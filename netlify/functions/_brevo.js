@@ -6,7 +6,19 @@
    n'échoue jamais (les e-mails ne doivent pas bloquer une commande).
    ========================================================= */
 const API = 'https://api.brevo.com/v3';
-const key = () => process.env.BREVO_API_KEY || '';
+// Tolérant : accepte la clé brute (xkeysib-…) OU une clé encodée en base64
+// dans un JSON {"api_key":"xkeysib-…"} (artefact de copier-coller), + trim.
+function key() {
+  let k = (process.env.BREVO_API_KEY || '').trim();
+  if (!k) return '';
+  if (/^eyJ[A-Za-z0-9+/]+=*$/.test(k)) {
+    try {
+      const obj = JSON.parse(Buffer.from(k, 'base64').toString('utf8'));
+      if (obj && obj.api_key) return String(obj.api_key).trim();
+    } catch (e) { /* on garde k tel quel */ }
+  }
+  return k;
+}
 const hasKey = () => !!key();
 
 // « #3 », « 3 », « liste 3 » → 3
