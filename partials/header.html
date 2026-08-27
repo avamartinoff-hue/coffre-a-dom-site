@@ -1,0 +1,46 @@
+<a class="skip-link" href="#contenu">{{t:skip}}</a>
+<header class="nav" id="nav">
+  <div class="nav__inner">
+    <a href="/" class="brand" aria-label="Coffre à Dom">
+      <img class="brand__logo" src="/assets/brand/logo.png" alt="Coffre à Dom" />
+    </a>
+
+    <nav class="nav__links" id="navLinks" aria-label="Navigation">
+      <a href="/" data-k="accueil">{{t:nav.home}}</a>
+
+      <div class="nav__item nav__item--mega">
+        <a href="/boutique/" data-k="boutique" class="nav__toggle">{{t:nav.shop}} <span class="caret">▾</span></a>
+        {{MEGAMENU}}
+      </div>
+
+      <div class="nav__item nav__item--drop">
+        <a href="/espace-gaming-immersif/" data-k="gaming" class="nav__toggle">{{t:nav.gaming}} <span class="caret">▾</span></a>
+        <div class="drop">
+          <a href="/espace-gaming-immersif/">🎮 {{t:gaming.space}}</a>
+          <a href="/session-jeu-ps5-immersive/">🎯 {{t:gaming.ps5}}</a>
+          <a href="/session-nintendo-retro/">🍄 {{t:gaming.nintendo}}</a>
+          <a href="/xbox-retro-gaming-suisse/">🕹️ {{t:gaming.xbox}}</a>
+          <a href="/session-simulateur-suisse/">🏎️ {{t:gaming.simu}}</a>
+          <a href="/experience-immersive-entreprise/">🏢 {{t:gaming.b2b}}</a>
+          <a href="/privatisation-evenement-particulier/">🎉 {{t:gaming.private}}</a>
+        </div>
+      </div>
+
+      <a href="/blog-geek/" data-k="univers">{{t:nav.blog}}</a>
+      <a href="/a-propos-coffre-a-dom/" data-k="univers">{{t:nav.about}}</a>
+      <a href="/contact/" data-k="contact">{{t:nav.contact}}</a>
+    </nav>
+
+    <div class="nav__actions">
+      {{LANGSWITCH}}
+      <a href="/panier/" class="cart-btn" aria-label="{{t:nav.cart_aria}}">
+        <svg class="cart-btn__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/><path d="M2.5 3h2.2l1.9 11.2a1.6 1.6 0 0 0 1.6 1.3h8.3a1.6 1.6 0 0 0 1.6-1.3L21 7H6.2"/></svg>
+        <span class="cart-count" data-cart-count>0</span>
+      </a>
+      <a href="/contact/" class="nav__cta">{{t:nav.reserve}}</a>
+      <button class="nav__burger" id="navBurger" aria-label="{{t:nav.burger_aria}}" aria-expanded="false" aria-controls="navLinks">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</header>

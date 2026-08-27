@@ -1,0 +1,65 @@
+<section class="section section--page">
+  <div class="container">
+    <nav class="crumb" aria-label="Fil d'Ariane"><a href="/">Accueil</a><span class="crumb__sep">/</span><span>Contact</span></nav>
+    <header class="page-hero">
+      <span class="page-hero__icon">🗝️</span>
+      <h1>Ouvre la porte du Coffre</h1>
+      <p>Réservation, privatisation, question sur une carte ou envie de devenir VIP&nbsp;? Écris-nous, on te répond.</p>
+    </header>
+
+    <div class="contact-grid">
+      <form class="form" name="contact" method="POST" data-netlify="true" netlify-honeypot="bot-field" action="/merci/">
+        <input type="hidden" name="form-name" value="contact" />
+        <p class="hidden"><label>Ne pas remplir : <input name="bot-field" /></label></p>
+        <div class="form__row">
+          <label class="field"><span>Nom</span><input type="text" name="nom" placeholder="Ton nom" required /></label>
+          <label class="field"><span>Email</span><input type="email" name="email" placeholder="toi@email.ch" required /></label>
+        </div>
+        <label class="field"><span>Sujet</span>
+          <select name="sujet">
+            <option>Réserver une session gaming</option>
+            <option>Privatisation / événement</option>
+            <option>Programme VIP</option>
+            <option>Question boutique / cartes</option>
+            <option>Autre</option>
+          </select>
+        </label>
+        <label class="field"><span>Message</span><textarea name="message" rows="6" placeholder="Dis-nous tout…" required></textarea></label>
+        <button type="submit" class="btn btn--gold btn--full">Envoyer le message 🗝️</button>
+      </form>
+
+      <aside class="contact-aside">
+        <div class="info-card">
+          <div class="info-card__icon">📞</div><h3>Nous joindre</h3>
+          <p>
+            <a href="tel:+41789418538">+41 78 941 85 38</a><br />
+            <a href="mailto:coffreadom@hotmail.com">coffreadom@hotmail.com</a>
+          </p>
+        </div>
+        <div class="info-card">
+          <div class="info-card__icon">📍</div><h3>Où nous trouver</h3>
+          <p>Route des Îles 84<br />1897 Le Bouveret, Suisse</p>
+          <a class="link-arrow" href="https://maps.google.com/?q=Route+des+Îles+84+1897+Bouveret" target="_blank" rel="noopener">Itinéraire <span>→</span></a>
+        </div>
+        <div class="info-card">
+          <div class="info-card__icon">🕑</div><h3>Horaires</h3>
+          <ul class="hours">
+            <li><span>Semaine</span><b>Sur réservation</b></li>
+            <li><span>Samedi</span><b>18h – 22h</b></li>
+            <li><span>Dimanche</span><b>14h – 18h</b></li>
+          </ul>
+        </div>
+        <div class="info-card">
+          <div class="info-card__icon">💳</div><h3>Paiements</h3>
+          <p>Cash · Twint · virement · paiement échelonné sur demande.</p>
+        </div>
+      </aside>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="map reveal" style="margin-top:16px">
+      <iframe title="Carte — Coffre à Dom, Le Bouveret" src="https://www.openstreetmap.org/export/embed.html?bbox=6.83%2C46.38%2C6.87%2C46.40&layer=mapnik&marker=46.3905%2C6.855" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+    </div>
+  </div>
+</section>

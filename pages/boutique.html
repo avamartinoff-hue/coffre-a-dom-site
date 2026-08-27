@@ -1,0 +1,58 @@
+<section class="section section--page">
+  <div class="container">
+    <nav class="crumb" aria-label="Fil d'Ariane"><a href="/">Accueil</a><span class="crumb__sep">/</span><span>Boutique</span></nav>
+    <header class="page-hero">
+      <span class="page-hero__icon">🃏</span>
+      <h1>La boutique du Coffre</h1>
+      <p>Cartes Pokémon, Magic, One Piece, Dragon Ball, Naruto… à l'unité, en booster ou en scellé, plus figurines, coffrets et protections. Retrait au Bouveret ou livraison postale.</p>
+    </header>
+
+    <div class="shop" id="shop">
+      <aside class="shop__sidebar">
+        <div class="shop__search">
+          <input type="search" id="shopSearch" placeholder="🔍 Rechercher une pièce…" aria-label="Rechercher une pièce" autocomplete="off" />
+        </div>
+
+        <div class="shop__filter">
+          <h3 class="shop__filter-title">Catégories</h3>
+          <div class="filter-list">{{SHOP_CATEGORIES}}</div>
+        </div>
+
+        <div class="shop__filter">
+          <h3 class="shop__filter-title">Disponibilité</h3>
+          <label class="filter-check"><input type="checkbox" id="inStockOnly" /><span>En stock uniquement</span></label>
+          <label class="filter-check"><input type="checkbox" id="onSaleOnly" /><span>En promo 🏷️</span></label>
+        </div>
+
+        <div class="shop__filter">
+          <h3 class="shop__filter-title">Prix (CHF)</h3>
+          <div class="filter-price">
+            <input type="number" id="priceMin" min="0" step="1" inputmode="numeric" placeholder="Min" aria-label="Prix minimum" />
+            <span class="filter-price__sep">–</span>
+            <input type="number" id="priceMax" min="0" step="1" inputmode="numeric" placeholder="Max" aria-label="Prix maximum" />
+          </div>
+        </div>
+
+        <button class="btn btn--ghost btn--sm" id="shopReset" type="button">Réinitialiser les filtres</button>
+      </aside>
+
+      <div class="shop__main">
+        <div class="shop__bar">
+          <span class="shop__count" data-shop-count>Chargement…</span>
+          <label class="shop__sort">
+            <span class="shop__sort-label">Trier :</span>
+            <select id="shopSort" aria-label="Trier les produits">
+              <option value="recent">Nouveautés</option>
+              <option value="price-asc">Prix croissant</option>
+              <option value="price-desc">Prix décroissant</option>
+              <option value="name">Nom A–Z</option>
+            </select>
+          </label>
+        </div>
+        <div class="pgrid" id="shopGrid">{{ALL_PRODUCTS}}</div>
+        <p class="empty" data-shop-empty hidden>Aucune pièce ne correspond à ta recherche. <button type="button" class="linkbtn" id="shopReset2">Tout afficher</button></p>
+      </div>
+    </div>
+  </div>
+</section>
+<script src="/shop.js" defer></script>

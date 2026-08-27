@@ -1,0 +1,3636 @@
+{
+  "categories": [
+    {
+      "slug": "30-anniversaire",
+      "name": "30ᵉ Anniversaire",
+      "parent": "pokemon-cartes",
+      "desc": ""
+    },
+    {
+      "slug": "booster-en-loose",
+      "name": "Booster en Loose",
+      "parent": "pokemon-cartes",
+      "desc": ""
+    },
+    {
+      "slug": "cartes-en",
+      "name": "Cartes EN",
+      "parent": "carte",
+      "desc": ""
+    },
+    {
+      "slug": "cartes-fr",
+      "name": "Cartes FR",
+      "parent": "carte",
+      "desc": ""
+    },
+    {
+      "slug": "carte-jap",
+      "name": "Cartes JAP",
+      "parent": "carte",
+      "desc": ""
+    },
+    {
+      "slug": "dragon-ball-anglais",
+      "name": "Dragon Ball – Anglais",
+      "parent": "jeu-de-cartes-a-collectionner",
+      "desc": ""
+    },
+    {
+      "slug": "epee-bouclier",
+      "name": "Epée & Bouclier",
+      "parent": "pokemon-cartes",
+      "desc": ""
+    },
+    {
+      "slug": "flammes-obsidiennes",
+      "name": "EV03 Flammes Obsidiennes",
+      "parent": "pokemon-cartes",
+      "desc": ""
+    },
+    {
+      "slug": "151",
+      "name": "EV03.5 151",
+      "parent": "pokemon-cartes",
+      "desc": ""
+    },
+    {
+      "slug": "couronne-stellaire",
+      "name": "EV07 Couronne stellaire",
+      "parent": "pokemon-cartes",
+      "desc": ""
+    },
+    {
+      "slug": "etincelles-deferlantes",
+      "name": "Ev08 Etincelles déferlantes",
+      "parent": "pokemon-cartes",
+      "desc": ""
+    },
+    {
+      "slug": "evolutions-prismatiques",
+      "name": "EV08.5 Évolutions Prismatiques",
+      "parent": "pokemon-cartes",
+      "desc": ""
+    },
+    {
+      "slug": "aventures-ensemble",
+      "name": "EV09 Aventures Ensemble",
+      "parent": "pokemon-cartes",
+      "desc": ""
+    },
+    {
+      "slug": "rivaux-predestines",
+      "name": "EV10 Rivalités Destinées",
+      "parent": "pokemon-cartes",
+      "desc": ""
+    },
+    {
+      "slug": "foudre-noire-flamme-blanche",
+      "name": "EV10.5 Foudre Noire & Flamme Blanche",
+      "parent": "pokemon-cartes",
+      "desc": ""
+    },
+    {
+      "slug": "pop",
+      "name": "Funko Pop",
+      "parent": null,
+      "icon": "🧸",
+      "desc": "Figurines Funko POP à collectionner."
+    },
+    {
+      "slug": "coffret-cadeau",
+      "name": "Idées Cadeaux",
+      "parent": null,
+      "icon": "🎁",
+      "desc": "Des idées cadeaux prêtes à offrir."
+    },
+    {
+      "slug": "jeu-de-cartes-a-collectionner",
+      "name": "Jeu de cartes à collectionner",
+      "parent": null,
+      "icon": "🃏",
+      "desc": "Pokémon, Magic, One Piece, Dragon Ball, Naruto… à l'unité, en booster ou en scellé."
+    },
+    {
+      "slug": "magic-the-gathering",
+      "name": "Magic The Gathering",
+      "parent": "jeu-de-cartes-a-collectionner",
+      "desc": ""
+    },
+    {
+      "slug": "me01-mega-evolution",
+      "name": "ME01 Mega Evolution",
+      "parent": "pokemon-cartes",
+      "desc": ""
+    },
+    {
+      "slug": "me02-flammes-fantasmagoriques",
+      "name": "ME02 Flammes Fantasmagoriques",
+      "parent": "pokemon-cartes",
+      "desc": ""
+    },
+    {
+      "slug": "me2-5-heros-transcendants",
+      "name": "ME02.5 Héros Transcendants",
+      "parent": "pokemon-cartes",
+      "desc": ""
+    },
+    {
+      "slug": "me03-equilibre-parfait",
+      "name": "ME03 Equilibre Parfait",
+      "parent": "pokemon-cartes",
+      "desc": ""
+    },
+    {
+      "slug": "me04-chaos-rising",
+      "name": "ME04 Chaos Ascendant",
+      "parent": "pokemon-cartes",
+      "desc": ""
+    },
+    {
+      "slug": "me05-abyss-eye",
+      "name": "ME05 Nuit Noire",
+      "parent": "pokemon-cartes",
+      "desc": ""
+    },
+    {
+      "slug": "naruto-mythos",
+      "name": "Naruto Mythos",
+      "parent": "jeu-de-cartes-a-collectionner",
+      "desc": ""
+    },
+    {
+      "slug": "one-piece",
+      "name": "One piece – FR & EN & Jap",
+      "parent": "jeu-de-cartes-a-collectionner",
+      "desc": ""
+    },
+    {
+      "slug": "carte",
+      "name": "Pokemon – Cartes",
+      "parent": "jeu-de-cartes-a-collectionner",
+      "desc": ""
+    },
+    {
+      "slug": "collection-coffrets",
+      "name": "Pokemon – Collection Coffrets & Box",
+      "parent": "jeu-de-cartes-a-collectionner",
+      "desc": ""
+    },
+    {
+      "slug": "pokemon-cartes",
+      "name": "Pokémon — Cartes",
+      "parent": "jeu-de-cartes-a-collectionner",
+      "desc": ""
+    },
+    {
+      "slug": "pokemon-japonais",
+      "name": "Pokemon – Japonais",
+      "parent": "jeu-de-cartes-a-collectionner",
+      "desc": ""
+    },
+    {
+      "slug": "promo",
+      "name": "Promo",
+      "parent": null,
+      "icon": "🏷️",
+      "desc": "Bons plans et prix cassés du moment."
+    },
+    {
+      "slug": "promo-pokemon",
+      "name": "Promo Pokémon",
+      "parent": "pokemon-cartes",
+      "desc": ""
+    },
+    {
+      "slug": "protections",
+      "name": "Protections",
+      "parent": "jeu-de-cartes-a-collectionner",
+      "desc": ""
+    },
+    {
+      "slug": "figurine-pvc-resine",
+      "name": "Répliques · PVC · Résine",
+      "parent": null,
+      "icon": "🗿",
+      "desc": "Répliques, figurines PVC et résine, du collector à l'exposition."
+    },
+    {
+      "slug": "vip",
+      "name": "VIP",
+      "parent": null,
+      "icon": "👑",
+      "desc": "Avantages et récompenses réservés aux membres du Coffre."
+    }
+  ],
+  "products": [
+    {
+      "slug": "pokemon-pokemon-day-2026-collection",
+      "name": "Pokémon – Pokémon Day 2026 Collection",
+      "price": 24.9,
+      "category": "collection-coffrets",
+      "onSale": false,
+      "inStock": true,
+      "desc": "🚨 Les précommandes 🚨 Date de disponibilité prévu: 28.08.2026",
+      "image": "assets/products/pokemon-pokemon-day-2026-collection.webp",
+      "translations": {
+        "en": {
+          "name": "Pokémon – Pokémon Day 2026 Collection",
+          "desc": "🚨 Pre-orders 🚨 Expected availability date: 28.08.2026"
+        },
+        "it": {
+          "name": "Pokémon – Pokémon Day 2026 Collection",
+          "desc": "🚨 Preordini 🚨 Data di disponibilità prevista: 28.08.2026"
+        },
+        "de": {
+          "name": "Pokémon – Pokémon Day 2026 Collection",
+          "desc": "🚨 Vorbestellungen 🚨 Voraussichtliches Verfügbarkeitsdatum: 28.08.2026"
+        }
+      }
+    },
+    {
+      "slug": "pokemon-first-partner-illustration-collection-3",
+      "name": "Pokémon – First Partner Illustration Collection #3",
+      "price": 34.9,
+      "category": "collection-coffrets",
+      "onSale": false,
+      "inStock": true,
+      "desc": "",
+      "image": "assets/products/pokemon-first-partner-illustration-collection-3.png",
+      "translations": {
+        "en": {
+          "name": "Pokémon – First Partner Illustration Collection #3",
+          "desc": ""
+        },
+        "it": {
+          "name": "Pokémon – First Partner Illustration Collection #3",
+          "desc": ""
+        },
+        "de": {
+          "name": "Pokémon – First Partner Illustration Collection #3",
+          "desc": ""
+        }
+      }
+    },
+    {
+      "slug": "pokemon-first-partner-illustration-collection-2",
+      "name": "Pokémon – First Partner Illustration Collection #2",
+      "price": 34.9,
+      "category": "collection-coffrets",
+      "onSale": false,
+      "inStock": true,
+      "desc": "🚨 Les précommandes 🚨 Date de disponibilité prévu: 28.08.2026",
+      "image": "assets/products/pokemon-first-partner-illustration-collection-2.webp",
+      "translations": {
+        "en": {
+          "name": "Pokémon – First Partner Illustration Collection #2",
+          "desc": "🚨 Pre-orders 🚨 Expected availability date: 28.08.2026"
+        },
+        "it": {
+          "name": "Pokémon – First Partner Illustration Collection #2",
+          "desc": "🚨 Preordini 🚨 Data di disponibilità prevista: 28.08.2026"
+        },
+        "de": {
+          "name": "Pokémon – First Partner Illustration Collection #2",
+          "desc": "🚨 Vorbestellungen 🚨 Voraussichtliches Verfügbarkeitsdatum: 28.08.2026"
+        }
+      }
+    },
+    {
+      "slug": "pokemon-sv10-destined-rivals-elite-trainer-box-en",
+      "name": "Pokémon – SV10 ‘Destined Rivals’ Elite Trainer Box (EN)",
+      "price": 149.9,
+      "category": "rivaux-predestines",
+      "onSale": true,
+      "inStock": true,
+      "desc": "Les précommandes Date de disponibilité prévu: 16.09.2026",
+      "image": "assets/products/pokemon-sv10-destined-rivals-elite-trainer-box-en.jpg",
+      "translations": {
+        "en": {
+          "name": "Pokémon – SV10 ‘Destined Rivals’ Elite Trainer Box (EN)",
+          "desc": "Pre-orders Expected availability date: 16.09.2026"
+        },
+        "it": {
+          "name": "Pokémon – SV10 ‘Destined Rivals’ Elite Trainer Box (EN)",
+          "desc": "Preordini Data di disponibilità prevista: 16.09.2026"
+        },
+        "de": {
+          "name": "Pokémon – SV10 ‘Destined Rivals’ Elite Trainer Box (EN)",
+          "desc": "Vorbestellungen Voraussichtliches Verfügbarkeitsdatum: 16.09.2026"
+        }
+      }
+    },
+    {
+      "slug": "naruto-mythos-tcg-konoha-shido-2nd-edition-booster-display-en",
+      "name": "Naruto Mythos TCG – Konoha Shido (2nd. Edition) – Booster Display – En",
+      "price": 95.9,
+      "category": "naruto-mythos",
+      "onSale": true,
+      "inStock": true,
+      "desc": "Available on September 4, 2026",
+      "image": "assets/products/naruto-mythos-tcg-konoha-shido-2nd-edition-booster-display-en.webp",
+      "translations": {
+        "en": {
+          "name": "Naruto Mythos TCG – Konoha Shido (2nd. Edition) – Booster Display – En",
+          "desc": "Available on September 4, 2026"
+        },
+        "it": {
+          "name": "Naruto Mythos TCG – Konoha Shido (2nd. Edition) – Booster Display – En",
+          "desc": "Disponibile dal 4 settembre 2026"
+        },
+        "de": {
+          "name": "Naruto Mythos TCG – Konoha Shido (2nd. Edition) – Booster Display – En",
+          "desc": "Verfügbar ab 4. September 2026"
+        }
+      }
+    },
+    {
+      "slug": "magic-the-gathering-draft-night-the-hobbit-en",
+      "name": "Magic The Gathering – Draft Night – The Hobbit – En",
+      "price": 129.9,
+      "category": "magic-the-gathering",
+      "onSale": false,
+      "inStock": true,
+      "desc": "",
+      "image": "assets/products/magic-the-gathering-draft-night-the-hobbit-en.jpg",
+      "translations": {
+        "en": {
+          "name": "Magic The Gathering – Draft Night – The Hobbit – En",
+          "desc": ""
+        },
+        "it": {
+          "name": "Magic The Gathering – Draft Night – The Hobbit – En",
+          "desc": ""
+        },
+        "de": {
+          "name": "Magic The Gathering – Draft Night – The Hobbit – En",
+          "desc": ""
+        }
+      }
+    },
+    {
+      "slug": "magic-the-gathering-bundle-le-hobbit-fr",
+      "name": "Magic The Gathering – Bundle – Le Hobbit – Fr",
+      "price": 69.9,
+      "category": "magic-the-gathering",
+      "onSale": false,
+      "inStock": true,
+      "desc": "",
+      "image": "assets/products/magic-the-gathering-bundle-le-hobbit-fr.jpg",
+      "translations": {
+        "en": {
+          "name": "Magic The Gathering – Bundle – The Hobbit – Fr",
+          "desc": ""
+        },
+        "it": {
+          "name": "Magic The Gathering – Bundle – Lo Hobbit – Fr",
+          "desc": ""
+        },
+        "de": {
+          "name": "Magic The Gathering – Bundle – Der Hobbit – Fr",
+          "desc": ""
+        }
+      }
+    },
+    {
+      "slug": "pokemon-30-anniversaire-poster-collection-fr",
+      "name": "Pokémon – 30ᵉ Anniversaire – Poster Collection – FR",
+      "price": 29.9,
+      "category": "30-anniversaire",
+      "onSale": true,
+      "inStock": false,
+      "desc": "Les précommandes Date de disponibilité prévu: 16.09.2026 Limite 1 par personne",
+      "image": "assets/products/pokemon-30-anniversaire-poster-collection-fr.webp",
+      "translations": {
+        "en": {
+          "name": "Pokémon – 30th Anniversary – Poster Collection – FR",
+          "desc": "Pre-orders Expected availability date: 16.09.2026 Limit 1 per person"
+        },
+        "it": {
+          "name": "Pokémon – 30° Anniversario – Poster Collection – FR",
+          "desc": "Preordini Data di disponibilità prevista: 16.09.2026 Limite 1 per persona"
+        },
+        "de": {
+          "name": "Pokémon – 30. Jubiläum – Poster Collection – FR",
+          "desc": "Vorbestellungen Voraussichtliches Verfügbarkeitsdatum: 16.09.2026 Limit 1 pro Person"
+        }
+      }
+    },
+    {
+      "slug": "pokemon-30-anniversaire-poster-collection-en",
+      "name": "Pokémon – 30ᵉ Anniversaire – Poster Collection – EN",
+      "price": 29.9,
+      "category": "30-anniversaire",
+      "onSale": true,
+      "inStock": false,
+      "desc": "Les précommandes Date de disponibilité prévu: 16.09.2026 Limite 1 par personne",
+      "image": "assets/products/pokemon-30-anniversaire-poster-collection-en.webp",
+      "translations": {
+        "en": {
+          "name": "Pokémon – 30th Anniversary – Poster Collection – EN",
+          "desc": "Pre-orders Expected availability date: 16.09.2026 Limit 1 per person"
+        },
+        "it": {
+          "name": "Pokémon – 30° Anniversario – Poster Collection – EN",
+          "desc": "Preordini Data di disponibilità prevista: 16.09.2026 Limite 1 per persona"
+        },
+        "de": {
+          "name": "Pokémon – 30. Jubiläum – Poster Collection – EN",
+          "desc": "Vorbestellungen Voraussichtliches Verfügbarkeitsdatum: 16.09.2026 Limit 1 pro Person"
+        }
+      }
+    },
+    {
+      "slug": "pokemon-30-anniversaire-ex-tin-amphinobi-en",
+      "name": "Pokémon – 30ᵉ Anniversaire – Ex Tin Amphinobi – EN",
+      "price": 35.9,
+      "category": "30-anniversaire",
+      "onSale": true,
+      "inStock": false,
+      "desc": "Les précommandes Date de disponibilité prévu: 16.09.2026 Limite 1 par personne/Pour les Tins , vous pourrez prendre 1 seul exemplaire toutes langues confondues. .",
+      "image": "assets/products/pokemon-30-anniversaire-ex-tin-amphinobi-en.webp",
+      "translations": {
+        "en": {
+          "name": "Pokémon – 30th Anniversary – Ex Tin Greninja – EN",
+          "desc": "Pre-orders Expected availability date: 16.09.2026 Limit 1 per person/For the Tins, you may take only 1 copy across all languages combined. ."
+        },
+        "it": {
+          "name": "Pokémon – 30° Anniversario – Ex Tin Greninja – EN",
+          "desc": "Preordini Data di disponibilità prevista: 16.09.2026 Limite 1 per persona/Per i Tin, potrete prendere 1 solo esemplare per tutte le lingue. ."
+        },
+        "de": {
+          "name": "Pokémon – 30. Jubiläum – Ex Tin Quajutsu – EN",
+          "desc": "Vorbestellungen Voraussichtliches Verfügbarkeitsdatum: 16.09.2026 Limit 1 pro Person/Für die Tins können Sie nur 1 Exemplar über alle Sprachen hinweg nehmen. ."
+        }
+      }
+    },
+    {
+      "slug": "pokemon-30-anniversaire-ex-tin-nymphali-en",
+      "name": "Pokémon – 30ᵉ Anniversaire – Ex Tin Nymphali – EN",
+      "price": 35.9,
+      "category": "30-anniversaire",
+      "onSale": true,
+      "inStock": false,
+      "desc": "Les précommandes Date de disponibilité prévu: 16.09.2026 Limite 1 par personne/Pour les Tins , vous pourrez prendre 1 seul exemplaire toutes langues confondues. .",
+      "image": "assets/products/pokemon-30-anniversaire-ex-tin-nymphali-en.webp",
+      "translations": {
+        "en": {
+          "name": "Pokémon – 30th Anniversary – Ex Tin Sylveon – EN",
+          "desc": "Pre-orders Expected availability date: 16.09.2026 Limit 1 per person/For the Tins, you may take only 1 copy across all languages combined. ."
+        },
+        "it": {
+          "name": "Pokémon – 30° Anniversario – Ex Tin Sylveon – EN",
+          "desc": "Preordini Data di disponibilità prevista: 16.09.2026 Limite 1 per persona/Per i Tin, potrete prendere 1 solo esemplare per tutte le lingue. ."
+        },
+        "de": {
+          "name": "Pokémon – 30. Jubiläum – Ex Tin Feelinara – EN",
+          "desc": "Vorbestellungen Voraussichtliches Verfügbarkeitsdatum: 16.09.2026 Limit 1 pro Person/Für die Tins können Sie nur 1 Exemplar über alle Sprachen hinweg nehmen. ."
+        }
+      }
+    },
+    {
+      "slug": "pokemon-30-anniversaire-ex-tin-amphinobi-fr",
+      "name": "Pokémon – 30ᵉ Anniversaire – Ex Tin Amphinobi – FR",
+      "price": 35.9,
+      "category": "30-anniversaire",
+      "onSale": true,
+      "inStock": false,
+      "desc": "Les précommandes Date de disponibilité prévu: 16.09.2026 Limite 1 par personne",
+      "image": "assets/products/pokemon-30-anniversaire-ex-tin-amphinobi-fr.webp",
+      "translations": {
+        "en": {
+          "name": "Pokémon – 30th Anniversary – Ex Tin Greninja – FR",
+          "desc": "Pre-orders Expected availability date: 16.09.2026 Limit 1 per person"
+        },
+        "it": {
+          "name": "Pokémon – 30° Anniversario – Ex Tin Greninja – FR",
+          "desc": "Preordini Data di disponibilità prevista: 16.09.2026 Limite 1 per persona"
+        },
+        "de": {
+          "name": "Pokémon – 30. Jubiläum – Ex Tin Quajutsu – FR",
+          "desc": "Vorbestellungen Voraussichtliches Verfügbarkeitsdatum: 16.09.2026 Limit 1 pro Person"
+        }
+      }
+    },
+    {
+      "slug": "pokemon-30-anniversaire-ex-tin-nymphali-fr",
+      "name": "Pokémon – 30ᵉ Anniversaire – Ex Tin Nymphali – FR",
+      "price": 35.9,
+      "category": "30-anniversaire",
+      "onSale": true,
+      "inStock": false,
+      "desc": "Les précommandes Date de disponibilité prévu: 16.09.2026 Limite 1 par personne/Pour les Tins , vous pourrez prendre 1 seul exemplaire toutes langues confondues. .",
+      "image": "assets/products/pokemon-30-anniversaire-ex-tin-nymphali-fr.webp",
+      "translations": {
+        "en": {
+          "name": "Pokémon – 30th Anniversary – Ex Tin Sylveon – FR",
+          "desc": "Pre-orders Expected availability date: 16.09.2026 Limit 1 per person/For the Tins, you may take only 1 copy across all languages combined. ."
+        },
+        "it": {
+          "name": "Pokémon – 30° Anniversario – Ex Tin Sylveon – FR",
+          "desc": "Preordini Data di disponibilità prevista: 16.09.2026 Limite 1 per persona/Per i Tin, potrete prendere 1 solo esemplare per tutte le lingue. ."
+        },
+        "de": {
+          "name": "Pokémon – 30. Jubiläum – Ex Tin Feelinara – FR",
+          "desc": "Vorbestellungen Voraussichtliches Verfügbarkeitsdatum: 16.09.2026 Limit 1 pro Person/Für die Tins können Sie nur 1 Exemplar über alle Sprachen hinweg nehmen. ."
+        }
+      }
+    },
+    {
+      "slug": "pokemon-30-anniversaire-ex-box-nymphali-fr",
+      "name": "Pokémon – 30ᵉ Anniversaire – Ex Box Nymphali – FR",
+      "price": 35.9,
+      "category": "30-anniversaire",
+      "onSale": true,
+      "inStock": false,
+      "desc": "Les précommandes Date de disponibilité prévu: 16.09.2026 Limite 1 par personne/Pour les Box , vous pourrez prendre 1 seul exemplaire toutes langues confondues.",
+      "image": "assets/products/pokemon-30-anniversaire-ex-box-nymphali-fr.webp",
+      "translations": {
+        "en": {
+          "name": "Pokémon – 30th Anniversary – Ex Box Sylveon – FR",
+          "desc": "Pre-orders Expected availability date: 16.09.2026 Limit 1 per person/For the Box, you may take only 1 copy across all languages combined."
+        },
+        "it": {
+          "name": "Pokémon – 30° Anniversario – Ex Box Sylveon – FR",
+          "desc": "Preordini Data di disponibilità prevista: 16.09.2026 Limite 1 per persona/Per le Box, potrete prendere 1 solo esemplare per tutte le lingue."
+        },
+        "de": {
+          "name": "Pokémon – 30. Jubiläum – Ex Box Feelinara – FR",
+          "desc": "Vorbestellungen Voraussichtliches Verfügbarkeitsdatum: 16.09.2026 Limit 1 pro Person/Für die Box können Sie nur 1 Exemplar über alle Sprachen hinweg nehmen."
+        }
+      }
+    },
+    {
+      "slug": "pokemon-30-anniversaire-ex-box-amphinobi-fr",
+      "name": "Pokémon – 30ᵉ Anniversaire – Ex Box Amphinobi – FR",
+      "price": 35.9,
+      "category": "30-anniversaire",
+      "onSale": true,
+      "inStock": false,
+      "desc": "Les précommandes Date de disponibilité prévu: 16.09.2026 Limite 1 par personne/Pour les Box , vous pourrez prendre 1 seul exemplaire toutes langues confondues.",
+      "image": "assets/products/pokemon-30-anniversaire-ex-box-amphinobi-fr.webp",
+      "translations": {
+        "en": {
+          "name": "Pokémon – 30th Anniversary – Ex Box Greninja – FR",
+          "desc": "Pre-orders Expected availability date: 16.09.2026 Limit 1 per person/For the Box, you may take only 1 copy across all languages combined."
+        },
+        "it": {
+          "name": "Pokémon – 30° Anniversario – Ex Box Greninja – FR",
+          "desc": "Preordini Data di disponibilità prevista: 16.09.2026 Limite 1 per persona/Per le Box, potrete prendere 1 solo esemplare per tutte le lingue."
+        },
+        "de": {
+          "name": "Pokémon – 30. Jubiläum – Ex Box Quajutsu – FR",
+          "desc": "Vorbestellungen Voraussichtliches Verfügbarkeitsdatum: 16.09.2026 Limit 1 pro Person/Für die Box können Sie nur 1 Exemplar über alle Sprachen hinweg nehmen."
+        }
+      }
+    },
+    {
+      "slug": "pokemon-30-anniversaire-ex-box-amphinobi-en",
+      "name": "Pokémon – 30ᵉ Anniversaire – Ex Box Amphinobi – EN",
+      "price": 35.9,
+      "category": "30-anniversaire",
+      "onSale": true,
+      "inStock": false,
+      "desc": "Les précommandes Date de disponibilité prévu: 16.09.2026 Limite 1 par personne/Pour les Box , vous pourrez prendre 1 seul exemplaire toutes langues confondues.",
+      "image": "assets/products/pokemon-30-anniversaire-ex-box-amphinobi-en.webp",
+      "translations": {
+        "en": {
+          "name": "Pokémon – 30th Anniversary – Ex Box Greninja – EN",
+          "desc": "Pre-orders Expected availability date: 16.09.2026 Limit 1 per person/For the Box, you may take only 1 copy across all languages combined."
+        },
+        "it": {
+          "name": "Pokémon – 30° Anniversario – Ex Box Greninja – EN",
+          "desc": "Preordini Data di disponibilità prevista: 16.09.2026 Limite 1 per persona/Per le Box, potrete prendere 1 solo esemplare per tutte le lingue."
+        },
+        "de": {
+          "name": "Pokémon – 30. Jubiläum – Ex Box Quajutsu – EN",
+          "desc": "Vorbestellungen Voraussichtliches Verfügbarkeitsdatum: 16.09.2026 Limit 1 pro Person/Für die Box können Sie nur 1 Exemplar über alle Sprachen hinweg nehmen."
+        }
+      }
+    },
+    {
+      "slug": "pokemon-30-anniversaire-ex-box-nymphali-en",
+      "name": "Pokémon – 30ᵉ Anniversaire – Ex Box Nymphali – EN",
+      "price": 35.9,
+      "category": "30-anniversaire",
+      "onSale": true,
+      "inStock": false,
+      "desc": "Les précommandes Date de disponibilité prévu: 16.09.2026 Limite 1 par personne/Pour les Box , vous pourrez prendre 1 seul exemplaire toutes langues confondues.",
+      "image": "assets/products/pokemon-30-anniversaire-ex-box-nymphali-en.webp",
+      "translations": {
+        "en": {
+          "name": "Pokémon – 30th Anniversary – Ex Box Sylveon – EN",
+          "desc": "Pre-orders Expected availability date: 16.09.2026 Limit 1 per person/For the Box, you may take only 1 copy across all languages combined."
+        },
+        "it": {
+          "name": "Pokémon – 30° Anniversario – Ex Box Sylveon – EN",
+          "desc": "Preordini Data di disponibilità prevista: 16.09.2026 Limite 1 per persona/Per le Box, potrete prendere 1 solo esemplare per tutte le lingue."
+        },
+        "de": {
+          "name": "Pokémon – 30. Jubiläum – Ex Box Feelinara – EN",
+          "desc": "Vorbestellungen Voraussichtliches Verfügbarkeitsdatum: 16.09.2026 Limit 1 pro Person/Für die Box können Sie nur 1 Exemplar über alle Sprachen hinweg nehmen."
+        }
+      }
+    },
+    {
+      "slug": "pokemon-30-anniversaire-binder-collection-fr",
+      "name": "Pokémon – 30ᵉ Anniversaire – Binder Collection – FR",
+      "price": 49.9,
+      "category": "30-anniversaire",
+      "onSale": true,
+      "inStock": false,
+      "desc": "Les précommandes Date de disponibilité prévu: 16.09.2026 Limite 1 par personne",
+      "image": "assets/products/pokemon-30-anniversaire-binder-collection-fr.webp",
+      "translations": {
+        "en": {
+          "name": "Pokémon – 30th Anniversary – Binder Collection – FR",
+          "desc": "Pre-orders Expected availability date: 16.09.2026 Limit 1 per person"
+        },
+        "it": {
+          "name": "Pokémon – 30° Anniversario – Binder Collection – FR",
+          "desc": "Preordini Data di disponibilità prevista: 16.09.2026 Limite 1 per persona"
+        },
+        "de": {
+          "name": "Pokémon – 30. Jubiläum – Binder Collection – FR",
+          "desc": "Vorbestellungen Voraussichtliches Verfügbarkeitsdatum: 16.09.2026 Limit 1 pro Person"
+        }
+      }
+    },
+    {
+      "slug": "pokemon-30-anniversaire-binder-collection-en",
+      "name": "Pokémon – 30ᵉ Anniversaire – Binder Collection – EN",
+      "price": 49.9,
+      "category": "30-anniversaire",
+      "onSale": true,
+      "inStock": false,
+      "desc": "Les précommandes Date de disponibilité prévu: 16.09.2026 Limite 1 par personne",
+      "image": "assets/products/pokemon-30-anniversaire-binder-collection-en.webp",
+      "translations": {
+        "en": {
+          "name": "Pokémon – 30th Anniversary – Binder Collection – EN",
+          "desc": "Pre-orders Expected availability date: 16.09.2026 Limit 1 per person"
+        },
+        "it": {
+          "name": "Pokémon – 30° Anniversario – Binder Collection – EN",
+          "desc": "Preordini Data di disponibilità prevista: 16.09.2026 Limite 1 per persona"
+        },
+        "de": {
+          "name": "Pokémon – 30. Jubiläum – Binder Collection – EN",
+          "desc": "Vorbestellungen Voraussichtliches Verfügbarkeitsdatum: 16.09.2026 Limit 1 pro Person"
+        }
+      }
+    },
+    {
+      "slug": "pokemon-30-anniversaire-tech-sticker-collection-fr",
+      "name": "Pokémon – 30ᵉ Anniversaire – Tech Sticker Collection – FR",
+      "price": 25.9,
+      "category": "30-anniversaire",
+      "onSale": true,
+      "inStock": false,
+      "desc": "Les précommandes Date de disponibilité prévu: 16.09.2026 Limite 1 par personne Distribution aléatoir entre Noadkoko d’Alola ou de Lucario",
+      "image": "assets/products/pokemon-30-anniversaire-tech-sticker-collection-fr.webp",
+      "translations": {
+        "en": {
+          "name": "Pokémon – 30th Anniversary – Tech Sticker Collection – FR",
+          "desc": "Pre-orders Expected availability date: 16.09.2026 Limit 1 per person Random distribution between Alolan Exeggutor or Lucario"
+        },
+        "it": {
+          "name": "Pokémon – 30° Anniversario – Tech Sticker Collection – FR",
+          "desc": "Preordini Data di disponibilità prevista: 16.09.2026 Limite 1 per persona Distribuzione casuale tra Exeggutor di Alola o Lucario"
+        },
+        "de": {
+          "name": "Pokémon – 30. Jubiläum – Tech Sticker Collection – FR",
+          "desc": "Vorbestellungen Voraussichtliches Verfügbarkeitsdatum: 16.09.2026 Limit 1 pro Person Zufällige Verteilung zwischen Alola-Kokowei oder Lucario"
+        }
+      }
+    },
+    {
+      "slug": "pokemon-30-anniversaire-tech-sticker-collection-en",
+      "name": "Pokémon – 30ᵉ Anniversaire – Tech Sticker Collection – EN",
+      "price": 25.9,
+      "category": "30-anniversaire",
+      "onSale": true,
+      "inStock": false,
+      "desc": "Les précommandes Date de disponibilité prévu: 16.09.2026 Limite 1 par personne Distribution aléatoir entre Noadkoko d’Alola ou de Lucario",
+      "image": "assets/products/pokemon-30-anniversaire-tech-sticker-collection-en.webp",
+      "translations": {
+        "en": {
+          "name": "Pokémon – 30th Anniversary – Tech Sticker Collection – EN",
+          "desc": "Pre-orders Expected availability date: 16.09.2026 Limit 1 per person Random distribution between Alolan Exeggutor or Lucario"
+        },
+        "it": {
+          "name": "Pokémon – 30° Anniversario – Tech Sticker Collection – EN",
+          "desc": "Preordini Data di disponibilità prevista: 16.09.2026 Limite 1 per persona Distribuzione casuale tra Exeggutor di Alola o Lucario"
+        },
+        "de": {
+          "name": "Pokémon – 30. Jubiläum – Tech Sticker Collection – EN",
+          "desc": "Vorbestellungen Voraussichtliches Verfügbarkeitsdatum: 16.09.2026 Limit 1 pro Person Zufällige Verteilung zwischen Alola-Kokowei oder Lucario"
+        }
+      }
+    },
+    {
+      "slug": "pokemon-30-anniversaire-pack-blister-fr",
+      "name": "Pokémon – 30ᵉ Anniversaire – Pack Blister – FR",
+      "price": 15.9,
+      "category": "30-anniversaire",
+      "onSale": true,
+      "inStock": false,
+      "desc": "Les précommandes Date de disponibilité prévu: 16.09.2026 Limite 1 par personne",
+      "image": "assets/products/pokemon-30-anniversaire-pack-blister-fr.webp",
+      "translations": {
+        "en": {
+          "name": "Pokémon – 30th Anniversary – Blister Pack – FR",
+          "desc": "Pre-orders Expected availability date: 16.09.2026 Limit 1 per person"
+        },
+        "it": {
+          "name": "Pokémon – 30° Anniversario – Blister Pack – FR",
+          "desc": "Preordini Data di disponibilità prevista: 16.09.2026 Limite 1 per persona"
+        },
+        "de": {
+          "name": "Pokémon – 30. Jubiläum – Blister-Pack – FR",
+          "desc": "Vorbestellungen Voraussichtliches Verfügbarkeitsdatum: 16.09.2026 Limit 1 pro Person"
+        }
+      }
+    },
+    {
+      "slug": "pokemon-30-anniversaire-pack-blister-en",
+      "name": "Pokémon – 30ᵉ Anniversaire – Pack Blister – EN",
+      "price": 15.9,
+      "category": "30-anniversaire",
+      "onSale": true,
+      "inStock": false,
+      "desc": "Les précommandes Date de disponibilité prévu: 16.09.2026 Limite 1 par personne",
+      "image": "assets/products/pokemon-30-anniversaire-pack-blister-en.webp",
+      "translations": {
+        "en": {
+          "name": "Pokémon – 30th Anniversary – Blister Pack – EN",
+          "desc": "Pre-orders Expected availability date: 16.09.2026 Limit 1 per person"
+        },
+        "it": {
+          "name": "Pokémon – 30° Anniversario – Blister Pack – EN",
+          "desc": "Preordini Data di disponibilità prevista: 16.09.2026 Limite 1 per persona"
+        },
+        "de": {
+          "name": "Pokémon – 30. Jubiläum – Blister-Pack – EN",
+          "desc": "Vorbestellungen Voraussichtliches Verfügbarkeitsdatum: 16.09.2026 Limit 1 pro Person"
+        }
+      }
+    },
+    {
+      "slug": "pokemon-30-anniversaire-coffret-dresseur-delite-fr",
+      "name": "Pokémon – 30ᵉ Anniversaire – Coffret Dresseur d’élite (FR)",
+      "price": 79.9,
+      "category": "30-anniversaire",
+      "onSale": true,
+      "inStock": false,
+      "desc": "Les précommandes Date de disponibilité prévu: 16.09.2026 Limite 2 par personne",
+      "image": "assets/products/pokemon-30-anniversaire-coffret-dresseur-delite-fr.png",
+      "translations": {
+        "en": {
+          "name": "Pokémon – 30th Anniversary – Elite Trainer Box (FR)",
+          "desc": "Pre-orders Expected availability date: 16.09.2026 Limit 2 per person"
+        },
+        "it": {
+          "name": "Pokémon – 30° Anniversario – Elite Trainer Box (FR)",
+          "desc": "Preordini Data di disponibilità prevista: 16.09.2026 Limite 2 per persona"
+        },
+        "de": {
+          "name": "Pokémon – 30. Jubiläum – Elite Trainer Box (FR)",
+          "desc": "Vorbestellungen Voraussichtliches Verfügbarkeitsdatum: 16.09.2026 Limit 2 pro Person"
+        }
+      }
+    },
+    {
+      "slug": "pokemon-30-anniversaire-elite-trainer-box-en",
+      "name": "Pokémon – 30ᵉ Anniversaire – Elite Trainer Box (EN)",
+      "price": 79.9,
+      "category": "30-anniversaire",
+      "onSale": true,
+      "inStock": false,
+      "desc": "Les précommandes Date de disponibilité prévu: 16.09.2026 Limite 1 par personne",
+      "image": "assets/products/pokemon-30-anniversaire-elite-trainer-box-en.webp",
+      "translations": {
+        "en": {
+          "name": "Pokémon – 30th Anniversary – Elite Trainer Box (EN)",
+          "desc": "Pre-orders Expected availability date: 16.09.2026 Limit 1 per person"
+        },
+        "it": {
+          "name": "Pokémon – 30° Anniversario – Elite Trainer Box (EN)",
+          "desc": "Preordini Data di disponibilità prevista: 16.09.2026 Limite 1 per persona"
+        },
+        "de": {
+          "name": "Pokémon – 30. Jubiläum – Elite Trainer Box (EN)",
+          "desc": "Vorbestellungen Voraussichtliches Verfügbarkeitsdatum: 16.09.2026 Limit 1 pro Person"
+        }
+      }
+    },
+    {
+      "slug": "one-piece-op16-the-time-of-battle-double-pack-display-fr-copie",
+      "name": "One Piece – OP17 Les Guerriers Les Plus Puissants Au Monde – Double Pack Display FR",
+      "price": 0,
+      "category": "one-piece",
+      "onSale": false,
+      "inStock": false,
+      "desc": "🚨 Précommandes 🚨 Date de disponibilité prévu: 28.08.2026 Maximum 4 par personne",
+      "image": "assets/products/one-piece-op16-the-time-of-battle-double-pack-display-fr-copie.webp",
+      "translations": {
+        "en": {
+          "name": "One Piece – OP17 The World's Strongest Warriors – Double Pack Display FR",
+          "desc": "🚨 Pre-orders 🚨 Expected availability date: 28.08.2026 Maximum 4 per person"
+        },
+        "it": {
+          "name": "One Piece – OP17 I Guerrieri Più Potenti Del Mondo – Double Pack Display FR",
+          "desc": "🚨 Preordini 🚨 Data di disponibilità prevista: 28.08.2026 Massimo 4 per persona"
+        },
+        "de": {
+          "name": "One Piece – OP17 Die stärksten Krieger der Welt – Double Pack Display FR",
+          "desc": "🚨 Vorbestellungen 🚨 Voraussichtliches Verfügbarkeitsdatum: 28.08.2026 Maximal 4 pro Person"
+        }
+      }
+    },
+    {
+      "slug": "one-piece-op17-les-guerriers-les-plus-puissants-au-monde-display-fr",
+      "name": "One Piece – OP17 Les Guerriers Les Plus Puissants Au Monde – Display – FR",
+      "price": 0,
+      "category": "one-piece",
+      "onSale": false,
+      "inStock": false,
+      "desc": "🚨 Précommandes 🚨 Date de disponibilité prévu: 28.08.2026 Maximum 1 par personne",
+      "image": "assets/products/one-piece-op17-les-guerriers-les-plus-puissants-au-monde-display-fr.jpg",
+      "translations": {
+        "en": {
+          "name": "One Piece – OP17 The World's Strongest Warriors – Display – FR",
+          "desc": "🚨 Pre-orders 🚨 Expected availability date: 28.08.2026 Maximum 1 per person"
+        },
+        "it": {
+          "name": "One Piece – OP17 I Guerrieri Più Potenti Del Mondo – Display – FR",
+          "desc": "🚨 Preordini 🚨 Data di disponibilità prevista: 28.08.2026 Massimo 1 per persona"
+        },
+        "de": {
+          "name": "One Piece – OP17 Die stärksten Krieger der Welt – Display – FR",
+          "desc": "🚨 Vorbestellungen 🚨 Voraussichtliches Verfügbarkeitsdatum: 28.08.2026 Maximal 1 pro Person"
+        }
+      }
+    },
+    {
+      "slug": "pokemon-fr-mega-puissances-ex-3x-tin",
+      "name": "Pokémon – FR ‘Méga Puissances’ ex 3x Tin",
+      "price": 74.9,
+      "category": "promo-pokemon",
+      "onSale": true,
+      "inStock": true,
+      "desc": "🚨 Les précommandes 🚨 Date de disponibilité prévu: 28.08.2026",
+      "image": "assets/products/pokemon-fr-mega-puissances-ex-3x-tin.png",
+      "translations": {
+        "en": {
+          "name": "Pokémon – FR ‘Mega Powers’ ex 3x Tin",
+          "desc": "🚨 Pre-orders 🚨 Expected availability date: 28.08.2026"
+        },
+        "it": {
+          "name": "Pokémon – FR ‘Mega Powers’ ex 3x Tin",
+          "desc": "🚨 Preordini 🚨 Data di disponibilità prevista: 28.08.2026"
+        },
+        "de": {
+          "name": "Pokémon – FR ‘Mega Powers’ ex 3x Tin",
+          "desc": "🚨 Vorbestellungen 🚨 Voraussichtliches Verfügbarkeitsdatum: 28.08.2026"
+        }
+      }
+    },
+    {
+      "slug": "pokemon-me02-5-heros-transcendants-coffret-dresseur-delite-fr-case",
+      "name": "Pokémon – ME02.5 Héros Transcendants – Coffret Dresseur d’élite (FR) (Case)",
+      "price": 1299.9,
+      "category": "me2-5-heros-transcendants",
+      "onSale": false,
+      "inStock": true,
+      "desc": "Les précommandes Date de disponibilité prévu: 07.08.2026",
+      "image": "assets/products/pokemon-me02-5-heros-transcendants-coffret-dresseur-delite-fr-case.webp",
+      "translations": {
+        "en": {
+          "name": "Pokémon – ME02.5 Transcendent Heroes – Elite Trainer Box (FR) (Case)",
+          "desc": "Pre-orders Expected availability date: 07.08.2026"
+        },
+        "it": {
+          "name": "Pokémon – ME02.5 Eroi Trascendenti – Elite Trainer Box (FR) (Case)",
+          "desc": "Preordini Data di disponibilità prevista: 07.08.2026"
+        },
+        "de": {
+          "name": "Pokémon – ME02.5 Transzendente Helden – Elite Trainer Box (FR) (Case)",
+          "desc": "Vorbestellungen Voraussichtliches Verfügbarkeitsdatum: 07.08.2026"
+        }
+      }
+    },
+    {
+      "slug": "pokemon-swsh10-astres-radieux-boite-de-36-boosters-display",
+      "name": "Pokémon – ‘SWSH10 ‘Astres Radieux’ – Boîte de 36 Boosters (Display) »Case »",
+      "price": 1799.9,
+      "category": "epee-bouclier",
+      "onSale": false,
+      "inStock": false,
+      "desc": "Les précommandes Date de disponibilité prévu: 07.08.2026",
+      "image": "assets/products/pokemon-swsh10-astres-radieux-boite-de-36-boosters-display.jpg",
+      "translations": {
+        "en": {
+          "name": "Pokémon – ‘SWSH10 ‘Astral Radiance’ – Box of 36 Boosters (Display) »Case »",
+          "desc": "Pre-orders Expected availability date: 07.08.2026"
+        },
+        "it": {
+          "name": "Pokémon – ‘SWSH10 ‘Splendore Astrale’ – Scatola da 36 Bustine (Display) »Case »",
+          "desc": "Preordini Data di disponibilità prevista: 07.08.2026"
+        },
+        "de": {
+          "name": "Pokémon – ‘SWSH10 ‘Strahlende Sterne’ – 36er-Boosterbox (Display) »Case »",
+          "desc": "Vorbestellungen Voraussichtliches Verfügbarkeitsdatum: 07.08.2026"
+        }
+      }
+    },
+    {
+      "slug": "pokemon-me02-5-heros-transcendants-display-bundle-en",
+      "name": "Pokémon – ME02.5 Héros Transcendants – Display Bundle (EN)",
+      "price": 1199.9,
+      "category": "me2-5-heros-transcendants",
+      "onSale": false,
+      "inStock": true,
+      "desc": "Les précommandes Date de disponibilité prévu: 07.08.2026",
+      "image": "assets/products/pokemon-me02-5-heros-transcendants-display-bundle-en.png",
+      "translations": {
+        "en": {
+          "name": "Pokémon – ME02.5 Transcendent Heroes – Display Bundle (EN)",
+          "desc": "Pre-orders Expected availability date: 07.08.2026"
+        },
+        "it": {
+          "name": "Pokémon – ME02.5 Eroi Trascendenti – Display Bundle (EN)",
+          "desc": "Preordini Data di disponibilità prevista: 07.08.2026"
+        },
+        "de": {
+          "name": "Pokémon – ME02.5 Transzendente Helden – Display Bundle (EN)",
+          "desc": "Vorbestellungen Voraussichtliches Verfügbarkeitsdatum: 07.08.2026"
+        }
+      }
+    },
+    {
+      "slug": "pokemon-sv10-destined-rivals-elite-trainer-box-en-case",
+      "name": "Pokémon – SV10 ‘Destined Rivals’ Elite Trainer Box (EN) (Case)",
+      "price": 1799.9,
+      "category": "rivaux-predestines",
+      "onSale": false,
+      "inStock": true,
+      "desc": "Les précommandes Date de disponibilité prévu: 16.09.2026",
+      "image": "assets/products/pokemon-sv10-destined-rivals-elite-trainer-box-en-case.jpg",
+      "translations": {
+        "en": {
+          "name": "Pokémon – SV10 ‘Destined Rivals’ Elite Trainer Box (EN) (Case)",
+          "desc": "Pre-orders Expected availability date: 16.09.2026"
+        },
+        "it": {
+          "name": "Pokémon – SV10 ‘Destined Rivals’ Elite Trainer Box (EN) (Case)",
+          "desc": "Preordini Data di disponibilità prevista: 16.09.2026"
+        },
+        "de": {
+          "name": "Pokémon – SV10 ‘Destined Rivals’ Elite Trainer Box (EN) (Case)",
+          "desc": "Vorbestellungen Voraussichtliches Verfügbarkeitsdatum: 16.09.2026"
+        }
+      }
+    },
+    {
+      "slug": "pokemon-en-first-partner-illustration-collection-1-case-6xcoffrets",
+      "name": "Pokémon – EN First Partner Illustration Collection #1 « Case 6x coffrets »",
+      "price": 349.9,
+      "category": "collection-coffrets",
+      "onSale": false,
+      "inStock": false,
+      "desc": "🚨 Les précommandes 🚨 Date de disponibilité prévu: 07.08.2026",
+      "image": "assets/products/pokemon-en-first-partner-illustration-collection-1-case-6xcoffrets.png",
+      "translations": {
+        "en": {
+          "name": "Pokémon – EN First Partner Illustration Collection #1 « Case 6x boxes »",
+          "desc": "🚨 Pre-orders 🚨 Expected availability date: 07.08.2026"
+        },
+        "it": {
+          "name": "Pokémon – EN First Partner Illustration Collection #1 « Case 6x confezioni »",
+          "desc": "🚨 Preordini 🚨 Data di disponibilità prevista: 07.08.2026"
+        },
+        "de": {
+          "name": "Pokémon – EN First Partner Illustration Collection #1 « Case 6x Boxen »",
+          "desc": "🚨 Vorbestellungen 🚨 Voraussichtliches Verfügbarkeitsdatum: 07.08.2026"
+        }
+      }
+    },
+    {
+      "slug": "pokemon-brasegali-fb-lv-x-sv-142-psa-9",
+      "name": "Pokémon – Brasegali [FB] LV.X (SV 142)- PSA 9",
+      "price": 369.9,
+      "category": "cartes-en",
+      "onSale": false,
+      "inStock": true,
+      "desc": "",
+      "image": "assets/products/pokemon-brasegali-fb-lv-x-sv-142-psa-9.jpg",
+      "translations": {
+        "en": {
+          "name": "Pokémon – Blaziken [FB] LV.X (SV 142)- PSA 9",
+          "desc": ""
+        },
+        "it": {
+          "name": "Pokémon – Blaziken [FB] LV.X (SV 142)- PSA 9",
+          "desc": ""
+        },
+        "de": {
+          "name": "Pokémon – Lohgock [FB] LV.X (SV 142)- PSA 9",
+          "desc": ""
+        }
+      }
+    },
+    {
+      "slug": "pokemon-mew-ex-mew-205-psa-9",
+      "name": "Pokémon – Mew ex (MEW 205)- PSA 9",
+      "price": 43.9,
+      "category": "cartes-en",
+      "onSale": false,
+      "inStock": false,
+      "desc": "",
+      "image": "assets/products/pokemon-mew-ex-mew-205-psa-9.jpg",
+      "translations": {
+        "en": {
+          "name": "Pokémon – Mew ex (MEW 205)- PSA 9",
+          "desc": ""
+        },
+        "it": {
+          "name": "Pokémon – Mew ex (MEW 205)- PSA 9",
+          "desc": ""
+        },
+        "de": {
+          "name": "Pokémon – Mew ex (MEW 205)- PSA 9",
+          "desc": ""
+        }
+      }
+    },
+    {
+      "slug": "pokemon-dracaufeu-ex-mew-199-psa-10",
+      "name": "Pokémon – Dracaufeu ex (MEW 199) – PSA 10",
+      "price": 2899.9,
+      "category": "cartes-fr",
+      "onSale": false,
+      "inStock": true,
+      "desc": "",
+      "image": "assets/products/pokemon-dracaufeu-ex-mew-199-psa-10.jpg",
+      "translations": {
+        "en": {
+          "name": "Pokémon – Charizard ex (MEW 199) – PSA 10",
+          "desc": ""
+        },
+        "it": {
+          "name": "Pokémon – Charizard ex (MEW 199) – PSA 10",
+          "desc": ""
+        },
+        "de": {
+          "name": "Pokémon – Glurak ex (MEW 199) – PSA 10",
+          "desc": ""
+        }
+      }
+    },
+    {
+      "slug": "pokemon-nostenfer-ex-de-la-team-rocket-sv10-127-psa-9",
+      "name": "Pokémon – Nostenfer ex de la Team Rocket (sv10 127) – PSA 9",
+      "price": 46.9,
+      "category": "carte-jap",
+      "onSale": false,
+      "inStock": true,
+      "desc": "",
+      "image": "assets/products/pokemon-nostenfer-ex-de-la-team-rocket-sv10-127-psa-9.jpg",
+      "translations": {
+        "en": {
+          "name": "Pokémon – Noivern ex of Team Rocket (sv10 127) – PSA 9",
+          "desc": ""
+        },
+        "it": {
+          "name": "Pokémon – Noivern ex del Team Rocket (sv10 127) – PSA 9",
+          "desc": ""
+        },
+        "de": {
+          "name": "Pokémon – UHaFnir ex vom Team Rocket (sv10 127) – PSA 9",
+          "desc": ""
+        }
+      }
+    },
+    {
+      "slug": "pokemon-pyroli-ex-sv8a-202-psa-10",
+      "name": "Pokémon – Pyroli ex (sv8a 202) – PSA 10",
+      "price": 135.9,
+      "category": "carte-jap",
+      "onSale": false,
+      "inStock": true,
+      "desc": "",
+      "image": "assets/products/pokemon-pyroli-ex-sv8a-202-psa-10.jpg",
+      "translations": {
+        "en": {
+          "name": "Pokémon – Flareon ex (sv8a 202) – PSA 10",
+          "desc": ""
+        },
+        "it": {
+          "name": "Pokémon – Flareon ex (sv8a 202) – PSA 10",
+          "desc": ""
+        },
+        "de": {
+          "name": "Pokémon – Flamara ex (sv8a 202) – PSA 10",
+          "desc": ""
+        }
+      }
+    },
+    {
+      "slug": "pokemon-givrali-ex-sv8a-206-psa-10-2",
+      "name": "Pokémon – Givrali ex (sv8a 206) – PSA 10",
+      "price": 154.9,
+      "category": "carte-jap",
+      "onSale": false,
+      "inStock": true,
+      "desc": "",
+      "image": "assets/products/pokemon-givrali-ex-sv8a-206-psa-10-2.jpg",
+      "translations": {
+        "en": {
+          "name": "Pokémon – Glaceon ex (sv8a 206) – PSA 10",
+          "desc": ""
+        },
+        "it": {
+          "name": "Pokémon – Glaceon ex (sv8a 206) – PSA 10",
+          "desc": ""
+        },
+        "de": {
+          "name": "Pokémon – Glaziola ex (sv8a 206) – PSA 10",
+          "desc": ""
+        }
+      }
+    },
+    {
+      "slug": "pokemon-givrali-ex-sv8a-206-psa-10",
+      "name": "Pokémon – Voltali ex (sv8a 209) – PSA 10",
+      "price": 126.9,
+      "category": "carte-jap",
+      "onSale": false,
+      "inStock": true,
+      "desc": "",
+      "image": "assets/products/pokemon-givrali-ex-sv8a-206-psa-10.jpg",
+      "translations": {
+        "en": {
+          "name": "Pokémon – Jolteon ex (sv8a 209) – PSA 10",
+          "desc": ""
+        },
+        "it": {
+          "name": "Pokémon – Jolteon ex (sv8a 209) – PSA 10",
+          "desc": ""
+        },
+        "de": {
+          "name": "Pokémon – Blitza ex (sv8a 209) – PSA 10",
+          "desc": ""
+        }
+      }
+    },
+    {
+      "slug": "pokemon-latias-latios-gx-sm9-114-psa-9",
+      "name": "Pokémon – Latias & Latios GX (sm9 114) – PSA 9",
+      "price": 159.9,
+      "category": "carte-jap",
+      "onSale": false,
+      "inStock": true,
+      "desc": "",
+      "image": "assets/products/pokemon-latias-latios-gx-sm9-114-psa-9.jpg",
+      "translations": {
+        "en": {
+          "name": "Pokémon – Latias & Latios GX (sm9 114) – PSA 9",
+          "desc": ""
+        },
+        "it": {
+          "name": "Pokémon – Latias & Latios GX (sm9 114) – PSA 9",
+          "desc": ""
+        },
+        "de": {
+          "name": "Pokémon – Latias & Latios GX (sm9 114) – PSA 9",
+          "desc": ""
+        }
+      }
+    },
+    {
+      "slug": "pokemon-darkness-ablaze-etb-avec-acylique-abime",
+      "name": "Pokémon – Darkness Ablaze – ETB – Avec Acylique (Abimé)",
+      "price": 105.9,
+      "category": "epee-bouclier",
+      "onSale": false,
+      "inStock": true,
+      "desc": "Avec Acylique",
+      "image": "assets/products/pokemon-darkness-ablaze-etb-avec-acylique-abime.jpg",
+      "translations": {
+        "en": {
+          "name": "Pokémon – Darkness Ablaze – ETB – With Acrylic (Damaged)",
+          "desc": "With Acrylic"
+        },
+        "it": {
+          "name": "Pokémon – Darkness Ablaze – ETB – Con Acrilico (Danneggiato)",
+          "desc": "Con Acrilico"
+        },
+        "de": {
+          "name": "Pokémon – Darkness Ablaze – ETB – Mit Acryl (Beschädigt)",
+          "desc": "Mit Acryl"
+        }
+      }
+    },
+    {
+      "slug": "pokemon-origine-perdue-booster-fr",
+      "name": "Pokémon – Origine Perdue – Booster – FR",
+      "price": 11.9,
+      "category": "booster-en-loose",
+      "onSale": false,
+      "inStock": true,
+      "desc": "",
+      "image": "assets/products/pokemon-origine-perdue-booster-fr.webp",
+      "translations": {
+        "en": {
+          "name": "Pokémon – Lost Origin – Booster – FR",
+          "desc": ""
+        },
+        "it": {
+          "name": "Pokémon – Origine Perduta – Booster – FR",
+          "desc": ""
+        },
+        "de": {
+          "name": "Pokémon – Verlorener Ursprung – Booster – FR",
+          "desc": ""
+        }
+      }
+    },
+    {
+      "slug": "pokemon-me01-mega-evolution-boite-de-36-boosters-display",
+      "name": "Pokémon – ME01 Méga Evolution – Boîte de 36 Boosters (Display)",
+      "price": 279.9,
+      "category": "me01-mega-evolution",
+      "onSale": false,
+      "inStock": false,
+      "desc": "",
+      "image": "assets/products/pokemon-me01-mega-evolution-boite-de-36-boosters-display.webp",
+      "translations": {
+        "en": {
+          "name": "Pokémon – ME01 Mega Evolution – Box of 36 Boosters (Display)",
+          "desc": ""
+        },
+        "it": {
+          "name": "Pokémon – ME01 Mega Evolution – Scatola da 36 Bustine (Display)",
+          "desc": ""
+        },
+        "de": {
+          "name": "Pokémon – ME01 Mega Evolution – 36er-Boosterbox (Display)",
+          "desc": ""
+        }
+      }
+    },
+    {
+      "slug": "pokemon-astral-radiance-etb-avec-acylique",
+      "name": "Pokémon – Astral Radiance – ETB – Avec Acylique",
+      "price": 119.9,
+      "category": "epee-bouclier",
+      "onSale": false,
+      "inStock": true,
+      "desc": "Avec Acylique",
+      "image": "assets/products/pokemon-astral-radiance-etb-avec-acylique.jpeg",
+      "translations": {
+        "en": {
+          "name": "Pokémon – Astral Radiance – ETB – With Acrylic",
+          "desc": "With Acrylic"
+        },
+        "it": {
+          "name": "Pokémon – Astral Radiance – ETB – Con Acrilico",
+          "desc": "Con Acrilico"
+        },
+        "de": {
+          "name": "Pokémon – Astral Radiance – ETB – Mit Acryl",
+          "desc": "Mit Acryl"
+        }
+      }
+    },
+    {
+      "slug": "pokemon-vivid-voltage-etb-avec-acylique",
+      "name": "Pokémon – Vivid Voltage – ETB – Avec Acylique",
+      "price": 149.9,
+      "category": "epee-bouclier",
+      "onSale": false,
+      "inStock": true,
+      "desc": "Avec Acylique",
+      "image": "assets/products/pokemon-vivid-voltage-etb-avec-acylique.webp",
+      "translations": {
+        "en": {
+          "name": "Pokémon – Vivid Voltage – ETB – With Acrylic",
+          "desc": "With Acrylic"
+        },
+        "it": {
+          "name": "Pokémon – Vivid Voltage – ETB – Con Acrilico",
+          "desc": "Con Acrilico"
+        },
+        "de": {
+          "name": "Pokémon – Vivid Voltage – ETB – Mit Acryl",
+          "desc": "Mit Acryl"
+        }
+      }
+    },
+    {
+      "slug": "pokemon-pokemon-go-etb-avec-acylique",
+      "name": "Pokémon – Pokémon GO – ETB – Avec Acylique",
+      "price": 145.9,
+      "category": "epee-bouclier",
+      "onSale": false,
+      "inStock": true,
+      "desc": "Avec Acylique",
+      "image": "assets/products/pokemon-pokemon-go-etb-avec-acylique.jpg",
+      "translations": {
+        "en": {
+          "name": "Pokémon – Pokémon GO – ETB – With Acrylic",
+          "desc": "With Acrylic"
+        },
+        "it": {
+          "name": "Pokémon – Pokémon GO – ETB – Con Acrilico",
+          "desc": "Con Acrilico"
+        },
+        "de": {
+          "name": "Pokémon – Pokémon GO – ETB – Mit Acryl",
+          "desc": "Mit Acryl"
+        }
+      }
+    },
+    {
+      "slug": "pokemon-silver-tempest-etb-avec-acylique",
+      "name": "Pokémon – Silver Tempest – ETB – Avec Acylique (Scellage abimé)",
+      "price": 135.9,
+      "category": "epee-bouclier",
+      "onSale": false,
+      "inStock": false,
+      "desc": "Avec Acylique",
+      "image": "assets/products/pokemon-silver-tempest-etb-avec-acylique.jpg",
+      "translations": {
+        "en": {
+          "name": "Pokémon – Silver Tempest – ETB – With Acrylic (Damaged seal)",
+          "desc": "With Acrylic"
+        },
+        "it": {
+          "name": "Pokémon – Silver Tempest – ETB – Con Acrilico (Sigillo danneggiato)",
+          "desc": "Con Acrilico"
+        },
+        "de": {
+          "name": "Pokémon – Silver Tempest – ETB – Mit Acryl (Beschädigte Versiegelung)",
+          "desc": "Mit Acryl"
+        }
+      }
+    },
+    {
+      "slug": "pokemon-evolution-celeste-display-fr",
+      "name": "Pokémon – Évolution Céleste – Display (FR)",
+      "price": 1849.9,
+      "category": "epee-bouclier",
+      "onSale": false,
+      "inStock": true,
+      "desc": "",
+      "image": "assets/products/pokemon-evolution-celeste-display-fr.webp",
+      "translations": {
+        "en": {
+          "name": "Pokémon – Évolution Céleste – Display (FR)",
+          "desc": ""
+        },
+        "it": {
+          "name": "Pokémon – Évolution Céleste – Display (FR)",
+          "desc": ""
+        },
+        "de": {
+          "name": "Pokémon – Évolution Céleste – Display (FR)",
+          "desc": ""
+        }
+      }
+    },
+    {
+      "slug": "pokemon-ev10-rivalites-destinees-coffret-dresseur-delite-fr",
+      "name": "Pokémon – EV10 Rivalités Destinées – Coffret Dresseur d’élite (FR)",
+      "price": 199.9,
+      "category": "rivaux-predestines",
+      "onSale": false,
+      "inStock": true,
+      "desc": "",
+      "image": "assets/products/pokemon-ev10-rivalites-destinees-coffret-dresseur-delite-fr.jpg",
+      "translations": {
+        "en": {
+          "name": "Pokémon – EV10 Rivalités Destinées – Elite Trainer Box (FR)",
+          "desc": ""
+        },
+        "it": {
+          "name": "Pokémon – EV10 Rivalités Destinées – Elite Trainer Box (FR)",
+          "desc": ""
+        },
+        "de": {
+          "name": "Pokémon – EV10 Rivalités Destinées – Elite-Trainer-Box (FR)",
+          "desc": ""
+        }
+      }
+    },
+    {
+      "slug": "pokemon-me02-5-heros-transcendants-coffret-dresseur-delite-fr",
+      "name": "Pokémon – ME02.5 Héros Transcendants – Coffret Dresseur d’élite (FR)",
+      "price": 109.9,
+      "category": "me2-5-heros-transcendants",
+      "onSale": false,
+      "inStock": true,
+      "desc": "",
+      "image": "assets/products/pokemon-me02-5-heros-transcendants-coffret-dresseur-delite-fr.webp",
+      "translations": {
+        "en": {
+          "name": "Pokémon – ME02.5 Héros Transcendants – Elite Trainer Box (FR)",
+          "desc": ""
+        },
+        "it": {
+          "name": "Pokémon – ME02.5 Héros Transcendants – Elite Trainer Box (FR)",
+          "desc": ""
+        },
+        "de": {
+          "name": "Pokémon – ME02.5 Héros Transcendants – Elite-Trainer-Box (FR)",
+          "desc": ""
+        }
+      }
+    },
+    {
+      "slug": "pokemon-surging-sparks-etb-avec-acylique",
+      "name": "Pokémon – Surging Sparks – ETB – Avec Acylique",
+      "price": 145.9,
+      "category": "etincelles-deferlantes",
+      "onSale": false,
+      "inStock": true,
+      "desc": "Avec Acylique",
+      "image": "assets/products/pokemon-surging-sparks-etb-avec-acylique.webp",
+      "translations": {
+        "en": {
+          "name": "Pokémon – Surging Sparks – ETB – With Acrylic",
+          "desc": "With Acrylic"
+        },
+        "it": {
+          "name": "Pokémon – Surging Sparks – ETB – Con acrilico",
+          "desc": "Con acrilico"
+        },
+        "de": {
+          "name": "Pokémon – Surging Sparks – ETB – Mit Acryl",
+          "desc": "Mit Acryl"
+        }
+      }
+    },
+    {
+      "slug": "pokemon-journey-together-etb-avec-acylique",
+      "name": "Pokémon – Journey Together – ETB – Avec Acylique",
+      "price": 119.9,
+      "category": "aventures-ensemble",
+      "onSale": false,
+      "inStock": true,
+      "desc": "Avec Acylique",
+      "image": "assets/products/pokemon-journey-together-etb-avec-acylique.png",
+      "translations": {
+        "en": {
+          "name": "Pokémon – Journey Together – ETB – With Acrylic",
+          "desc": "With Acrylic"
+        },
+        "it": {
+          "name": "Pokémon – Journey Together – ETB – Con acrilico",
+          "desc": "Con acrilico"
+        },
+        "de": {
+          "name": "Pokémon – Journey Together – ETB – Mit Acryl",
+          "desc": "Mit Acryl"
+        }
+      }
+    },
+    {
+      "slug": "pokemon-obsidian-flames-etb-avec-acylique",
+      "name": "Pokémon – Obsidian Flames – ETB – Avec Acylique",
+      "price": 285.9,
+      "category": "flammes-obsidiennes",
+      "onSale": false,
+      "inStock": false,
+      "desc": "Avec Acylique",
+      "image": "assets/products/pokemon-obsidian-flames-etb-avec-acylique.jpg",
+      "translations": {
+        "en": {
+          "name": "Pokémon – Obsidian Flames – ETB – With Acrylic",
+          "desc": "With Acrylic"
+        },
+        "it": {
+          "name": "Pokémon – Obsidian Flames – ETB – Con acrilico",
+          "desc": "Con acrilico"
+        },
+        "de": {
+          "name": "Pokémon – Obsidian Flames – ETB – Mit Acryl",
+          "desc": "Mit Acryl"
+        }
+      }
+    },
+    {
+      "slug": "pokemon-ev08-5-evolutions-prismatiques-coffret-dresseur-delite-acrylic-case",
+      "name": "Pokémon – EV08.5 Évolutions Prismatiques – Coffret Dresseur d’élite + Acrylic Case",
+      "price": 139.9,
+      "category": "evolutions-prismatiques",
+      "onSale": false,
+      "inStock": false,
+      "desc": "",
+      "image": "assets/products/pokemon-ev08-5-evolutions-prismatiques-coffret-dresseur-delite-acrylic-case.jpg",
+      "translations": {
+        "en": {
+          "name": "Pokémon – EV08.5 Évolutions Prismatiques – Elite Trainer Box + Acrylic Case",
+          "desc": ""
+        },
+        "it": {
+          "name": "Pokémon – EV08.5 Évolutions Prismatiques – Elite Trainer Box + Acrylic Case",
+          "desc": ""
+        },
+        "de": {
+          "name": "Pokémon – EV08.5 Évolutions Prismatiques – Elite-Trainer-Box + Acrylic Case",
+          "desc": ""
+        }
+      }
+    },
+    {
+      "slug": "pokemon-me02-5-heros-transcendants-mini-tin",
+      "name": "Pokémon – ME02.5 ‘Héros Transcendants’ Mini Tin",
+      "price": 199.9,
+      "category": "me2-5-heros-transcendants",
+      "onSale": false,
+      "inStock": true,
+      "desc": "",
+      "image": "assets/products/pokemon-me02-5-heros-transcendants-mini-tin.webp",
+      "translations": {
+        "en": {
+          "name": "Pokémon – ME02.5 ‘Héros Transcendants’ Mini Tin",
+          "desc": ""
+        },
+        "it": {
+          "name": "Pokémon – ME02.5 ‘Héros Transcendants’ Mini Tin",
+          "desc": ""
+        },
+        "de": {
+          "name": "Pokémon – ME02.5 ‘Héros Transcendants’ Mini Tin",
+          "desc": ""
+        }
+      }
+    },
+    {
+      "slug": "pokemon-me02-5-heros-transcendants-fantominus-tech-sticker-collection",
+      "name": "Pokémon – ME02.5 ‘Héros Transcendants’ Fantominus Tech Sticker Collection",
+      "price": 24.9,
+      "category": "me2-5-heros-transcendants",
+      "onSale": false,
+      "inStock": false,
+      "desc": "1 max / par commande",
+      "image": "assets/products/pokemon-me02-5-heros-transcendants-fantominus-tech-sticker-collection.webp",
+      "translations": {
+        "en": {
+          "name": "Pokémon – ME02.5 ‘Héros Transcendants’ Fantominus Tech Sticker Collection",
+          "desc": "1 max / per order"
+        },
+        "it": {
+          "name": "Pokémon – ME02.5 ‘Héros Transcendants’ Fantominus Tech Sticker Collection",
+          "desc": "1 max / per ordine"
+        },
+        "de": {
+          "name": "Pokémon – ME02.5 ‘Héros Transcendants’ Fantominus Tech Sticker Collection",
+          "desc": "1 max / pro Bestellung"
+        }
+      }
+    },
+    {
+      "slug": "one-piece-op13-carrying-on-his-will",
+      "name": "One Piece – OP13 Carrying on His Will",
+      "price": 189.9,
+      "category": "one-piece",
+      "onSale": false,
+      "inStock": true,
+      "desc": "🚨 Précommandes 🚨 Maximum 2 par personne",
+      "image": "assets/products/one-piece-op13-carrying-on-his-will.webp",
+      "translations": {
+        "en": {
+          "name": "One Piece – OP13 Carrying on His Will",
+          "desc": "🚨 Pre-orders 🚨 Maximum 2 per person"
+        },
+        "it": {
+          "name": "One Piece – OP13 Carrying on His Will",
+          "desc": "🚨 Preordini 🚨 Massimo 2 a persona"
+        },
+        "de": {
+          "name": "One Piece – OP13 Carrying on His Will",
+          "desc": "🚨 Vorbestellungen 🚨 Maximal 2 pro Person"
+        }
+      }
+    },
+    {
+      "slug": "pokemon-m5-mega-abyss-eye-display-box-jp",
+      "name": "Pokémon – M5 Mega Abyss Eye Display Box – JP",
+      "price": 119.9,
+      "category": "promo-pokemon",
+      "onSale": false,
+      "inStock": true,
+      "desc": "Préco – date de livraison prévu mi-juillet",
+      "image": "assets/products/pokemon-m5-mega-abyss-eye-display-box-jp.webp",
+      "translations": {
+        "en": {
+          "name": "Pokémon – M5 Mega Abyss Eye Display Box – JP",
+          "desc": "Pre-order – expected delivery date mid-July"
+        },
+        "it": {
+          "name": "Pokémon – M5 Mega Abyss Eye Display Box – JP",
+          "desc": "Preordine – data di consegna prevista metà luglio"
+        },
+        "de": {
+          "name": "Pokémon – M5 Mega Abyss Eye Display Box – JP",
+          "desc": "Vorbestellung – voraussichtliches Lieferdatum Mitte Juli"
+        }
+      }
+    },
+    {
+      "slug": "pokemon-me05-nuit-noire-boite-de-36-boosters-display-fr",
+      "name": "Pokémon – ME05 Nuit Noire – Boîte de 36 Boosters (Display) (FR)",
+      "price": 249.9,
+      "category": "me05-abyss-eye",
+      "onSale": false,
+      "inStock": true,
+      "desc": "",
+      "image": "assets/products/pokemon-me05-nuit-noire-boite-de-36-boosters-display-fr.webp",
+      "translations": {
+        "en": {
+          "name": "Pokémon – ME05 Nuit Noire – Box of 36 Boosters (Display) (FR)",
+          "desc": ""
+        },
+        "it": {
+          "name": "Pokémon – ME05 Nuit Noire – Box da 36 Bustine (Display) (FR)",
+          "desc": ""
+        },
+        "de": {
+          "name": "Pokémon – ME05 Nuit Noire – Box mit 36 Boostern (Display) (FR)",
+          "desc": ""
+        }
+      }
+    },
+    {
+      "slug": "pokemon-me05-pitch-black-boite-de-36-boosters-display-en",
+      "name": "Pokémon – ME05 Pitch Black – Boîte de 36 Boosters (Display) (EN)",
+      "price": 249.9,
+      "category": "me05-abyss-eye",
+      "onSale": false,
+      "inStock": true,
+      "desc": "",
+      "image": "assets/products/pokemon-me05-pitch-black-boite-de-36-boosters-display-en.webp",
+      "translations": {
+        "en": {
+          "name": "Pokémon – ME05 Pitch Black – Box of 36 Boosters (Display) (EN)",
+          "desc": ""
+        },
+        "it": {
+          "name": "Pokémon – ME05 Pitch Black – Box da 36 Bustine (Display) (EN)",
+          "desc": ""
+        },
+        "de": {
+          "name": "Pokémon – ME05 Pitch Black – Box mit 36 Boostern (Display) (EN)",
+          "desc": ""
+        }
+      }
+    },
+    {
+      "slug": "pokemon-me05-nuit-noire-coffret-dresseur-delite-fr",
+      "name": "Pokémon – ME05 Nuit Noire – Coffret Dresseur d’élite (FR)",
+      "price": 79.9,
+      "category": "me05-abyss-eye",
+      "onSale": false,
+      "inStock": true,
+      "desc": "",
+      "image": "assets/products/pokemon-me05-nuit-noire-coffret-dresseur-delite-fr.webp",
+      "translations": {
+        "en": {
+          "name": "Pokémon – ME05 Nuit Noire – Elite Trainer Box (FR)",
+          "desc": ""
+        },
+        "it": {
+          "name": "Pokémon – ME05 Nuit Noire – Elite Trainer Box (FR)",
+          "desc": ""
+        },
+        "de": {
+          "name": "Pokémon – ME05 Nuit Noire – Elite-Trainer-Box (FR)",
+          "desc": ""
+        }
+      }
+    },
+    {
+      "slug": "pokemon-me05-pitch-black-elite-trainer-box-en",
+      "name": "Pokémon – ME05 Pitch Black – Elite Trainer Box (EN)",
+      "price": 79.9,
+      "category": "me05-abyss-eye",
+      "onSale": false,
+      "inStock": true,
+      "desc": "(Petit trou sur le scellage)",
+      "image": "assets/products/pokemon-me05-pitch-black-elite-trainer-box-en.webp",
+      "translations": {
+        "en": {
+          "name": "Pokémon – ME05 Pitch Black – Elite Trainer Box (EN)",
+          "desc": "(Small hole in the seal)"
+        },
+        "it": {
+          "name": "Pokémon – ME05 Pitch Black – Elite Trainer Box (EN)",
+          "desc": "(Piccolo foro nella sigillatura)"
+        },
+        "de": {
+          "name": "Pokémon – ME05 Pitch Black – Elite Trainer Box (EN)",
+          "desc": "(Kleines Loch in der Versiegelung)"
+        }
+      }
+    },
+    {
+      "slug": "one-piece-op16-the-time-of-battle-double-pack-display-fr",
+      "name": "One Piece – OP16 The Time of Battle – Double Pack Display FR",
+      "price": 19.9,
+      "category": "one-piece",
+      "onSale": false,
+      "inStock": true,
+      "desc": "🚨 Précommandes 🚨 Date de disponibilité prévu: 12.06.2026 Maximum 4 par personne",
+      "image": "assets/products/one-piece-op16-the-time-of-battle-double-pack-display-fr.webp",
+      "translations": {
+        "en": {
+          "name": "One Piece – OP16 The Time of Battle – Double Pack Display FR",
+          "desc": "🚨 Pre-orders 🚨 Expected availability date: 12.06.2026 Maximum 4 per person"
+        },
+        "it": {
+          "name": "One Piece – OP16 The Time of Battle – Double Pack Display FR",
+          "desc": "🚨 Preordini 🚨 Data di disponibilità prevista: 12.06.2026 Massimo 4 a persona"
+        },
+        "de": {
+          "name": "One Piece – OP16 The Time of Battle – Double Pack Display FR",
+          "desc": "🚨 Vorbestellungen 🚨 Voraussichtliches Verfügbarkeitsdatum: 12.06.2026 Maximal 4 pro Person"
+        }
+      }
+    },
+    {
+      "slug": "one-piece-op16-the-time-of-battle-booster-display-fr",
+      "name": "One Piece – OP16 The Time of Battle – Booster Display – FR",
+      "price": 189.9,
+      "category": "one-piece",
+      "onSale": false,
+      "inStock": false,
+      "desc": "🚨 Précommandes 🚨 Date de disponibilité prévu: 12.06.2026 Maximum 1 par personne",
+      "image": "assets/products/one-piece-op16-the-time-of-battle-booster-display-fr.webp",
+      "translations": {
+        "en": {
+          "name": "One Piece – OP16 The Time of Battle – Booster Display – FR",
+          "desc": "🚨 Pre-orders 🚨 Expected availability date: 12.06.2026 Maximum 1 per person"
+        },
+        "it": {
+          "name": "One Piece – OP16 The Time of Battle – Booster Display – FR",
+          "desc": "🚨 Preordini 🚨 Data di disponibilità prevista: 12.06.2026 Massimo 1 a persona"
+        },
+        "de": {
+          "name": "One Piece – OP16 The Time of Battle – Booster Display – FR",
+          "desc": "🚨 Vorbestellungen 🚨 Voraussichtliches Verfügbarkeitsdatum: 12.06.2026 Maximal 1 pro Person"
+        }
+      }
+    },
+    {
+      "slug": "pokemon-sv08-5-prismatic-evolutions-elite-trainer-box-en",
+      "name": "Pokémon – SV08.5 ‘Prismatic Evolutions’ – Elite Trainer Box (Case)",
+      "price": 1799.9,
+      "category": "evolutions-prismatiques",
+      "onSale": false,
+      "inStock": true,
+      "desc": "",
+      "image": "assets/products/pokemon-sv08-5-prismatic-evolutions-elite-trainer-box-en.webp",
+      "translations": {
+        "en": {
+          "name": "Pokémon – SV08.5 ‘Prismatic Evolutions’ – Elite Trainer Box (Case)",
+          "desc": ""
+        },
+        "it": {
+          "name": "Pokémon – SV08.5 ‘Prismatic Evolutions’ – Elite Trainer Box (Case)",
+          "desc": ""
+        },
+        "de": {
+          "name": "Pokémon – SV08.5 ‘Prismatic Evolutions’ – Elite Trainer Box (Case)",
+          "desc": ""
+        }
+      }
+    },
+    {
+      "slug": "pokemon-swsh11-origine-perdue-boite-de-36-boosters-display",
+      "name": "Pokémon – SWSH11 ‘Origine Perdue’ – Boîte de 36 Boosters (Display)",
+      "price": 399.9,
+      "category": "epee-bouclier",
+      "onSale": false,
+      "inStock": true,
+      "desc": "🚨 Les précommandes du Restock🚨 Date de disponibilité prévu: 03.07.2026 Maximum 2 par personne",
+      "image": "assets/products/pokemon-swsh11-origine-perdue-boite-de-36-boosters-display.webp",
+      "translations": {
+        "en": {
+          "name": "Pokémon – SWSH11 ‘Origine Perdue’ – Box of 36 Boosters (Display)",
+          "desc": "🚨 Restock pre-orders 🚨 Expected availability date: 03.07.2026 Maximum 2 per person"
+        },
+        "it": {
+          "name": "Pokémon – SWSH11 ‘Origine Perdue’ – Box da 36 Bustine (Display)",
+          "desc": "🚨 Preordini del restock 🚨 Data di disponibilità prevista: 03.07.2026 Massimo 2 a persona"
+        },
+        "de": {
+          "name": "Pokémon – SWSH11 ‘Origine Perdue’ – Box mit 36 Boostern (Display)",
+          "desc": "🚨 Restock-Vorbestellungen 🚨 Voraussichtliches Verfügbarkeitsdatum: 03.07.2026 Maximal 2 pro Person"
+        }
+      }
+    },
+    {
+      "slug": "pokemon-mega-amphinobi-premium-ex-collection",
+      "name": "Pokémon – Méga-Amphinobi Premium ex Collection",
+      "price": 49.9,
+      "category": "me04-chaos-rising",
+      "onSale": true,
+      "inStock": true,
+      "desc": "🚨 Les précommandes 🚨 Date de disponibilité prévu: 03.07.2026",
+      "image": "assets/products/pokemon-mega-amphinobi-premium-ex-collection.webp",
+      "translations": {
+        "en": {
+          "name": "Pokémon – Méga-Amphinobi Premium ex Collection",
+          "desc": "🚨 Pre-orders 🚨 Expected availability date: 03.07.2026"
+        },
+        "it": {
+          "name": "Pokémon – Méga-Amphinobi Premium ex Collection",
+          "desc": "🚨 Preordini 🚨 Data di disponibilità prevista: 03.07.2026"
+        },
+        "de": {
+          "name": "Pokémon – Méga-Amphinobi Premium ex Collection",
+          "desc": "🚨 Vorbestellungen 🚨 Voraussichtliches Verfügbarkeitsdatum: 03.07.2026"
+        }
+      }
+    },
+    {
+      "slug": "pokemon-ev09-aventures-ensemble-etb-fr",
+      "name": "Pokémon – EV09 Aventures Ensemble – ETB (FR)",
+      "price": 79.9,
+      "category": "aventures-ensemble",
+      "onSale": true,
+      "inStock": true,
+      "desc": "",
+      "image": "assets/products/pokemon-ev09-aventures-ensemble-etb-fr.jpg",
+      "translations": {
+        "en": {
+          "name": "Pokémon – EV09 Aventures Ensemble – ETB (FR)",
+          "desc": ""
+        },
+        "it": {
+          "name": "Pokémon – EV09 Aventures Ensemble – ETB (FR)",
+          "desc": ""
+        },
+        "de": {
+          "name": "Pokémon – EV09 Aventures Ensemble – ETB (FR)",
+          "desc": ""
+        }
+      }
+    },
+    {
+      "slug": "pokemon-mega-clair-de-lune-ex-tin-mega-melodelfe-ex",
+      "name": "Pokémon – Méga Clair de Lune Ex Tin – Méga-Mélodelfe-ex",
+      "price": 24.9,
+      "category": "promo-pokemon",
+      "onSale": true,
+      "inStock": true,
+      "desc": "🚨 Les précommandes 🚨 Date de disponibilité prévu: 05.06.2026",
+      "image": "assets/products/pokemon-mega-clair-de-lune-ex-tin-mega-melodelfe-ex.webp",
+      "translations": {
+        "en": {
+          "name": "Pokémon – Méga Clair de Lune Ex Tin – Méga-Mélodelfe-ex",
+          "desc": "🚨 Pre-orders 🚨 Expected availability date: 05.06.2026"
+        },
+        "it": {
+          "name": "Pokémon – Méga Clair de Lune Ex Tin – Méga-Mélodelfe-ex",
+          "desc": "🚨 Preordini 🚨 Data di disponibilità prevista: 05.06.2026"
+        },
+        "de": {
+          "name": "Pokémon – Méga Clair de Lune Ex Tin – Méga-Mélodelfe-ex",
+          "desc": "🚨 Vorbestellungen 🚨 Voraussichtliches Verfügbarkeitsdatum: 05.06.2026"
+        }
+      }
+    },
+    {
+      "slug": "pokemon-me04-chaos-ascendant-coffret-dresseur-delite-fr",
+      "name": "Pokémon – ME04 Chaos Ascendant – Coffret Dresseur d’élite (FR) « Case »",
+      "price": 699.9,
+      "category": "me04-chaos-rising",
+      "onSale": false,
+      "inStock": true,
+      "desc": "Les précommandes Date de disponibilité prévu: 07.08.2026",
+      "image": "assets/products/pokemon-me04-chaos-ascendant-coffret-dresseur-delite-fr.webp",
+      "translations": {
+        "en": {
+          "name": "Pokémon – ME04 Chaos Ascendant – Elite Trainer Box (FR) « Case »",
+          "desc": "Pre-orders Expected availability date: 07.08.2026"
+        },
+        "it": {
+          "name": "Pokémon – ME04 Chaos Ascendant – Elite Trainer Box (FR) « Case »",
+          "desc": "Preordini Data di disponibilità prevista: 07.08.2026"
+        },
+        "de": {
+          "name": "Pokémon – ME04 Chaos Ascendant – Elite-Trainer-Box (FR) « Case »",
+          "desc": "Vorbestellungen Voraussichtliches Verfügbarkeitsdatum: 07.08.2026"
+        }
+      }
+    },
+    {
+      "slug": "pokemon-me04-chaos-ascendant-boite-de-36-boosters-display",
+      "name": "Pokémon – ME04 Chaos Ascendant – Boîte de 36 Boosters (Display)",
+      "price": 219.9,
+      "category": "me04-chaos-rising",
+      "onSale": true,
+      "inStock": true,
+      "desc": "🚨 Les précommandes 🚨 Date de disponibilité prévu: 22.5.2026 Limiter les achats à 1 article par commande",
+      "image": "assets/products/pokemon-me04-chaos-ascendant-boite-de-36-boosters-display.webp",
+      "translations": {
+        "en": {
+          "name": "Pokémon – ME04 Chaos Ascendant – Box of 36 Boosters (Display)",
+          "desc": "🚨 Pre-orders 🚨 Expected availability date: 22.5.2026 Limit purchases to 1 item per order"
+        },
+        "it": {
+          "name": "Pokémon – ME04 Chaos Ascendant – Box da 36 Bustine (Display)",
+          "desc": "🚨 Preordini 🚨 Data di disponibilità prevista: 22.5.2026 Limitare gli acquisti a 1 articolo per ordine"
+        },
+        "de": {
+          "name": "Pokémon – ME04 Chaos Ascendant – Box mit 36 Boostern (Display)",
+          "desc": "🚨 Vorbestellungen 🚨 Voraussichtliches Verfügbarkeitsdatum: 22.5.2026 Käufe auf 1 Artikel pro Bestellung beschränken"
+        }
+      }
+    },
+    {
+      "slug": "one-piece-op15-adventure-on-kamis-island-booster-display-24-packs-fr",
+      "name": "One Piece – OP15 Adventure on Kami’s Island – Booster Display – FR",
+      "price": 189.9,
+      "category": "one-piece",
+      "onSale": false,
+      "inStock": true,
+      "desc": "",
+      "image": "assets/products/one-piece-op15-adventure-on-kamis-island-booster-display-24-packs-fr.png",
+      "translations": {
+        "en": {
+          "name": "One Piece – OP15 Adventure on Kami’s Island – Booster Display – FR",
+          "desc": ""
+        },
+        "it": {
+          "name": "One Piece – OP15 Adventure on Kami’s Island – Booster Display – FR",
+          "desc": ""
+        },
+        "de": {
+          "name": "One Piece – OP15 Adventure on Kami’s Island – Booster Display – FR",
+          "desc": ""
+        }
+      }
+    },
+    {
+      "slug": "one-piece-op15-double-pack-display-fr",
+      "name": "One Piece – OP15 Adventure on Kami’s Island – Double Pack Display FR",
+      "price": 19.9,
+      "category": "one-piece",
+      "onSale": false,
+      "inStock": false,
+      "desc": "",
+      "image": "assets/products/one-piece-op15-double-pack-display-fr.jpg",
+      "translations": {
+        "en": {
+          "name": "One Piece – OP15 Adventure on Kami’s Island – Double Pack Display FR",
+          "desc": ""
+        },
+        "it": {
+          "name": "One Piece – OP15 Adventure on Kami’s Island – Double Pack Display FR",
+          "desc": ""
+        },
+        "de": {
+          "name": "One Piece – OP15 Adventure on Kami’s Island – Double Pack Display FR",
+          "desc": ""
+        }
+      }
+    },
+    {
+      "slug": "pokemon-coffrets-mega-zygarde-ex-premium-collection",
+      "name": "Pokémon – Coffrets Méga-Zygarde ex Premium Collection",
+      "price": 49.9,
+      "category": "me03-equilibre-parfait",
+      "onSale": true,
+      "inStock": true,
+      "desc": "🚨 Les précommandes 🚨 Date de disponibilité prévu: 01.05.2026",
+      "image": "assets/products/pokemon-coffrets-mega-zygarde-ex-premium-collection.webp",
+      "translations": {
+        "en": {
+          "name": "Pokémon – Méga-Zygarde ex Premium Collection Boxes",
+          "desc": "🚨 Pre-orders 🚨 Expected availability date: 01.05.2026"
+        },
+        "it": {
+          "name": "Pokémon – Cofanetti Méga-Zygarde ex Premium Collection",
+          "desc": "🚨 Preordini 🚨 Data di disponibilità prevista: 01.05.2026"
+        },
+        "de": {
+          "name": "Pokémon – Méga-Zygarde ex Premium Collection Boxen",
+          "desc": "🚨 Vorbestellungen 🚨 Voraussichtliches Verfügbarkeitsdatum: 01.05.2026"
+        }
+      }
+    },
+    {
+      "slug": "pokemon-coffrets-heros-transcendants-display-bundle",
+      "name": "Pokémon – Coffrets Héros Transcendants – Display Bundle",
+      "price": 699.9,
+      "category": "me2-5-heros-transcendants",
+      "onSale": false,
+      "inStock": true,
+      "desc": "",
+      "image": "assets/products/pokemon-coffrets-heros-transcendants-display-bundle.png",
+      "translations": {
+        "en": {
+          "name": "Pokémon – Héros Transcendants Boxes – Display Bundle",
+          "desc": ""
+        },
+        "it": {
+          "name": "Pokémon – Cofanetti Héros Transcendants – Display Bundle",
+          "desc": ""
+        },
+        "de": {
+          "name": "Pokémon – Héros Transcendants Boxen – Display Bundle",
+          "desc": ""
+        }
+      }
+    },
+    {
+      "slug": "pokemon-coffrets-heros-transcendants-bundle",
+      "name": "Pokémon – Coffrets Héros Transcendants – Bundle",
+      "price": 59.9,
+      "category": "me2-5-heros-transcendants",
+      "onSale": false,
+      "inStock": false,
+      "desc": "",
+      "image": "assets/products/pokemon-coffrets-heros-transcendants-bundle.webp",
+      "translations": {
+        "en": {
+          "name": "Pokémon – Héros Transcendants Boxes – Bundle",
+          "desc": ""
+        },
+        "it": {
+          "name": "Pokémon – Cofanetti Héros Transcendants – Bundle",
+          "desc": ""
+        },
+        "de": {
+          "name": "Pokémon – Héros Transcendants Boxen – Bundle",
+          "desc": ""
+        }
+      }
+    },
+    {
+      "slug": "pokemon-world-championship-deck-2025",
+      "name": "Pokémon – World Championship Deck 2025 (Lot de 4)",
+      "price": 99.9,
+      "category": "promo-pokemon",
+      "onSale": true,
+      "inStock": true,
+      "desc": "🚨 Les précommandes 🚨 Date de disponibilité prévu: 19.06.2026",
+      "image": "assets/products/pokemon-world-championship-deck-2025.jpg",
+      "translations": {
+        "en": {
+          "name": "Pokémon – World Championship Deck 2025 (Set of 4)",
+          "desc": "🚨 Pre-orders 🚨 Expected availability date: 19.06.2026"
+        },
+        "it": {
+          "name": "Pokémon – World Championship Deck 2025 (Set da 4)",
+          "desc": "🚨 Preordini 🚨 Data di disponibilità prevista: 19.06.2026"
+        },
+        "de": {
+          "name": "Pokémon – World Championship Deck 2025 (4er-Set)",
+          "desc": "🚨 Vorbestellungen 🚨 Voraussichtliches Verfügbarkeitsdatum: 19.06.2026"
+        }
+      }
+    },
+    {
+      "slug": "pokemon-ev04-faille-paradoxe-boite-de-36-boosters-displayfr",
+      "name": "Pokémon – EV04 Faille Paradoxe – Boîte de 36 Boosters (Display)(FR)",
+      "price": 319.9,
+      "category": "pokemon-cartes",
+      "onSale": false,
+      "inStock": true,
+      "desc": "",
+      "image": "assets/products/pokemon-ev04-faille-paradoxe-boite-de-36-boosters-displayfr.jpeg",
+      "translations": {
+        "en": {
+          "name": "Pokémon – EV04 Faille Paradoxe – Box of 36 Boosters (Display)(FR)",
+          "desc": ""
+        },
+        "it": {
+          "name": "Pokémon – EV04 Faille Paradoxe – Box da 36 Bustine (Display)(FR)",
+          "desc": ""
+        },
+        "de": {
+          "name": "Pokémon – EV04 Faille Paradoxe – Box mit 36 Boostern (Display)(FR)",
+          "desc": ""
+        }
+      }
+    },
+    {
+      "slug": "pokemon-me02-5-heros-transcendants-booster-fr",
+      "name": "Pokémon – ME02.5 Héros Transcendants – Booster – FR",
+      "price": 9.9,
+      "category": "booster-en-loose",
+      "onSale": false,
+      "inStock": false,
+      "desc": "",
+      "image": "assets/products/pokemon-me02-5-heros-transcendants-booster-fr.jpg",
+      "translations": {
+        "en": {
+          "name": "Pokémon – ME02.5 Héros Transcendants – Booster – FR",
+          "desc": ""
+        },
+        "it": {
+          "name": "Pokémon – ME02.5 Héros Transcendants – Booster – FR",
+          "desc": ""
+        },
+        "de": {
+          "name": "Pokémon – ME02.5 Héros Transcendants – Booster – FR",
+          "desc": ""
+        }
+      }
+    },
+    {
+      "slug": "pokemon-me02-flammes-fantasmagoriques-booster-fr",
+      "name": "Pokémon – ME02 Flammes Fantasmagoriques – Booster – FR",
+      "price": 9.9,
+      "category": "booster-en-loose",
+      "onSale": false,
+      "inStock": true,
+      "desc": "",
+      "image": "assets/products/pokemon-me02-flammes-fantasmagoriques-booster-fr.webp",
+      "translations": {
+        "en": {
+          "name": "Pokémon – ME02 Flammes Fantasmagoriques – Booster – FR",
+          "desc": ""
+        },
+        "it": {
+          "name": "Pokémon – ME02 Flammes Fantasmagoriques – Booster – FR",
+          "desc": ""
+        },
+        "de": {
+          "name": "Pokémon – ME02 Flammes Fantasmagoriques – Booster – FR",
+          "desc": ""
+        }
+      }
+    },
+    {
+      "slug": "pokemon-me01-mega-evolution-booster-fr",
+      "name": "Pokémon – ME01 Méga-Évolution – Booster – FR",
+      "price": 7.9,
+      "category": "booster-en-loose",
+      "onSale": false,
+      "inStock": true,
+      "desc": "",
+      "image": "assets/products/pokemon-me01-mega-evolution-booster-fr.png",
+      "translations": {
+        "en": {
+          "name": "Pokémon – ME01 Méga-Évolution – Booster – FR",
+          "desc": ""
+        },
+        "it": {
+          "name": "Pokémon – ME01 Méga-Évolution – Booster – FR",
+          "desc": ""
+        },
+        "de": {
+          "name": "Pokémon – ME01 Méga-Évolution – Booster – FR",
+          "desc": ""
+        }
+      }
+    },
+    {
+      "slug": "pokemon-ev10-5-flamme-blanche-booster-fr",
+      "name": "Pokémon – EV10.5 Flamme Blanche – Booster – FR",
+      "price": 7.9,
+      "category": "booster-en-loose",
+      "onSale": false,
+      "inStock": true,
+      "desc": "",
+      "image": "assets/products/pokemon-ev10-5-flamme-blanche-booster-fr.jpg",
+      "translations": {
+        "en": {
+          "name": "Pokémon – EV10.5 Flamme Blanche – Booster – FR",
+          "desc": ""
+        },
+        "it": {
+          "name": "Pokémon – EV10.5 Flamme Blanche – Booster – FR",
+          "desc": ""
+        },
+        "de": {
+          "name": "Pokémon – EV10.5 Flamme Blanche – Booster – FR",
+          "desc": ""
+        }
+      }
+    },
+    {
+      "slug": "pokemon-ev10-5-foudre-noire-booster-fr",
+      "name": "Pokémon – EV10.5 Foudre Noire – Booster – FR",
+      "price": 7.9,
+      "category": "booster-en-loose",
+      "onSale": false,
+      "inStock": true,
+      "desc": "",
+      "image": "assets/products/pokemon-ev10-5-foudre-noire-booster-fr.webp",
+      "translations": {
+        "en": {
+          "name": "Pokémon – EV10.5 Foudre Noire – Booster – FR",
+          "desc": ""
+        },
+        "it": {
+          "name": "Pokémon – EV10.5 Foudre Noire – Booster – FR",
+          "desc": ""
+        },
+        "de": {
+          "name": "Pokémon – EV10.5 Foudre Noire – Booster – FR",
+          "desc": ""
+        }
+      }
+    },
+    {
+      "slug": "pokemon-ev09-aventures-ensemble-booster-fr",
+      "name": "Pokémon – EV09 Aventures Ensemble – Booster – FR",
+      "price": 5.9,
+      "category": "booster-en-loose",
+      "onSale": true,
+      "inStock": true,
+      "desc": "",
+      "image": "assets/products/pokemon-ev09-aventures-ensemble-booster-fr.jpg",
+      "translations": {
+        "en": {
+          "name": "Pokémon – EV09 Aventures Ensemble – Booster – FR",
+          "desc": ""
+        },
+        "it": {
+          "name": "Pokémon – EV09 Aventures Ensemble – Booster – FR",
+          "desc": ""
+        },
+        "de": {
+          "name": "Pokémon – EV09 Aventures Ensemble – Booster – FR",
+          "desc": ""
+        }
+      }
+    },
+    {
+      "slug": "pokemon-ev08-etincelles-deferlantes-booster-fr",
+      "name": "Pokémon – EV08 Etincelles Déferlantes – Booster – FR",
+      "price": 6.9,
+      "category": "booster-en-loose",
+      "onSale": true,
+      "inStock": true,
+      "desc": "",
+      "image": "assets/products/pokemon-ev08-etincelles-deferlantes-booster-fr.png",
+      "translations": {
+        "en": {
+          "name": "Pokémon – EV08 Etincelles Déferlantes – Booster – FR",
+          "desc": ""
+        },
+        "it": {
+          "name": "Pokémon – EV08 Etincelles Déferlantes – Booster – FR",
+          "desc": ""
+        },
+        "de": {
+          "name": "Pokémon – EV08 Etincelles Déferlantes – Booster – FR",
+          "desc": ""
+        }
+      }
+    },
+    {
+      "slug": "pokemon-booster-mystere-fr",
+      "name": "Pokémon – Booster Mystère – FR",
+      "price": 5.9,
+      "category": "booster-en-loose",
+      "onSale": false,
+      "inStock": true,
+      "desc": "",
+      "image": "assets/products/pokemon-booster-mystere-fr.jpg",
+      "translations": {
+        "en": {
+          "name": "Pokémon – Mystery Booster – FR",
+          "desc": ""
+        },
+        "it": {
+          "name": "Pokémon – Booster Mistero – FR",
+          "desc": ""
+        },
+        "de": {
+          "name": "Pokémon – Mystery-Booster – FR",
+          "desc": ""
+        }
+      }
+    },
+    {
+      "slug": "pokemon-ev09-aventures-ensemble-boite-de-36-boosters-displayfr-case",
+      "name": "Pokémon – EV09 Aventures Ensemble – Boîte de 36 Boosters (Display)(FR) « Case »",
+      "price": 1199.9,
+      "category": "aventures-ensemble",
+      "onSale": true,
+      "inStock": true,
+      "desc": "",
+      "image": "assets/products/pokemon-ev09-aventures-ensemble-boite-de-36-boosters-displayfr-case.png",
+      "translations": {
+        "en": {
+          "name": "Pokémon – EV09 Aventures Ensemble – Box of 36 Boosters (Display)(FR) « Case »",
+          "desc": ""
+        },
+        "it": {
+          "name": "Pokémon – EV09 Aventures Ensemble – Box da 36 Bustine (Display)(FR) « Case »",
+          "desc": ""
+        },
+        "de": {
+          "name": "Pokémon – EV09 Aventures Ensemble – Box mit 36 Boostern (Display)(FR) « Case »",
+          "desc": ""
+        }
+      }
+    },
+    {
+      "slug": "pokemon-equilibre-parfait-three-pack-blister",
+      "name": "Pokémon – Équilibre Parfait Three Pack Blister",
+      "price": 19.9,
+      "category": "me03-equilibre-parfait",
+      "onSale": true,
+      "inStock": true,
+      "desc": "🚨 Les précommandes 🚨 Date de disponibilité prévu: 27.03.2026 ⚠️ Info importante ⚠️ Pour que tout le monde puisse en profiter, 👉 limite de 6 articles maximum par personne.",
+      "image": "assets/products/pokemon-equilibre-parfait-three-pack-blister.webp",
+      "translations": {
+        "en": {
+          "name": "Pokémon – Équilibre Parfait Three Pack Blister",
+          "desc": "🚨 Pre-orders 🚨 Expected availability date: 27.03.2026 ⚠️ Important info ⚠️ So that everyone can enjoy it, 👉 limit of 6 items maximum per person."
+        },
+        "it": {
+          "name": "Pokémon – Équilibre Parfait Three Pack Blister",
+          "desc": "🚨 Preordini 🚨 Data di disponibilità prevista: 27.03.2026 ⚠️ Info importante ⚠️ Affinché tutti possano approfittarne, 👉 limite di massimo 6 articoli a persona."
+        },
+        "de": {
+          "name": "Pokémon – Équilibre Parfait Three Pack Blister",
+          "desc": "🚨 Vorbestellungen 🚨 Voraussichtliches Verfügbarkeitsdatum: 27.03.2026 ⚠️ Wichtige Info ⚠️ Damit alle etwas davon haben, 👉 Limit von maximal 6 Artikeln pro Person."
+        }
+      }
+    },
+    {
+      "slug": "pokemon-me03-equilibre-parfait-boite-de-36-boosters-display",
+      "name": "Pokémon – ME03 Équilibre Parfait – Boîte de 36 Boosters (Display)",
+      "price": 219.9,
+      "category": "me03-equilibre-parfait",
+      "onSale": false,
+      "inStock": true,
+      "desc": "🚨 Les précommandes 🚨 Date de disponibilité prévu: 27.03.2026 Case scellée possible pour l’achat de 6 unités",
+      "image": "assets/products/pokemon-me03-equilibre-parfait-boite-de-36-boosters-display.webp",
+      "translations": {
+        "en": {
+          "name": "Pokémon – ME03 Équilibre Parfait – Box of 36 Boosters (Display)",
+          "desc": "🚨 Pre-orders 🚨 Expected availability date: 27.03.2026 Sealed case possible for the purchase of 6 units"
+        },
+        "it": {
+          "name": "Pokémon – ME03 Équilibre Parfait – Box da 36 Bustine (Display)",
+          "desc": "🚨 Preordini 🚨 Data di disponibilità prevista: 27.03.2026 Case sigillato possibile per l'acquisto di 6 unità"
+        },
+        "de": {
+          "name": "Pokémon – ME03 Équilibre Parfait – Box mit 36 Boostern (Display)",
+          "desc": "🚨 Vorbestellungen 🚨 Voraussichtliches Verfügbarkeitsdatum: 27.03.2026 Versiegelter Case möglich beim Kauf von 6 Einheiten"
+        }
+      }
+    },
+    {
+      "slug": "pokemon-me03-equilibre-parfait-coffret-dresseur-delite-fr",
+      "name": "Pokémon – ME03 Équilibre Parfait – Coffret Dresseur d’élite (FR)",
+      "price": 69.9,
+      "category": "me03-equilibre-parfait",
+      "onSale": true,
+      "inStock": true,
+      "desc": "🚨 Les précommandes 🚨 Date de disponibilité prévu: 27.03.2026 Case scellée possible pour l’achat de 10 unités",
+      "image": "assets/products/pokemon-me03-equilibre-parfait-coffret-dresseur-delite-fr.webp",
+      "translations": {
+        "en": {
+          "name": "Pokémon – ME03 Équilibre Parfait – Elite Trainer Box (FR)",
+          "desc": "🚨 Pre-orders 🚨 Expected availability date: 27.03.2026 Sealed case possible for the purchase of 10 units"
+        },
+        "it": {
+          "name": "Pokémon – ME03 Équilibre Parfait – Elite Trainer Box (FR)",
+          "desc": "🚨 Preordini 🚨 Data di disponibilità prevista: 27.03.2026 Case sigillato possibile per l'acquisto di 10 unità"
+        },
+        "de": {
+          "name": "Pokémon – ME03 Équilibre Parfait – Elite-Trainer-Box (FR)",
+          "desc": "🚨 Vorbestellungen 🚨 Voraussichtliches Verfügbarkeitsdatum: 27.03.2026 Versiegelter Case möglich beim Kauf von 10 Einheiten"
+        }
+      }
+    },
+    {
+      "slug": "dragon-ball-fb08-saiyans-pride-fusion-world-en-case",
+      "name": "Dragon Ball – FB08 Saiyan’s Pride – « Fusion World » (EN) « Case »",
+      "price": 1799.9,
+      "category": "dragon-ball-anglais",
+      "onSale": false,
+      "inStock": true,
+      "desc": "",
+      "image": "assets/products/dragon-ball-fb08-saiyans-pride-fusion-world-en-case.jpeg",
+      "translations": {
+        "en": {
+          "name": "Dragon Ball – FB08 Saiyan’s Pride – « Fusion World » (EN) « Case »",
+          "desc": ""
+        },
+        "it": {
+          "name": "Dragon Ball – FB08 Saiyan’s Pride – « Fusion World » (EN) « Case »",
+          "desc": ""
+        },
+        "de": {
+          "name": "Dragon Ball – FB08 Saiyan’s Pride – « Fusion World » (EN) « Case »",
+          "desc": ""
+        }
+      }
+    },
+    {
+      "slug": "dragon-ball-fb08-saiyans-pride-fusion-world-en",
+      "name": "Dragon Ball – FB08 Saiyan’s Pride – « Fusion World » (EN)",
+      "price": 129.9,
+      "category": "dragon-ball-anglais",
+      "onSale": false,
+      "inStock": false,
+      "desc": "",
+      "image": "assets/products/dragon-ball-fb08-saiyans-pride-fusion-world-en.webp",
+      "translations": {
+        "en": {
+          "name": "Dragon Ball – FB08 Saiyan’s Pride – « Fusion World » (EN)",
+          "desc": ""
+        },
+        "it": {
+          "name": "Dragon Ball – FB08 Saiyan’s Pride – « Fusion World » (EN)",
+          "desc": ""
+        },
+        "de": {
+          "name": "Dragon Ball – FB08 Saiyan’s Pride – « Fusion World » (EN)",
+          "desc": ""
+        }
+      }
+    },
+    {
+      "slug": "pokemon-stars-etincelantes-display",
+      "name": "Pokémon – Stars Étincelantes – Display",
+      "price": 449.9,
+      "category": "epee-bouclier",
+      "onSale": true,
+      "inStock": true,
+      "desc": "",
+      "image": "assets/products/pokemon-stars-etincelantes-display.jpg",
+      "translations": {
+        "en": {
+          "name": "Pokémon – Stars Étincelantes – Display",
+          "desc": ""
+        },
+        "it": {
+          "name": "Pokémon – Stars Étincelantes – Display",
+          "desc": ""
+        },
+        "de": {
+          "name": "Pokémon – Stars Étincelantes – Display",
+          "desc": ""
+        }
+      }
+    },
+    {
+      "slug": "pokemon-coffret-dresseur-delite-de-tempete-argentee-avec-protection-acrylique",
+      "name": "Pokémon – Coffret Dresseur d’Élite de Tempête Argentée + avec protection acrylique",
+      "price": 249.9,
+      "category": "epee-bouclier",
+      "onSale": true,
+      "inStock": true,
+      "desc": "",
+      "image": "assets/products/pokemon-coffret-dresseur-delite-de-tempete-argentee-avec-protection-acrylique.webp",
+      "translations": {
+        "en": {
+          "name": "Pokémon – Tempête Argentée Elite Trainer Box + with acrylic protection",
+          "desc": ""
+        },
+        "it": {
+          "name": "Pokémon – Elite Trainer Box di Tempête Argentée + con protezione acrilica",
+          "desc": ""
+        },
+        "de": {
+          "name": "Pokémon – Tempête Argentée Elite-Trainer-Box + mit Acrylschutz",
+          "desc": ""
+        }
+      }
+    },
+    {
+      "slug": "pokemon-coffret-dresseur-delite-de-destinees-radieuses-avec-protection-acrylique",
+      "name": "Pokémon – Coffret Dresseur d’Élite de Destinées Radieuses + avec protection acrylique",
+      "price": 299.9,
+      "category": "epee-bouclier",
+      "onSale": false,
+      "inStock": true,
+      "desc": "",
+      "image": "assets/products/pokemon-coffret-dresseur-delite-de-destinees-radieuses-avec-protection-acrylique.jpg",
+      "translations": {
+        "en": {
+          "name": "Pokémon – Destinées Radieuses Elite Trainer Box + with acrylic protection",
+          "desc": ""
+        },
+        "it": {
+          "name": "Pokémon – Elite Trainer Box di Destinées Radieuses + con protezione acrilica",
+          "desc": ""
+        },
+        "de": {
+          "name": "Pokémon – Destinées Radieuses Elite-Trainer-Box + mit Acrylschutz",
+          "desc": ""
+        }
+      }
+    },
+    {
+      "slug": "pokemon-coffret-dresseur-delite-de-destinees-occultes-avec-protection-acrylique",
+      "name": "Pokémon – Coffret Dresseur d’Élite de Destinées Occultes + avec protection acrylique",
+      "price": 699.9,
+      "category": "promo-pokemon",
+      "onSale": false,
+      "inStock": false,
+      "desc": "",
+      "image": "assets/products/pokemon-coffret-dresseur-delite-de-destinees-occultes-avec-protection-acrylique.jpg",
+      "translations": {
+        "en": {
+          "name": "Pokémon – Destinées Occultes Elite Trainer Box + with acrylic protection",
+          "desc": ""
+        },
+        "it": {
+          "name": "Pokémon – Elite Trainer Box Destinées Occultes + con protezione acrilica",
+          "desc": ""
+        },
+        "de": {
+          "name": "Pokémon – Destinées Occultes Top-Trainer-Box + mit Acrylschutz",
+          "desc": ""
+        }
+      }
+    },
+    {
+      "slug": "pokemon-collection-ultra-premium-ecarlate-et-violet-151",
+      "name": "Pokémon – Collection Ultra Premium Écarlate et Violet – 151 + Avec protection acrylique",
+      "price": 749.9,
+      "category": "151",
+      "onSale": true,
+      "inStock": true,
+      "desc": "",
+      "image": "assets/products/pokemon-collection-ultra-premium-ecarlate-et-violet-151.png",
+      "translations": {
+        "en": {
+          "name": "Pokémon – Ultra Premium Collection Écarlate et Violet – 151 + With acrylic protection",
+          "desc": ""
+        },
+        "it": {
+          "name": "Pokémon – Collezione Ultra Premium Écarlate et Violet – 151 + Con protezione acrilica",
+          "desc": ""
+        },
+        "de": {
+          "name": "Pokémon – Ultra-Premium-Kollektion Écarlate et Violet – 151 + Mit Acrylschutz",
+          "desc": ""
+        }
+      }
+    },
+    {
+      "slug": "pokemon-me02-5-heros-transcendants-premium-poster-collection-mega-lucario-ex",
+      "name": "Pokémon – ME02.5 ‘Héros Transcendants’ Premium Poster Collection – Méga Lucario ex",
+      "price": 119.9,
+      "category": "me2-5-heros-transcendants",
+      "onSale": false,
+      "inStock": false,
+      "desc": "🚨 Les précommandes 🚨 Date de disponibilité prévu: 20.03.2026",
+      "image": "assets/products/pokemon-me02-5-heros-transcendants-premium-poster-collection-mega-lucario-ex.webp",
+      "translations": {
+        "en": {
+          "name": "Pokémon – ME02.5 ‘Héros Transcendants’ Premium Poster Collection – Mega Lucario ex",
+          "desc": "🚨 Pre-orders 🚨 Expected availability date: 20.03.2026"
+        },
+        "it": {
+          "name": "Pokémon – ME02.5 ‘Héros Transcendants’ Premium Poster Collection – Mega Lucario ex",
+          "desc": "🚨 Preordini 🚨 Data di disponibilità prevista: 20.03.2026"
+        },
+        "de": {
+          "name": "Pokémon – ME02.5 ‘Héros Transcendants’ Premium Poster Collection – Mega Lucario ex",
+          "desc": "🚨 Vorbestellungen 🚨 Voraussichtliches Verfügbarkeitsdatum: 20.03.2026"
+        }
+      }
+    },
+    {
+      "slug": "pokemon-me02-5-heros-transcendants-premium-poster-collection",
+      "name": "Pokémon – ME02.5 ‘Héros Transcendants’ Premium Poster Collection – Méga Gardevoir ex",
+      "price": 119.9,
+      "category": "me2-5-heros-transcendants",
+      "onSale": false,
+      "inStock": false,
+      "desc": "🚨 Les précommandes 🚨 Date de disponibilité prévu: 20.03.2026",
+      "image": "assets/products/pokemon-me02-5-heros-transcendants-premium-poster-collection.webp",
+      "translations": {
+        "en": {
+          "name": "Pokémon – ME02.5 ‘Héros Transcendants’ Premium Poster Collection – Mega Gardevoir ex",
+          "desc": "🚨 Pre-orders 🚨 Expected availability date: 20.03.2026"
+        },
+        "it": {
+          "name": "Pokémon – ME02.5 ‘Héros Transcendants’ Premium Poster Collection – Mega Gardevoir ex",
+          "desc": "🚨 Preordini 🚨 Data di disponibilità prevista: 20.03.2026"
+        },
+        "de": {
+          "name": "Pokémon – ME02.5 ‘Héros Transcendants’ Premium Poster Collection – Mega Gardevoir ex",
+          "desc": "🚨 Vorbestellungen 🚨 Voraussichtliches Verfügbarkeitsdatum: 20.03.2026"
+        }
+      }
+    },
+    {
+      "slug": "pokemon-fr-enhanced-2-pack-q1-2026",
+      "name": "Pokémon – FR Enhanced 2-Pack Q1 2026",
+      "price": 11.9,
+      "category": "promo-pokemon",
+      "onSale": true,
+      "inStock": true,
+      "desc": "🚨 Les précommandes 🚨 Date de disponibilité prévu: 06.03.2026",
+      "image": "assets/products/pokemon-fr-enhanced-2-pack-q1-2026.webp",
+      "translations": {
+        "en": {
+          "name": "Pokémon – FR Enhanced 2-Pack Q1 2026",
+          "desc": "🚨 Pre-orders 🚨 Expected availability date: 06.03.2026"
+        },
+        "it": {
+          "name": "Pokémon – FR Enhanced 2-Pack Q1 2026",
+          "desc": "🚨 Preordini 🚨 Data di disponibilità prevista: 06.03.2026"
+        },
+        "de": {
+          "name": "Pokémon – FR Enhanced 2-Pack Q1 2026",
+          "desc": "🚨 Vorbestellungen 🚨 Voraussichtliches Verfügbarkeitsdatum: 06.03.2026"
+        }
+      }
+    },
+    {
+      "slug": "etui-en-acrylique-collection-pokemon-ultra-premium-mega-dracaufeu-transparent",
+      "name": "Étui en acrylique – Collection Pokémon Ultra-Premium Méga Dracaufeu – Transparent",
+      "price": 49.9,
+      "category": "protections",
+      "onSale": false,
+      "inStock": false,
+      "desc": "Réapprovisionnement le 23 mars 2026",
+      "image": "assets/products/etui-en-acrylique-collection-pokemon-ultra-premium-mega-dracaufeu-transparent.webp",
+      "translations": {
+        "en": {
+          "name": "Acrylic case – Pokémon Ultra-Premium Collection Mega Dracaufeu – Transparent",
+          "desc": "Restock on 23 March 2026"
+        },
+        "it": {
+          "name": "Custodia in acrilico – Collezione Pokémon Ultra-Premium Mega Dracaufeu – Trasparente",
+          "desc": "Riassortimento il 23 marzo 2026"
+        },
+        "de": {
+          "name": "Acryl-Etui – Pokémon Ultra-Premium-Kollektion Mega Dracaufeu – Transparent",
+          "desc": "Wiederauffüllung am 23. März 2026"
+        }
+      }
+    },
+    {
+      "slug": "etui-en-acrylique-coffret-de-boosters-pokemon-display-transparent",
+      "name": "Étui en acrylique – Coffret de boosters Pokémon (Display) – Transparent",
+      "price": 24.9,
+      "category": "protections",
+      "onSale": false,
+      "inStock": true,
+      "desc": "Livraison prévu dans 1 à 2 semaine",
+      "image": "assets/products/etui-en-acrylique-coffret-de-boosters-pokemon-display-transparent.webp",
+      "translations": {
+        "en": {
+          "name": "Acrylic case – Pokémon Booster Box (Display) – Transparent",
+          "desc": "Delivery expected in 1 to 2 weeks"
+        },
+        "it": {
+          "name": "Custodia in acrilico – Box di buste Pokémon (Display) – Trasparente",
+          "desc": "Consegna prevista tra 1 e 2 settimane"
+        },
+        "de": {
+          "name": "Acryl-Etui – Pokémon Booster-Box (Display) – Transparent",
+          "desc": "Lieferung voraussichtlich in 1 bis 2 Wochen"
+        }
+      }
+    },
+    {
+      "slug": "etui-en-acrylique-coffret-dresseur-delite-pokemon-etb-transparent",
+      "name": "Étui en acrylique – Coffret Dresseur d’élite Pokémon (ETB) – Transparent",
+      "price": 29.9,
+      "category": "protections",
+      "onSale": false,
+      "inStock": false,
+      "desc": "Livraison prévu dans 1 à 2 semaine",
+      "image": "assets/products/etui-en-acrylique-coffret-dresseur-delite-pokemon-etb-transparent.webp",
+      "translations": {
+        "en": {
+          "name": "Acrylic case – Pokémon Elite Trainer Box (ETB) – Transparent",
+          "desc": "Delivery expected in 1 to 2 weeks"
+        },
+        "it": {
+          "name": "Custodia in acrilico – Elite Trainer Box Pokémon (ETB) – Trasparente",
+          "desc": "Consegna prevista tra 1 e 2 settimane"
+        },
+        "de": {
+          "name": "Acryl-Etui – Pokémon Top-Trainer-Box (ETB) – Transparent",
+          "desc": "Lieferung voraussichtlich in 1 bis 2 Wochen"
+        }
+      }
+    },
+    {
+      "slug": "pokemon-m2a-mega-dream-ex-display-box-jp",
+      "name": "Pokémon – M2A Mega Dream EX Display Box – JP (no shrink)",
+      "price": 119.9,
+      "category": "promo-pokemon",
+      "onSale": false,
+      "inStock": true,
+      "desc": "",
+      "image": "assets/products/pokemon-m2a-mega-dream-ex-display-box-jp.webp",
+      "translations": {
+        "en": {
+          "name": "Pokémon – M2A Mega Dream EX Display Box – JP (no shrink)",
+          "desc": ""
+        },
+        "it": {
+          "name": "Pokémon – M2A Mega Dream EX Display Box – JP (no shrink)",
+          "desc": ""
+        },
+        "de": {
+          "name": "Pokémon – M2A Mega Dream EX Display Box – JP (no shrink)",
+          "desc": ""
+        }
+      }
+    },
+    {
+      "slug": "pokemon-couronne-zenith-boite-artikodin-de-galar",
+      "name": "Pokémon – Couronne Zenith : Boîte Artikodin de Galar",
+      "price": 99.9,
+      "category": "collection-coffrets",
+      "onSale": false,
+      "inStock": false,
+      "desc": "",
+      "image": "assets/products/pokemon-couronne-zenith-boite-artikodin-de-galar.webp",
+      "translations": {
+        "en": {
+          "name": "Pokémon – Couronne Zenith: Artikodin de Galar Box",
+          "desc": ""
+        },
+        "it": {
+          "name": "Pokémon – Couronne Zenith: Box Artikodin de Galar",
+          "desc": ""
+        },
+        "de": {
+          "name": "Pokémon – Couronne Zenith: Artikodin de Galar Box",
+          "desc": ""
+        }
+      }
+    },
+    {
+      "slug": "pokemon",
+      "name": "Pokémon – Mystery – 1ère Édition du Coffre à Dom",
+      "price": 34.9,
+      "category": "promo-pokemon",
+      "onSale": false,
+      "inStock": false,
+      "desc": "",
+      "image": "assets/products/pokemon.png",
+      "translations": {
+        "en": {
+          "name": "Pokémon – Mystery – Coffre à Dom 1st Edition",
+          "desc": ""
+        },
+        "it": {
+          "name": "Pokémon – Mystery – 1ª Edizione del Coffre à Dom",
+          "desc": ""
+        },
+        "de": {
+          "name": "Pokémon – Mystery – 1. Edition des Coffre à Dom",
+          "desc": ""
+        }
+      }
+    },
+    {
+      "slug": "pokemon-me02-flammes-fantasmagoriques-boite-de-36-boosters-display",
+      "name": "Pokémon – ME02 Flammes Fantasmagoriques – Boîte de 36 Boosters (Display)",
+      "price": 299.9,
+      "category": "me02-flammes-fantasmagoriques",
+      "onSale": false,
+      "inStock": false,
+      "desc": "1 en stock : livraison immédiate 🚀 3 en précommande : livraison prévue pour le 06.03.26 📦",
+      "image": "assets/products/pokemon-me02-flammes-fantasmagoriques-boite-de-36-boosters-display.webp",
+      "translations": {
+        "en": {
+          "name": "Pokémon – ME02 Flammes Fantasmagoriques – Box of 36 Boosters (Display)",
+          "desc": "1 in stock: immediate delivery 🚀 3 on pre-order: delivery expected on 06.03.26 📦"
+        },
+        "it": {
+          "name": "Pokémon – ME02 Flammes Fantasmagoriques – Box da 36 Buste (Display)",
+          "desc": "1 disponibile: consegna immediata 🚀 3 in preordine: consegna prevista per il 06.03.26 📦"
+        },
+        "de": {
+          "name": "Pokémon – ME02 Flammes Fantasmagoriques – Box mit 36 Boostern (Display)",
+          "desc": "1 an Lager: sofortige Lieferung 🚀 3 als Vorbestellung: Lieferung voraussichtlich am 06.03.26 📦"
+        }
+      }
+    },
+    {
+      "slug": "pokemon-me02-flammes-fantasmagoriques-coffret-dresseur-delite",
+      "name": "Pokémon – ME02 Flammes Fantasmagoriques – Coffret Dresseur d’élite",
+      "price": 99.9,
+      "category": "me02-flammes-fantasmagoriques",
+      "onSale": false,
+      "inStock": false,
+      "desc": "",
+      "image": "assets/products/pokemon-me02-flammes-fantasmagoriques-coffret-dresseur-delite.webp",
+      "translations": {
+        "en": {
+          "name": "Pokémon – ME02 Flammes Fantasmagoriques – Elite Trainer Box",
+          "desc": ""
+        },
+        "it": {
+          "name": "Pokémon – ME02 Flammes Fantasmagoriques – Elite Trainer Box",
+          "desc": ""
+        },
+        "de": {
+          "name": "Pokémon – ME02 Flammes Fantasmagoriques – Top-Trainer-Box",
+          "desc": ""
+        }
+      }
+    },
+    {
+      "slug": "pokemon-mega-dracaufeu-ultra-premium-collection",
+      "name": "Pokémon – Méga-Dracaufeu Ultra Premium Collection",
+      "price": 199.9,
+      "category": "collection-coffrets",
+      "onSale": false,
+      "inStock": false,
+      "desc": "🚨 Les précommandes 🚨 Date de disponibilité prévu: 14.11.2025 Informations sur les précommandes : Un maximum de 1 sera réservé par client.",
+      "image": "assets/products/pokemon-mega-dracaufeu-ultra-premium-collection.webp",
+      "translations": {
+        "en": {
+          "name": "Pokémon – Mega Dracaufeu Ultra Premium Collection",
+          "desc": "🚨 Pre-orders 🚨 Expected availability date: 14.11.2025 Pre-order information: A maximum of 1 will be reserved per customer."
+        },
+        "it": {
+          "name": "Pokémon – Mega Dracaufeu Collezione Ultra Premium",
+          "desc": "🚨 Preordini 🚨 Data di disponibilità prevista: 14.11.2025 Informazioni sui preordini: Sarà riservato un massimo di 1 per cliente."
+        },
+        "de": {
+          "name": "Pokémon – Mega Dracaufeu Ultra-Premium-Kollektion",
+          "desc": "🚨 Vorbestellungen 🚨 Voraussichtliches Verfügbarkeitsdatum: 14.11.2025 Informationen zu Vorbestellungen: Pro Kunde wird maximal 1 reserviert."
+        }
+      }
+    },
+    {
+      "slug": "pokemon-mega-florizarre-ex-premium-collection",
+      "name": "Pokémon – Méga-Florizarre EX Premium Collection",
+      "price": 59.9,
+      "category": "me01-mega-evolution",
+      "onSale": true,
+      "inStock": true,
+      "desc": "🚨 Les précommandes 🚨 Date de disponibilité prévu: 14.11.2025",
+      "image": "assets/products/pokemon-mega-florizarre-ex-premium-collection.webp",
+      "translations": {
+        "en": {
+          "name": "Pokémon – Mega Florizarre EX Premium Collection",
+          "desc": "🚨 Pre-orders 🚨 Expected availability date: 14.11.2025"
+        },
+        "it": {
+          "name": "Pokémon – Mega Florizarre EX Collezione Premium",
+          "desc": "🚨 Preordini 🚨 Data di disponibilità prevista: 14.11.2025"
+        },
+        "de": {
+          "name": "Pokémon – Mega Florizarre EX Premium-Kollektion",
+          "desc": "🚨 Vorbestellungen 🚨 Voraussichtliches Verfügbarkeitsdatum: 14.11.2025"
+        }
+      }
+    },
+    {
+      "slug": "pokemon-coffret-mega-kangourex-ex",
+      "name": "Pokémon – Coffret Méga Kangourex EX",
+      "price": 29.9,
+      "category": "me01-mega-evolution",
+      "onSale": true,
+      "inStock": true,
+      "desc": "🚨 Les précommandes 🚨 Date de disponibilité prévu: 14.11.2025",
+      "image": "assets/products/pokemon-coffret-mega-kangourex-ex.webp",
+      "translations": {
+        "en": {
+          "name": "Pokémon – Mega Kangourex EX Box",
+          "desc": "🚨 Pre-orders 🚨 Expected availability date: 14.11.2025"
+        },
+        "it": {
+          "name": "Pokémon – Box Mega Kangourex EX",
+          "desc": "🚨 Preordini 🚨 Data di disponibilità prevista: 14.11.2025"
+        },
+        "de": {
+          "name": "Pokémon – Mega Kangourex EX Box",
+          "desc": "🚨 Vorbestellungen 🚨 Voraussichtliches Verfügbarkeitsdatum: 14.11.2025"
+        }
+      }
+    },
+    {
+      "slug": "pokemon-mega-lucario-ex-figure-collection",
+      "name": "Pokémon – Méga Lucario ex Figure Collection",
+      "price": 39.9,
+      "category": "me01-mega-evolution",
+      "onSale": true,
+      "inStock": true,
+      "desc": "🚨 Les précommandes 🚨 Date de disponibilité prévu: 07.11.2025",
+      "image": "assets/products/pokemon-mega-lucario-ex-figure-collection.webp",
+      "translations": {
+        "en": {
+          "name": "Pokémon – Mega Lucario ex Figure Collection",
+          "desc": "🚨 Pre-orders 🚨 Expected availability date: 07.11.2025"
+        },
+        "it": {
+          "name": "Pokémon – Mega Lucario ex Figure Collection",
+          "desc": "🚨 Preordini 🚨 Data di disponibilità prevista: 07.11.2025"
+        },
+        "de": {
+          "name": "Pokémon – Mega Lucario ex Figure Collection",
+          "desc": "🚨 Vorbestellungen 🚨 Voraussichtliches Verfügbarkeitsdatum: 07.11.2025"
+        }
+      }
+    },
+    {
+      "slug": "pokemon-ev10-5-flamme-blanche-coffret-dresseur-delite-fr",
+      "name": "Pokémon – EV10.5 Flamme Blanche – Coffret Dresseur d’élite (FR)",
+      "price": 89.9,
+      "category": "foudre-noire-flamme-blanche",
+      "onSale": false,
+      "inStock": true,
+      "desc": "",
+      "image": "assets/products/pokemon-ev10-5-flamme-blanche-coffret-dresseur-delite-fr.jpg",
+      "translations": {
+        "en": {
+          "name": "Pokémon – EV10.5 Flamme Blanche – Elite Trainer Box (FR)",
+          "desc": ""
+        },
+        "it": {
+          "name": "Pokémon – EV10.5 Flamme Blanche – Elite Trainer Box (FR)",
+          "desc": ""
+        },
+        "de": {
+          "name": "Pokémon – EV10.5 Flamme Blanche – Top-Trainer-Box (FR)",
+          "desc": ""
+        }
+      }
+    },
+    {
+      "slug": "pokemon-mega-latias-ex-box",
+      "name": "Pokémon – Méga- Latias Ex Box",
+      "price": 34.9,
+      "category": "collection-coffrets",
+      "onSale": false,
+      "inStock": true,
+      "desc": "🚨 Les précommandes ouvrent le 19.09.2025🚨 Date de disponibilité prévu: 10.10.2025",
+      "image": "assets/products/pokemon-mega-latias-ex-box.webp",
+      "translations": {
+        "en": {
+          "name": "Pokémon – Mega Latias Ex Box",
+          "desc": "🚨 Pre-orders open on 19.09.2025🚨 Expected availability date: 10.10.2025"
+        },
+        "it": {
+          "name": "Pokémon – Mega Latias Ex Box",
+          "desc": "🚨 I preordini aprono il 19.09.2025🚨 Data di disponibilità prevista: 10.10.2025"
+        },
+        "de": {
+          "name": "Pokémon – Mega Latias Ex Box",
+          "desc": "🚨 Die Vorbestellungen öffnen am 19.09.2025🚨 Voraussichtliches Verfügbarkeitsdatum: 10.10.2025"
+        }
+      }
+    },
+    {
+      "slug": "pokemon-classeur-pro-a-12-poches-avec-fermeture-eclair-gengar-elite-series",
+      "name": "Pokémon – Classeur Pro à 12 poches avec fermeture éclair Gengar Elite Series",
+      "price": 49.9,
+      "category": "protections",
+      "onSale": false,
+      "inStock": true,
+      "desc": "",
+      "image": "assets/products/pokemon-classeur-pro-a-12-poches-avec-fermeture-eclair-gengar-elite-series.webp",
+      "translations": {
+        "en": {
+          "name": "Pokémon – 12-Pocket Zippered Pro Binder Gengar Elite Series",
+          "desc": ""
+        },
+        "it": {
+          "name": "Pokémon – Raccoglitore Pro a 12 tasche con cerniera Gengar Elite Series",
+          "desc": ""
+        },
+        "de": {
+          "name": "Pokémon – Pro-Ordner mit 12 Fächern und Reissverschluss Gengar Elite Series",
+          "desc": ""
+        }
+      }
+    },
+    {
+      "slug": "pokemon-pro-binder-zippered-12-pocket-green",
+      "name": "Pokémon – PRO-Binder Zippered 12-Pocket – Green",
+      "price": 39.9,
+      "category": "protections",
+      "onSale": false,
+      "inStock": true,
+      "desc": "",
+      "image": "assets/products/pokemon-pro-binder-zippered-12-pocket-green.jpg",
+      "translations": {
+        "en": {
+          "name": "Pokémon – PRO-Binder Zippered 12-Pocket – Green",
+          "desc": ""
+        },
+        "it": {
+          "name": "Pokémon – PRO-Binder Zippered 12-Pocket – Verde",
+          "desc": ""
+        },
+        "de": {
+          "name": "Pokémon – PRO-Binder Zippered 12-Pocket – Grün",
+          "desc": ""
+        }
+      }
+    },
+    {
+      "slug": "pokemon-premium-snap-binder-red",
+      "name": "Pokémon – Premium Snap Binder Red",
+      "price": 29.9,
+      "category": "protections",
+      "onSale": false,
+      "inStock": true,
+      "desc": "",
+      "image": "assets/products/pokemon-premium-snap-binder-red.jpg",
+      "translations": {
+        "en": {
+          "name": "Pokémon – Premium Snap Binder Red",
+          "desc": ""
+        },
+        "it": {
+          "name": "Pokémon – Premium Snap Binder Rosso",
+          "desc": ""
+        },
+        "de": {
+          "name": "Pokémon – Premium Snap Binder Rot",
+          "desc": ""
+        }
+      }
+    },
+    {
+      "slug": "pokemon-lucario-elite-series-12-pocket-zip-pro-binder",
+      "name": "Pokémon – Lucario Elite Series 12-Pocket Zip. Pro-Binder",
+      "price": 59.9,
+      "category": "protections",
+      "onSale": false,
+      "inStock": true,
+      "desc": "",
+      "image": "assets/products/pokemon-lucario-elite-series-12-pocket-zip-pro-binder.jpg",
+      "translations": {
+        "en": {
+          "name": "Pokémon – Lucario Elite Series 12-Pocket Zip. Pro-Binder",
+          "desc": ""
+        },
+        "it": {
+          "name": "Pokémon – Lucario Elite Series 12-Pocket Zip. Pro-Binder",
+          "desc": ""
+        },
+        "de": {
+          "name": "Pokémon – Lucario Elite Series 12-Pocket Zip. Pro-Binder",
+          "desc": ""
+        }
+      }
+    },
+    {
+      "slug": "pokemon-etui-a-cartes-katana-sleeves-taille-standard-transparent-100",
+      "name": "Pokémon – Étui à cartes Katana Sleeves taille standard Transparent 100",
+      "price": 7.9,
+      "category": "protections",
+      "onSale": false,
+      "inStock": false,
+      "desc": "",
+      "image": "assets/products/pokemon-etui-a-cartes-katana-sleeves-taille-standard-transparent-100.jpg",
+      "translations": {
+        "en": {
+          "name": "Pokémon – Katana Sleeves card sleeves standard size Transparent 100",
+          "desc": ""
+        },
+        "it": {
+          "name": "Pokémon – Custodia per carte Katana Sleeves taglia standard Trasparente 100",
+          "desc": ""
+        },
+        "de": {
+          "name": "Pokémon – Kartenhüllen Katana Sleeves Standardgrösse Transparent 100",
+          "desc": ""
+        }
+      }
+    },
+    {
+      "slug": "pokemon-etui-a-cartes-katana-inner-sleeves-standard-transparent-100",
+      "name": "Pokémon – Étui à cartes Katana Inner Sleeves Standard Transparent 100 « 64 × 89 mm »",
+      "price": 7.9,
+      "category": "protections",
+      "onSale": false,
+      "inStock": true,
+      "desc": "",
+      "image": "assets/products/pokemon-etui-a-cartes-katana-inner-sleeves-standard-transparent-100.jpg",
+      "translations": {
+        "en": {
+          "name": "Pokémon – Katana Inner Sleeves card sleeves Standard Transparent 100 « 64 × 89 mm »",
+          "desc": ""
+        },
+        "it": {
+          "name": "Pokémon – Custodia per carte Katana Inner Sleeves Standard Trasparente 100 « 64 × 89 mm »",
+          "desc": ""
+        },
+        "de": {
+          "name": "Pokémon – Kartenhüllen Katana Inner Sleeves Standard Transparent 100 « 64 × 89 mm »",
+          "desc": ""
+        }
+      }
+    },
+    {
+      "slug": "pokemon-etui-a-cartes-card-covers-toploading-35-pt-paquet-de-25",
+      "name": "Pokémon – Étui à cartes Card Covers Toploading 35 pt Paquet de 25",
+      "price": 7.9,
+      "category": "protections",
+      "onSale": false,
+      "inStock": true,
+      "desc": "",
+      "image": "assets/products/pokemon-etui-a-cartes-card-covers-toploading-35-pt-paquet-de-25.jpg",
+      "translations": {
+        "en": {
+          "name": "Pokémon – Card holders Card Covers Toploading 35 pt Pack of 25",
+          "desc": ""
+        },
+        "it": {
+          "name": "Pokémon – Custodia per carte Card Covers Toploading 35 pt Confezione da 25",
+          "desc": ""
+        },
+        "de": {
+          "name": "Pokémon – Kartenhüllen Card Covers Toploading 35 pt 25er-Pack",
+          "desc": ""
+        }
+      }
+    },
+    {
+      "slug": "pokemon-team-rocket-special-pack",
+      "name": "Pokémon – Team Rocket – Spécial Pack",
+      "price": 599.9,
+      "category": "rivaux-predestines",
+      "onSale": true,
+      "inStock": true,
+      "desc": "",
+      "image": "assets/products/pokemon-team-rocket-special-pack.png",
+      "translations": {
+        "en": {
+          "name": "Pokémon – Team Rocket – Special Pack",
+          "desc": ""
+        },
+        "it": {
+          "name": "Pokémon – Team Rocket – Pacchetto Speciale",
+          "desc": ""
+        },
+        "de": {
+          "name": "Pokémon – Team Rocket – Spezial-Pack",
+          "desc": ""
+        }
+      }
+    },
+    {
+      "slug": "pokemon-ev10-5-foudre-noire-coffret-dresseur-delite",
+      "name": "Pokémon – EV10.5 Foudre Noire – Coffret Dresseur d’élite (FR)",
+      "price": 89.9,
+      "category": "foudre-noire-flamme-blanche",
+      "onSale": false,
+      "inStock": true,
+      "desc": "",
+      "image": "assets/products/pokemon-ev10-5-foudre-noire-coffret-dresseur-delite.jpg",
+      "translations": {
+        "en": {
+          "name": "Pokémon – EV10.5 Foudre Noire – Elite Trainer Box (FR)",
+          "desc": ""
+        },
+        "it": {
+          "name": "Pokémon – EV10.5 Foudre Noire – Elite Trainer Box (FR)",
+          "desc": ""
+        },
+        "de": {
+          "name": "Pokémon – EV10.5 Foudre Noire – Top-Trainer-Box (FR)",
+          "desc": ""
+        }
+      }
+    },
+    {
+      "slug": "vip-legendaire",
+      "name": "❤️ VIP Légendaire – Édition Pokémon 30th",
+      "price": 100,
+      "category": "promo-pokemon",
+      "onSale": false,
+      "inStock": false,
+      "desc": "Valable pour la sortie Pokémon 30th. 🔄 Renouvelable à chaque nouvelle série Pokémon. Devenez un Pilier du Coffre à Dom et profitez d’avantages exclusifs réservés à nos membres.",
+      "image": "assets/products/vip-legendaire.png",
+      "translations": {
+        "en": {
+          "name": "❤️ Legendary VIP – Pokémon 30th Edition",
+          "desc": "Valid for the Pokémon 30th release. 🔄 Renewable with each new Pokémon series. Become a Pillar of the Coffre à Dom and enjoy exclusive benefits reserved for our members."
+        },
+        "it": {
+          "name": "❤️ VIP Leggendario – Edizione Pokémon 30th",
+          "desc": "Valido per l’uscita Pokémon 30th. 🔄 Rinnovabile a ogni nuova serie Pokémon. Diventa un Pilastro del Coffre à Dom e approfitta di vantaggi esclusivi riservati ai nostri membri."
+        },
+        "de": {
+          "name": "❤️ Legendärer VIP – Pokémon 30th Edition",
+          "desc": "Gültig für den Release von Pokémon 30th. 🔄 Bei jeder neuen Pokémon-Serie verlängerbar. Werden Sie eine Säule des Coffre à Dom und profitieren Sie von exklusiven Vorteilen für unsere Mitglieder."
+        }
+      }
+    },
+    {
+      "slug": "pokemon-collection-premium-cynthias-garchomp-ex-fr",
+      "name": "Pokémon – Collection Premium Cynthia’s Garchomp ex – FR",
+      "price": 59.9,
+      "category": "collection-coffrets",
+      "onSale": false,
+      "inStock": true,
+      "desc": "🚨 Les précommandes seront bientôt ouvertes ! 🚨 Restez connectés à notre newsletter et à nos réseaux pour ne rien manquer des prochaines annonces. 🔥💥 Date de disponibilité prévu: 13.06.2025 Informations sur les précommandes : Un maximum ",
+      "image": "assets/products/pokemon-collection-premium-cynthias-garchomp-ex-fr.png",
+      "translations": {
+        "en": {
+          "name": "Pokémon – Cynthia’s Garchomp ex Premium Collection – FR",
+          "desc": "🚨 Pre-orders will open soon! 🚨 Stay tuned to our newsletter and our social media so you don’t miss any of the upcoming announcements. 🔥💥 Expected availability date: 13.06.2025 Pre-order information: A maximum "
+        },
+        "it": {
+          "name": "Pokémon – Collezione Premium Cynthia’s Garchomp ex – FR",
+          "desc": "🚨 I preordini apriranno presto! 🚨 Rimani connesso alla nostra newsletter e ai nostri social per non perdere nessuno dei prossimi annunci. 🔥💥 Data di disponibilità prevista: 13.06.2025 Informazioni sui preordini: Un massimo "
+        },
+        "de": {
+          "name": "Pokémon – Cynthia’s Garchomp ex Premium-Kollektion – FR",
+          "desc": "🚨 Die Vorbestellungen öffnen bald! 🚨 Bleiben Sie mit unserem Newsletter und unseren sozialen Netzwerken verbunden, um keine der kommenden Ankündigungen zu verpassen. 🔥💥 Voraussichtliches Verfügbarkeitsdatum: 13.06.2025 Informationen zu Vorbestellungen: Maximal "
+        }
+      }
+    },
+    {
+      "slug": "pokemon-ev10-rivaux-predestines-boite-de-36-boosters-display",
+      "name": "Pokémon – EV10 Rivaux Prédestinés – Boîte de 36 Boosters (Display) FR",
+      "price": 299.9,
+      "category": "rivaux-predestines",
+      "onSale": false,
+      "inStock": true,
+      "desc": "Date de disponibilité prévu: 24.04.2026",
+      "image": "assets/products/pokemon-ev10-rivaux-predestines-boite-de-36-boosters-display.jpg",
+      "translations": {
+        "en": {
+          "name": "Pokémon – EV10 Rivaux Prédestinés – Box of 36 Boosters (Display) FR",
+          "desc": "Expected availability date: 24.04.2026"
+        },
+        "it": {
+          "name": "Pokémon – EV10 Rivaux Prédestinés – Box da 36 Buste (Display) FR",
+          "desc": "Data di disponibilità prevista: 24.04.2026"
+        },
+        "de": {
+          "name": "Pokémon – EV10 Rivaux Prédestinés – Box mit 36 Boostern (Display) FR",
+          "desc": "Voraussichtliches Verfügbarkeitsdatum: 24.04.2026"
+        }
+      }
+    },
+    {
+      "slug": "pokemon-collection-premium-lonos-bellibolt-ex",
+      "name": "Pokémon – Collection Premium Lono’s Bellibolt ex",
+      "price": 59.9,
+      "category": "collection-coffrets",
+      "onSale": false,
+      "inStock": true,
+      "desc": "",
+      "image": "assets/products/pokemon-collection-premium-lonos-bellibolt-ex.png",
+      "translations": {
+        "en": {
+          "name": "Pokémon – Lono’s Bellibolt ex Premium Collection",
+          "desc": ""
+        },
+        "it": {
+          "name": "Pokémon – Collezione Premium Lono’s Bellibolt ex",
+          "desc": ""
+        },
+        "de": {
+          "name": "Pokémon – Lono’s Bellibolt ex Premium-Kollektion",
+          "desc": ""
+        }
+      }
+    },
+    {
+      "slug": "pokemon-collection-speciale-charizard-ex",
+      "name": "Pokémon – Collection Spéciale Charizard ex",
+      "price": 44.5,
+      "category": "promo-pokemon",
+      "onSale": true,
+      "inStock": true,
+      "desc": "Précommande Date de disponibilité prévu: 11.04.2025 Repoussés: 27.06.2025 Informations sur les précommandes : Un maximum de 4 collections spéciales sera réservée par client. Toute commande dépassant cette limite sera annulée. En raison de l",
+      "image": "assets/products/pokemon-collection-speciale-charizard-ex.png",
+      "translations": {
+        "en": {
+          "name": "Pokémon – Charizard ex Special Collection",
+          "desc": "Pre-order Expected availability date: 11.04.2025 Postponed: 27.06.2025 Pre-order information: A maximum of 4 special collections will be reserved per customer. Any order exceeding this limit will be cancelled. Due to the"
+        },
+        "it": {
+          "name": "Pokémon – Collezione Speciale Charizard ex",
+          "desc": "Preordine Data di disponibilità prevista: 11.04.2025 Rinviato: 27.06.2025 Informazioni sui preordini: Sarà riservato un massimo di 4 collezioni speciali per cliente. Qualsiasi ordine che superi questo limite sarà annullato. A causa del"
+        },
+        "de": {
+          "name": "Pokémon – Charizard ex Spezial-Kollektion",
+          "desc": "Vorbestellung Voraussichtliches Verfügbarkeitsdatum: 11.04.2025 Verschoben: 27.06.2025 Informationen zu Vorbestellungen: Pro Kunde werden maximal 4 Spezial-Kollektionen reserviert. Jede Bestellung, die dieses Limit überschreitet, wird storniert. Aufgrund der"
+        }
+      }
+    },
+    {
+      "slug": "pokemon-ev09-aventures-ensemble-boite-de-36-boosters-displayfr",
+      "name": "Pokémon – EV09 Aventures Ensemble – Boîte de 36 Boosters (Display)(FR)",
+      "price": 199.9,
+      "category": "aventures-ensemble",
+      "onSale": true,
+      "inStock": true,
+      "desc": "4 en stock : livraison immédiate 🚀 6 en précommande : livraison prévue pour le 06.03.26 📦",
+      "image": "assets/products/pokemon-ev09-aventures-ensemble-boite-de-36-boosters-displayfr.jpg",
+      "translations": {
+        "en": {
+          "name": "Pokémon – EV09 Aventures Ensemble – Box of 36 Boosters (Display)(FR)",
+          "desc": "4 in stock: immediate delivery 🚀 6 on pre-order: delivery expected on 06.03.26 📦"
+        },
+        "it": {
+          "name": "Pokémon – EV09 Aventures Ensemble – Box da 36 Buste (Display)(FR)",
+          "desc": "4 disponibili: consegna immediata 🚀 6 in preordine: consegna prevista per il 06.03.26 📦"
+        },
+        "de": {
+          "name": "Pokémon – EV09 Aventures Ensemble – Box mit 36 Boostern (Display)(FR)",
+          "desc": "4 an Lager: sofortige Lieferung 🚀 6 als Vorbestellung: Lieferung voraussichtlich am 06.03.26 📦"
+        }
+      }
+    },
+    {
+      "slug": "pokemon-pikachu-9-pocket-portfolio",
+      "name": "Pokémon – Pikachu 9-Pocket Portfolio",
+      "price": 19.9,
+      "category": "promo-pokemon",
+      "onSale": false,
+      "inStock": false,
+      "desc": "Date de disponibilité prévu: semaine 25",
+      "image": "assets/products/pokemon-pikachu-9-pocket-portfolio.jpg",
+      "translations": {
+        "en": {
+          "name": "Pokémon – Pikachu 9-Pocket Portfolio",
+          "desc": "Expected availability date: week 25"
+        },
+        "it": {
+          "name": "Pokémon – Pikachu 9-Pocket Portfolio",
+          "desc": "Data di disponibilità prevista: settimana 25"
+        },
+        "de": {
+          "name": "Pokémon – Pikachu 9-Pocket Portfolio",
+          "desc": "Voraussichtliches Verfügbarkeitsdatum: Woche 25"
+        }
+      }
+    },
+    {
+      "slug": "halo-master-chief-deluxe-helmet-1-1",
+      "name": "Halo Master Chief Deluxe Helmet 1/1",
+      "price": 149.9,
+      "category": "promo",
+      "onSale": true,
+      "inStock": true,
+      "desc": "",
+      "image": "assets/products/halo-master-chief-deluxe-helmet-1-1.jpg",
+      "translations": {
+        "en": {
+          "name": "Halo Master Chief Deluxe Helmet 1/1",
+          "desc": ""
+        },
+        "it": {
+          "name": "Halo Master Chief Deluxe Helmet 1/1",
+          "desc": ""
+        },
+        "de": {
+          "name": "Halo Master Chief Deluxe Helmet 1/1",
+          "desc": ""
+        }
+      }
+    },
+    {
+      "slug": "hasbro-the-black-series-star-wars-capitaine-cardinal",
+      "name": "Hasbro The Black Series – Star Wars – Capitaine Cardinal",
+      "price": 149.9,
+      "category": "promo",
+      "onSale": true,
+      "inStock": false,
+      "desc": "",
+      "image": "assets/products/hasbro-the-black-series-star-wars-capitaine-cardinal.jpg",
+      "translations": {
+        "en": {
+          "name": "Hasbro The Black Series – Star Wars – Captain Cardinal",
+          "desc": ""
+        },
+        "it": {
+          "name": "Hasbro The Black Series – Star Wars – Capitano Cardinal",
+          "desc": ""
+        },
+        "de": {
+          "name": "Hasbro The Black Series – Star Wars – Captain Cardinal",
+          "desc": ""
+        }
+      }
+    },
+    {
+      "slug": "hasbro-replique-boba-fett-premium-helm",
+      "name": "Hasbro Réplique – Boba Fett – Premium Helm",
+      "price": 149.9,
+      "category": "promo",
+      "onSale": true,
+      "inStock": false,
+      "desc": "",
+      "image": "assets/products/hasbro-replique-boba-fett-premium-helm.jpg",
+      "translations": {
+        "en": {
+          "name": "Hasbro Replica – Boba Fett – Premium Helm",
+          "desc": ""
+        },
+        "it": {
+          "name": "Hasbro Replica – Boba Fett – Premium Helm",
+          "desc": ""
+        },
+        "de": {
+          "name": "Hasbro Replik – Boba Fett – Premium Helm",
+          "desc": ""
+        }
+      }
+    },
+    {
+      "slug": "hasbro-replique-iron-man-mark-85",
+      "name": "Hasbro Réplique – Iron Man – Mark 85",
+      "price": 149.9,
+      "category": "promo",
+      "onSale": true,
+      "inStock": true,
+      "desc": "",
+      "image": "assets/products/hasbro-replique-iron-man-mark-85.jpg",
+      "translations": {
+        "en": {
+          "name": "Hasbro Replica – Iron Man – Mark 85",
+          "desc": ""
+        },
+        "it": {
+          "name": "Hasbro Replica – Iron Man – Mark 85",
+          "desc": ""
+        },
+        "de": {
+          "name": "Hasbro Replik – Iron Man – Mark 85",
+          "desc": ""
+        }
+      }
+    },
+    {
+      "slug": "pop-pop-pokemon-851-dracaufeu",
+      "name": "Pop! POP – Pokemon – 851 – Dracaufeu",
+      "price": 49.9,
+      "category": "pop",
+      "onSale": false,
+      "inStock": true,
+      "desc": "",
+      "image": "assets/products/pop-pop-pokemon-851-dracaufeu.jpg",
+      "translations": {
+        "en": {
+          "name": "Pop! POP – Pokemon – 851 – Dracaufeu",
+          "desc": ""
+        },
+        "it": {
+          "name": "Pop! POP – Pokemon – 851 – Dracaufeu",
+          "desc": ""
+        },
+        "de": {
+          "name": "Pop! POP – Pokemon – 851 – Dracaufeu",
+          "desc": ""
+        }
+      }
+    },
+    {
+      "slug": "banpresto-dragon-ball-z-solid-edge-works-son-gohan",
+      "name": "Banpresto Dragon Ball Z – Solid Edge Works – Son Gohan",
+      "price": 39.9,
+      "category": "promo",
+      "onSale": true,
+      "inStock": true,
+      "desc": "",
+      "image": "assets/products/banpresto-dragon-ball-z-solid-edge-works-son-gohan.jpg",
+      "translations": {
+        "en": {
+          "name": "Banpresto Dragon Ball Z – Solid Edge Works – Son Gohan",
+          "desc": ""
+        },
+        "it": {
+          "name": "Banpresto Dragon Ball Z – Solid Edge Works – Son Gohan",
+          "desc": ""
+        },
+        "de": {
+          "name": "Banpresto Dragon Ball Z – Solid Edge Works – Son Gohan",
+          "desc": ""
+        }
+      }
+    },
+    {
+      "slug": "pokemon-ev08-etincelles-deferlantes-boite-de-36-boosters-2",
+      "name": "Pokémon – EV08 Etincelles Déferlantes – Boîte de 36 Boosters (Display)(FR)",
+      "price": 249.9,
+      "category": "etincelles-deferlantes",
+      "onSale": false,
+      "inStock": false,
+      "desc": "",
+      "image": "assets/products/pokemon-ev08-etincelles-deferlantes-boite-de-36-boosters-2.png",
+      "translations": {
+        "en": {
+          "name": "Pokémon – EV08 Etincelles Déferlantes – Box of 36 Boosters (Display)(FR)",
+          "desc": ""
+        },
+        "it": {
+          "name": "Pokémon – EV08 Etincelles Déferlantes – Box da 36 Buste (Display)(FR)",
+          "desc": ""
+        },
+        "de": {
+          "name": "Pokémon – EV08 Etincelles Déferlantes – Box mit 36 Boostern (Display)(FR)",
+          "desc": ""
+        }
+      }
+    },
+    {
+      "slug": "pokemon-ev08-etincelles-deferlantes-coffret-dresseur-delite",
+      "name": "Pokémon – EV08 Etincelles Déferlantes – Coffret Dresseur d’élite + Acrylic Case",
+      "price": 139.9,
+      "category": "etincelles-deferlantes",
+      "onSale": false,
+      "inStock": false,
+      "desc": "Micro trou en bas à gauche sur le Scellage",
+      "image": "assets/products/pokemon-ev08-etincelles-deferlantes-coffret-dresseur-delite.jpg",
+      "translations": {
+        "en": {
+          "name": "Pokémon – EV08 Etincelles Déferlantes – Elite Trainer Box + Acrylic Case",
+          "desc": "Micro hole at the bottom left on the sealing"
+        },
+        "it": {
+          "name": "Pokémon – EV08 Etincelles Déferlantes – Elite Trainer Box + Acrylic Case",
+          "desc": "Micro foro in basso a sinistra sulla sigillatura"
+        },
+        "de": {
+          "name": "Pokémon – EV08 Etincelles Déferlantes – Top-Trainer-Box + Acrylic Case",
+          "desc": "Mikroloch unten links auf der Versiegelung"
+        }
+      }
+    },
+    {
+      "slug": "pokemon-ev07-couronne-stellaire-boite-de-36-boosters-displayfr",
+      "name": "Pokémon – EV07 Couronne Stellaire – Boîte de 36 Boosters (Display)(FR)",
+      "price": 249.9,
+      "category": "couronne-stellaire",
+      "onSale": false,
+      "inStock": true,
+      "desc": "",
+      "image": "assets/products/pokemon-ev07-couronne-stellaire-boite-de-36-boosters-displayfr.jpeg",
+      "translations": {
+        "en": {
+          "name": "Pokémon – EV07 Couronne Stellaire – Box of 36 Boosters (Display)(FR)",
+          "desc": ""
+        },
+        "it": {
+          "name": "Pokémon – EV07 Couronne Stellaire – Box da 36 Buste (Display)(FR)",
+          "desc": ""
+        },
+        "de": {
+          "name": "Pokémon – EV07 Couronne Stellaire – Box mit 36 Boostern (Display)(FR)",
+          "desc": ""
+        }
+      }
+    },
+    {
+      "slug": "hasbro-the-black-series-the-mandalorian-helm",
+      "name": "Hasbro The Black Series: The Mandalorian Helm",
+      "price": 149.9,
+      "category": "figurine-pvc-resine",
+      "onSale": true,
+      "inStock": false,
+      "desc": "",
+      "image": "assets/products/hasbro-the-black-series-the-mandalorian-helm.png",
+      "translations": {
+        "en": {
+          "name": "Hasbro The Black Series: The Mandalorian Helm",
+          "desc": ""
+        },
+        "it": {
+          "name": "Hasbro The Black Series: The Mandalorian Helm",
+          "desc": ""
+        },
+        "de": {
+          "name": "Hasbro The Black Series: The Mandalorian Helm",
+          "desc": ""
+        }
+      }
+    },
+    {
+      "slug": "leia-on-speeder-bike-star-wars-228",
+      "name": "Luke Skywalker with speeder bike – STAR WARS (229) – Chase",
+      "price": 29.9,
+      "category": "pop",
+      "onSale": true,
+      "inStock": true,
+      "desc": "",
+      "image": "assets/products/leia-on-speeder-bike-star-wars-228.png",
+      "translations": {
+        "en": {
+          "name": "Luke Skywalker with speeder bike – STAR WARS (229) – Chase",
+          "desc": ""
+        },
+        "it": {
+          "name": "Luke Skywalker with speeder bike – STAR WARS (229) – Chase",
+          "desc": ""
+        },
+        "de": {
+          "name": "Luke Skywalker with speeder bike – STAR WARS (229) – Chase",
+          "desc": ""
+        }
+      }
+    }
+  ]
+}

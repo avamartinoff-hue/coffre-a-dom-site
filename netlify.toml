@@ -1,0 +1,60 @@
+# Configuration Netlify — Coffre à Dom
+# Le site est généré par un mini-SSG maison (build.mjs) dans /dist.
+
+[build]
+  command = "node build.mjs"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "20"
+  # Clés publiques Supabase (sans risque : protégées par RLS)
+  SUPABASE_URL = "https://bjdmeeqzzfxroicxrsna.supabase.co"
+  SUPABASE_PUBLISHABLE_KEY = "sb_publishable_Niou6fd3VZH_qGTAJRjBeQ_u_Zm8q-z"
+  TWINT_PHONE = "+41 78 941 85 38"
+  # Les SECRETS (SUPABASE_SECRET_KEY, ADMIN_PASSWORD) se définissent dans
+  # Netlify → Site configuration → Environment variables (jamais dans ce fichier).
+
+# Fonctions serverless (ex. inscription newsletter Brevo)
+[functions]
+  directory = "netlify/functions"
+
+# ---------- En-têtes ----------
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "SAMEORIGIN"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "geolocation=(), microphone=(), camera=()"
+
+[[headers]]
+  for = "/styles.css"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/*.js"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# ---------- Redirections des anciennes URL WordPress (SEO) ----------
+[[redirects]]
+  from = "/accueil"
+  to = "/"
+  status = 301
+[[redirects]]
+  from = "/contact-2/"
+  to = "/contact/"
+  status = 301
+[[redirects]]
+  from = "/panier-2/"
+  to = "/panier/"
+  status = 301
+[[redirects]]
+  from = "/paiement/"
+  to = "/commander/"
+  status = 301
+[[redirects]]
+  from = "/espace-gaming_immersif/"
+  to = "/espace-gaming-immersif/"
+  status = 301

@@ -1,0 +1,58 @@
+<section class="section section--page">
+  <div class="container container--narrow">
+    <nav class="crumb" aria-label="Brotkrümelnavigation"><a href="/">Startseite</a><span class="crumb__sep">/</span><a href="/panier/">Warenkorb</a><span class="crumb__sep">/</span><span>Bestellen</span></nav>
+    <header class="page-hero page-hero--left">
+      <span class="page-hero__icon">📦</span>
+      <h1>Meine Bestellung abschliessen</h1>
+      <p>Prüfen Sie Ihren Warenkorb, wählen Sie die Zahlung und bestätigen Sie. Abholung in Le Bouveret oder Postversand.</p>
+    </header>
+
+    <div class="order-summary" data-order-summary></div>
+
+    <div data-checkout-confirm hidden></div>
+
+    <form class="form" id="checkoutForm" novalidate data-checkout-form>
+      <div class="form__row">
+        <label class="field"><span>Vollständiger Name</span><input type="text" name="nom" required /></label>
+        <label class="field"><span>E-Mail</span><input type="email" name="email" required /></label>
+      </div>
+      <div class="form__row">
+        <label class="field"><span>Telefon</span><input type="tel" name="telephone" /></label>
+        <label class="field"><span>Abholung oder Lieferung?</span>
+          <select name="mode" data-mode>
+            <option value="retrait">Abholung im Shop (Le Bouveret)</option>
+            <option value="poste">Postversand (Schweiz)</option>
+          </select>
+        </label>
+      </div>
+      <div class="addr-fields" data-address-field hidden>
+        <span class="addr-fields__title">Lieferadresse (nur Schweiz)</span>
+        <div class="addr-row addr-row--street">
+          <label class="field"><span>Strasse</span><input type="text" name="rue" autocomplete="address-line1" placeholder="Route des Îles" /></label>
+          <label class="field"><span>Nr.</span><input type="text" name="numero" autocomplete="address-line2" placeholder="84" /></label>
+        </div>
+        <div class="addr-row addr-row--city">
+          <label class="field"><span>PLZ</span><input type="text" name="npa" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" autocomplete="postal-code" placeholder="1897" /></label>
+          <label class="field"><span>Ort</span><input type="text" name="localite" autocomplete="address-level2" placeholder="Le Bouveret" /></label>
+        </div>
+      </div>
+      <label class="field"><span>Bemerkung</span><textarea name="remarque" rows="2" placeholder="Eine Anmerkung zu Ihrer Bestellung?"></textarea></label>
+
+      <fieldset class="pay-methods">
+        <legend>Zahlungsart</legend>
+        <label class="pay-opt">
+          <input type="radio" name="method" value="twint" checked />
+          <span class="pay-opt__body"><b>📱 TWINT</b><small>Mobile Zahlung — Anweisungen nach der Bestätigung</small></span>
+        </label>
+        <label class="pay-opt pay-opt--soon">
+          <input type="radio" name="method" value="sumup" disabled />
+          <span class="pay-opt__body"><b>💳 Kreditkarte (SumUp)</b><small>Bald verfügbar</small></span>
+        </label>
+      </fieldset>
+
+      <p class="form__msg" data-checkout-msg role="status" aria-live="polite"></p>
+      <button type="submit" class="btn btn--gold btn--full" data-checkout-submit>Meine Bestellung bestätigen 🗝️</button>
+      <p class="form__legal">Mit der Bestätigung akzeptieren Sie unsere <a href="/conditions-generales-de-vente/">allgemeinen Geschäftsbedingungen</a>. Die TWINT-Zahlung erfolgt nach Erhalt der Anweisungen; wir bestätigen Ihre Bestellung, sobald wir sie erhalten haben.</p>
+    </form>
+  </div>
+</section>

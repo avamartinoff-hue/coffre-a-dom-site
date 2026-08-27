@@ -1,0 +1,506 @@
+{
+ "151": {
+  "en": {
+   "name": "EV03.5 151",
+   "desc": ""
+  },
+  "it": {
+   "name": "EV03.5 151",
+   "desc": ""
+  },
+  "de": {
+   "name": "EV03.5 151",
+   "desc": ""
+  }
+ },
+ "30-anniversaire": {
+  "en": {
+   "name": "30th Anniversary",
+   "desc": ""
+  },
+  "it": {
+   "name": "30° Anniversario",
+   "desc": ""
+  },
+  "de": {
+   "name": "30. Jubiläum",
+   "desc": ""
+  }
+ },
+ "booster-en-loose": {
+  "en": {
+   "name": "Loose Boosters",
+   "desc": ""
+  },
+  "it": {
+   "name": "Bustine sciolte",
+   "desc": ""
+  },
+  "de": {
+   "name": "Lose Booster",
+   "desc": ""
+  }
+ },
+ "cartes-en": {
+  "en": {
+   "name": "EN Cards",
+   "desc": ""
+  },
+  "it": {
+   "name": "Carte EN",
+   "desc": ""
+  },
+  "de": {
+   "name": "EN-Karten",
+   "desc": ""
+  }
+ },
+ "cartes-fr": {
+  "en": {
+   "name": "FR Cards",
+   "desc": ""
+  },
+  "it": {
+   "name": "Carte FR",
+   "desc": ""
+  },
+  "de": {
+   "name": "FR-Karten",
+   "desc": ""
+  }
+ },
+ "carte-jap": {
+  "en": {
+   "name": "JP Cards",
+   "desc": ""
+  },
+  "it": {
+   "name": "Carte JP",
+   "desc": ""
+  },
+  "de": {
+   "name": "JP-Karten",
+   "desc": ""
+  }
+ },
+ "dragon-ball-anglais": {
+  "en": {
+   "name": "Dragon Ball – English",
+   "desc": ""
+  },
+  "it": {
+   "name": "Dragon Ball – Inglese",
+   "desc": ""
+  },
+  "de": {
+   "name": "Dragon Ball – Englisch",
+   "desc": ""
+  }
+ },
+ "epee-bouclier": {
+  "en": {
+   "name": "Sword & Shield",
+   "desc": ""
+  },
+  "it": {
+   "name": "Spada e Scudo",
+   "desc": ""
+  },
+  "de": {
+   "name": "Schwert & Schild",
+   "desc": ""
+  }
+ },
+ "flammes-obsidiennes": {
+  "en": {
+   "name": "EV03 Flammes Obsidiennes",
+   "desc": ""
+  },
+  "it": {
+   "name": "EV03 Flammes Obsidiennes",
+   "desc": ""
+  },
+  "de": {
+   "name": "EV03 Flammes Obsidiennes",
+   "desc": ""
+  }
+ },
+ "couronne-stellaire": {
+  "en": {
+   "name": "EV07 Couronne stellaire",
+   "desc": ""
+  },
+  "it": {
+   "name": "EV07 Couronne stellaire",
+   "desc": ""
+  },
+  "de": {
+   "name": "EV07 Couronne stellaire",
+   "desc": ""
+  }
+ },
+ "etincelles-deferlantes": {
+  "en": {
+   "name": "Ev08 Etincelles déferlantes",
+   "desc": ""
+  },
+  "it": {
+   "name": "Ev08 Etincelles déferlantes",
+   "desc": ""
+  },
+  "de": {
+   "name": "Ev08 Etincelles déferlantes",
+   "desc": ""
+  }
+ },
+ "evolutions-prismatiques": {
+  "en": {
+   "name": "EV08.5 Évolutions Prismatiques",
+   "desc": ""
+  },
+  "it": {
+   "name": "EV08.5 Évolutions Prismatiques",
+   "desc": ""
+  },
+  "de": {
+   "name": "EV08.5 Évolutions Prismatiques",
+   "desc": ""
+  }
+ },
+ "aventures-ensemble": {
+  "en": {
+   "name": "EV09 Aventures Ensemble",
+   "desc": ""
+  },
+  "it": {
+   "name": "EV09 Aventures Ensemble",
+   "desc": ""
+  },
+  "de": {
+   "name": "EV09 Aventures Ensemble",
+   "desc": ""
+  }
+ },
+ "rivaux-predestines": {
+  "en": {
+   "name": "EV10 Rivalités Destinées",
+   "desc": ""
+  },
+  "it": {
+   "name": "EV10 Rivalités Destinées",
+   "desc": ""
+  },
+  "de": {
+   "name": "EV10 Rivalités Destinées",
+   "desc": ""
+  }
+ },
+ "foudre-noire-flamme-blanche": {
+  "en": {
+   "name": "EV10.5 Foudre Noire & Flamme Blanche",
+   "desc": ""
+  },
+  "it": {
+   "name": "EV10.5 Foudre Noire & Flamme Blanche",
+   "desc": ""
+  },
+  "de": {
+   "name": "EV10.5 Foudre Noire & Flamme Blanche",
+   "desc": ""
+  }
+ },
+ "pop": {
+  "en": {
+   "name": "Funko Pop",
+   "desc": "Collectible Funko POP figures."
+  },
+  "it": {
+   "name": "Funko Pop",
+   "desc": "Figure Funko POP da collezione."
+  },
+  "de": {
+   "name": "Funko Pop",
+   "desc": "Funko POP Sammelfiguren."
+  }
+ },
+ "coffret-cadeau": {
+  "en": {
+   "name": "Gift Ideas",
+   "desc": "Gift ideas ready to give."
+  },
+  "it": {
+   "name": "Idee regalo",
+   "desc": "Idee regalo pronte da regalare."
+  },
+  "de": {
+   "name": "Geschenkideen",
+   "desc": "Geschenkideen, bereit zum Verschenken."
+  }
+ },
+ "jeu-de-cartes-a-collectionner": {
+  "en": {
+   "name": "Trading Card Games",
+   "desc": "Pokémon, Magic, One Piece, Dragon Ball, Naruto… singles, boosters or sealed."
+  },
+  "it": {
+   "name": "Giochi di carte collezionabili",
+   "desc": "Pokémon, Magic, One Piece, Dragon Ball, Naruto… singole, in bustina o sigillate."
+  },
+  "de": {
+   "name": "Sammelkartenspiele",
+   "desc": "Pokémon, Magic, One Piece, Dragon Ball, Naruto… einzeln, als Booster oder versiegelt."
+  }
+ },
+ "magic-the-gathering": {
+  "en": {
+   "name": "Magic The Gathering",
+   "desc": ""
+  },
+  "it": {
+   "name": "Magic The Gathering",
+   "desc": ""
+  },
+  "de": {
+   "name": "Magic The Gathering",
+   "desc": ""
+  }
+ },
+ "me01-mega-evolution": {
+  "en": {
+   "name": "ME01 Mega Evolution",
+   "desc": ""
+  },
+  "it": {
+   "name": "ME01 Mega Evolution",
+   "desc": ""
+  },
+  "de": {
+   "name": "ME01 Mega Evolution",
+   "desc": ""
+  }
+ },
+ "me02-flammes-fantasmagoriques": {
+  "en": {
+   "name": "ME02 Flammes Fantasmagoriques",
+   "desc": ""
+  },
+  "it": {
+   "name": "ME02 Flammes Fantasmagoriques",
+   "desc": ""
+  },
+  "de": {
+   "name": "ME02 Flammes Fantasmagoriques",
+   "desc": ""
+  }
+ },
+ "me2-5-heros-transcendants": {
+  "en": {
+   "name": "ME02.5 Héros Transcendants",
+   "desc": ""
+  },
+  "it": {
+   "name": "ME02.5 Héros Transcendants",
+   "desc": ""
+  },
+  "de": {
+   "name": "ME02.5 Héros Transcendants",
+   "desc": ""
+  }
+ },
+ "me03-equilibre-parfait": {
+  "en": {
+   "name": "ME03 Equilibre Parfait",
+   "desc": ""
+  },
+  "it": {
+   "name": "ME03 Equilibre Parfait",
+   "desc": ""
+  },
+  "de": {
+   "name": "ME03 Equilibre Parfait",
+   "desc": ""
+  }
+ },
+ "me04-chaos-rising": {
+  "en": {
+   "name": "ME04 Chaos Ascendant",
+   "desc": ""
+  },
+  "it": {
+   "name": "ME04 Chaos Ascendant",
+   "desc": ""
+  },
+  "de": {
+   "name": "ME04 Chaos Ascendant",
+   "desc": ""
+  }
+ },
+ "me05-abyss-eye": {
+  "en": {
+   "name": "ME05 Nuit Noire",
+   "desc": ""
+  },
+  "it": {
+   "name": "ME05 Nuit Noire",
+   "desc": ""
+  },
+  "de": {
+   "name": "ME05 Nuit Noire",
+   "desc": ""
+  }
+ },
+ "naruto-mythos": {
+  "en": {
+   "name": "Naruto Mythos",
+   "desc": ""
+  },
+  "it": {
+   "name": "Naruto Mythos",
+   "desc": ""
+  },
+  "de": {
+   "name": "Naruto Mythos",
+   "desc": ""
+  }
+ },
+ "one-piece": {
+  "en": {
+   "name": "One piece – FR & EN & Jap",
+   "desc": ""
+  },
+  "it": {
+   "name": "One piece – FR & EN & Jap",
+   "desc": ""
+  },
+  "de": {
+   "name": "One piece – FR & EN & Jap",
+   "desc": ""
+  }
+ },
+ "carte": {
+  "en": {
+   "name": "Pokémon – Cards",
+   "desc": ""
+  },
+  "it": {
+   "name": "Pokémon – Carte",
+   "desc": ""
+  },
+  "de": {
+   "name": "Pokémon – Karten",
+   "desc": ""
+  }
+ },
+ "collection-coffrets": {
+  "en": {
+   "name": "Pokémon – Boxes & Collections",
+   "desc": ""
+  },
+  "it": {
+   "name": "Pokémon – Box e collezioni",
+   "desc": ""
+  },
+  "de": {
+   "name": "Pokémon – Boxen & Kollektionen",
+   "desc": ""
+  }
+ },
+ "pokemon-cartes": {
+  "en": {
+   "name": "Pokémon – Cards",
+   "desc": ""
+  },
+  "it": {
+   "name": "Pokémon – Carte",
+   "desc": ""
+  },
+  "de": {
+   "name": "Pokémon – Karten",
+   "desc": ""
+  }
+ },
+ "pokemon-japonais": {
+  "en": {
+   "name": "Pokémon – Japanese",
+   "desc": ""
+  },
+  "it": {
+   "name": "Pokémon – Giapponese",
+   "desc": ""
+  },
+  "de": {
+   "name": "Pokémon – Japanisch",
+   "desc": ""
+  }
+ },
+ "promo": {
+  "en": {
+   "name": "Deals",
+   "desc": "Current deals and slashed prices."
+  },
+  "it": {
+   "name": "Offerte",
+   "desc": "Offerte del momento e prezzi stracciati."
+  },
+  "de": {
+   "name": "Angebote",
+   "desc": "Aktuelle Angebote und Tiefstpreise."
+  }
+ },
+ "promo-pokemon": {
+  "en": {
+   "name": "Pokémon Deals",
+   "desc": ""
+  },
+  "it": {
+   "name": "Offerte Pokémon",
+   "desc": ""
+  },
+  "de": {
+   "name": "Pokémon-Angebote",
+   "desc": ""
+  }
+ },
+ "protections": {
+  "en": {
+   "name": "Sleeves & Protection",
+   "desc": ""
+  },
+  "it": {
+   "name": "Protezioni",
+   "desc": ""
+  },
+  "de": {
+   "name": "Schutzhüllen",
+   "desc": ""
+  }
+ },
+ "figurine-pvc-resine": {
+  "en": {
+   "name": "Replicas · PVC · Resin",
+   "desc": "Replicas, PVC and resin figures, from collector's items to display pieces."
+  },
+  "it": {
+   "name": "Repliche · PVC · Resina",
+   "desc": "Repliche, figure in PVC e resina, dal pezzo da collezione all'esposizione."
+  },
+  "de": {
+   "name": "Repliken · PVC · Resin",
+   "desc": "Repliken, PVC- und Resin-Figuren, vom Sammlerstück bis zum Ausstellungsstück."
+  }
+ },
+ "vip": {
+  "en": {
+   "name": "VIP",
+   "desc": "Perks and rewards reserved for Coffre members."
+  },
+  "it": {
+   "name": "VIP",
+   "desc": "Vantaggi e premi riservati ai membri del Coffre."
+  },
+  "de": {
+   "name": "VIP",
+   "desc": "Vorteile und Belohnungen exklusiv für Coffre-Mitglieder."
+  }
+ }
+}

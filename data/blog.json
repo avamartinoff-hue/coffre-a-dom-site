@@ -1,0 +1,92 @@
+{
+  "categories": [
+    {
+      "slug": "cartes-collection",
+      "name": "Cartes & collection"
+    },
+    {
+      "slug": "gaming",
+      "name": "Gaming"
+    },
+    {
+      "slug": "culture-geek",
+      "name": "Culture geek"
+    }
+  ],
+  "authors": [
+    {
+      "slug": "dom",
+      "name": "Dom",
+      "role": "Fondateur & Dernier Gardien",
+      "bio": "Né dans les années 90, biberonné aux jeux vidéo et aux cartes Pokémon. Dom veille sur le Coffre et sa communauté."
+    },
+    {
+      "slug": "equipe-coffre",
+      "name": "L'équipe du Coffre",
+      "role": "Rédaction",
+      "bio": "Les passionné·e·s qui font vivre le Coffre à Dom au quotidien."
+    }
+  ],
+  "posts": [
+    {
+      "slug": "guide-debuter-collection-pokemon",
+      "title": "Débuter sa collection Pokémon sans se ruiner",
+      "category": "cartes-collection",
+      "author": "dom",
+      "date": "2026-08-12",
+      "excerpt": "Boosters en loose, cartes à l'unité, sets à viser en premier : notre guide pour bien démarrer.",
+      "cover": "🃏",
+      "cover_img": "assets/brand/joueurscarte.png"
+    },
+    {
+      "slug": "scelle-vs-loose-que-choisir",
+      "title": "Scellé ou loose : que choisir pour investir ?",
+      "category": "cartes-collection",
+      "author": "equipe-coffre",
+      "date": "2026-08-05",
+      "excerpt": "On compare l'achat de produits scellés et de boosters en loose, avantages et pièges.",
+      "cover": "📦",
+      "cover_img": "assets/venue/venue-3121.jpg"
+    },
+    {
+      "slug": "top-jeux-coop-canape",
+      "title": "Top 5 des jeux coop à tester au Coffre",
+      "category": "gaming",
+      "author": "equipe-coffre",
+      "date": "2026-07-28",
+      "excerpt": "PS5 ou Switch, voici nos cinq incontournables à jouer à deux sur le canapé du Coffre.",
+      "cover": "🎮",
+      "cover_img": "assets/venue/venue-3170.jpg"
+    },
+    {
+      "slug": "retrogaming-pourquoi-ca-cartonne",
+      "title": "Rétro-gaming : pourquoi ça cartonne encore",
+      "category": "gaming",
+      "author": "dom",
+      "date": "2026-07-15",
+      "excerpt": "La nostalgie a du bon : petit tour d'horizon de la vague rétro qui ne faiblit pas.",
+      "cover": "🕹️",
+      "cover_img": "assets/venue/venue-3150.jpg"
+    },
+    {
+      "slug": "organiser-anniversaire-geek",
+      "title": "Organiser un anniversaire geek mémorable",
+      "category": "culture-geek",
+      "author": "equipe-coffre",
+      "date": "2026-07-02",
+      "excerpt": "Privatisation, tournois, coffres mystères : la recette d'un anniversaire dont on reparle.",
+      "cover": "🎉",
+      "cover_img": "assets/venue/venue-3164.jpg"
+    },
+    {
+      "slug": "coffres-mysteres-comment-ca-marche",
+      "title": "Coffres mystères : comment ça marche vraiment",
+      "category": "culture-geek",
+      "author": "dom",
+      "date": "2026-06-20",
+      "excerpt": "On vous explique le système de tickets et comment maximiser vos chances au Coffre.",
+      "cover": "🗝️",
+      "cover_img": "assets/brand/FIN-03.png"
+    }
+  ]
+}

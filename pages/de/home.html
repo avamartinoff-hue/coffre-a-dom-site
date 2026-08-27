@@ -1,0 +1,193 @@
+<!-- ===================== HERO ===================== -->
+<section class="hero" id="accueil">
+  <div class="hero__glow" aria-hidden="true"></div>
+  <div class="hero__grid" aria-hidden="true"></div>
+
+  <div class="hero__inner hero--split">
+    <div class="hero__text">
+      <p class="eyebrow reveal">Shop &amp; lebendiger Treffpunkt — Le Bouveret 🇨🇭</p>
+      <h1 class="hero__title reveal">
+        Der Coffre ist offen,<br />
+        <span class="grad">das Abenteuer ruft dich&nbsp;!</span>
+      </h1>
+      <p class="hero__sub reveal">
+        Ein verspielter &amp; nostalgischer Rückzugsort, wo man seine Pokémon-Karten holt,
+        eine Konsole herausfordert, eine Mystery-Truhe öffnet und vor allem&nbsp;: zusammenkommt.
+      </p>
+      <div class="hero__actions reveal">
+        <a href="/boutique/" class="btn btn--gold">Shop entdecken 🃏</a>
+        <a href="/espace-gaming-immersif/" class="btn btn--ghost">Session reservieren ⚔️</a>
+      </div>
+      <div class="hero__stats reveal">
+        <div class="stat"><span class="stat__num">{{PRODUCT_COUNT}}</span><span class="stat__label">Schätze im Shop</span></div>
+        <div class="stat"><span class="stat__num">4</span><span class="stat__label">Säulen des Coffre</span></div>
+        <div class="stat"><span class="stat__num">∞</span><span class="stat__label">Partien zu spielen</span></div>
+      </div>
+    </div>
+    <div class="hero__art reveal">
+      <img src="/assets/brand/AA-02.png" alt="Ein Abenteurer vor der untergehenden Sonne — die Welt von Coffre à Dom" />
+    </div>
+  </div>
+
+  <a href="#univers" class="hero__scroll" aria-label="Nach unten scrollen"><span></span></a>
+</section>
+
+<!-- ===================== MARQUEE ===================== -->
+<div class="marquee" aria-hidden="true">
+  <div class="marquee__track">
+    <span>POKÉMON-KARTEN ✦ VERSIEGELTE BOXEN ✦ GAMING-BEREICH ✦ PS5 ✦ NINTENDO SWITCH ✦ MYSTERY-TRUHEN ✦ VIP-PROGRAMM ✦ PRIVATANLÄSSE ✦ VINTAGE &amp; GEEK ✦&nbsp;</span>
+    <span>POKÉMON-KARTEN ✦ VERSIEGELTE BOXEN ✦ GAMING-BEREICH ✦ PS5 ✦ NINTENDO SWITCH ✦ MYSTERY-TRUHEN ✦ VIP-PROGRAMM ✦ PRIVATANLÄSSE ✦ VINTAGE &amp; GEEK ✦&nbsp;</span>
+  </div>
+</div>
+
+<!-- ===================== PILIERS ===================== -->
+<section class="section" id="univers">
+  <div class="container">
+    <header class="section__head reveal">
+      <p class="kicker">Die Welt</p>
+      <h2>Vier Säulen, ein Rückzugsort</h2>
+      <p class="section__lead">
+        Coffre à Dom ist nicht nur ein Shop&nbsp;: Es ist eine Festung des Spiels und der Gemeinschaft,
+        bewacht von einem Enthusiasten, der den Zauber des Zusammenkommens nicht erlöschen lassen will.
+      </p>
+    </header>
+    <div class="pillars">
+      <a class="pillar reveal" href="/boutique/"><div class="pillar__icon">🃏</div><h3>Der Shop</h3><p>Einzelne Pokémon-Karten, versiegelte Boxen, Geek- &amp; Vintage-Schätze zum Aufstöbern.</p></a>
+      <a class="pillar reveal" href="/espace-gaming-immersif/"><div class="pillar__icon">🎮</div><h3>Der Gaming-Bereich</h3><p>PS5, Nintendo Switch, HD-Bildschirme und Simulatoren&nbsp;: komm spielen, komm herausfordern.</p></a>
+      <a class="pillar reveal" href="/#coffres"><div class="pillar__icon">🗝️</div><h3>Die Mystery-Truhen</h3><p>Ein Ticketsystem, das deine Einkäufe und gemeisterten Herausforderungen belohnt.</p></a>
+      <a class="pillar reveal" href="/blog-geek/"><div class="pillar__icon">🏆</div><h3>Die Community</h3><p>Turniere, Events und Begegnungen&nbsp;: Hier heisst spielen zusammenkommen.</p></a>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== BOUTIQUE : CATÉGORIES ===================== -->
+<section class="section section--alt" id="boutique">
+  <div class="container">
+    <header class="section__head reveal">
+      <p class="kicker">Der Shop</p>
+      <h2>Schätze zum Sammeln</h2>
+      <p class="section__lead">Einzelkarten, versiegelte Boxen, Figuren und Schutzhüllen&nbsp;: Entdecke die Welten des Coffre.</p>
+    </header>
+    <div class="ccard-grid reveal">{{CATEGORY_GRID}}</div>
+
+    <header class="section__head section__head--sm reveal" style="margin-top:64px">
+      <h2>Aktuelle Favoriten</h2>
+    </header>
+    <div class="pgrid reveal">{{FEATURED_PRODUCTS}}</div>
+    <div class="center reveal"><a href="/boutique/" class="btn btn--ghost">Zum ganzen Shop →</a></div>
+  </div>
+</section>
+
+<!-- ===================== GAMING ===================== -->
+<section class="section" id="gaming">
+  <div class="container">
+    <header class="section__head reveal">
+      <p class="kicker">Der Gaming-Bereich</p>
+      <h2>Wähle deine Formel, nimm die Herausforderung an</h2>
+      <p class="section__lead">PS5, Nintendo Switch und HD-Bildschirme warten auf dich. Unter der Woche auf Reservierung, am Wochenende mit freiem Zugang.</p>
+    </header>
+    <div class="plans">
+      <article class="plan reveal">
+        <p class="plan__tag" data-arcade>Solo-Challenge</p>
+        <p class="plan__price">2<span>CHF</span></p><p class="plan__time">2 bis 10 Min</p>
+        <ul class="plan__feat"><li>Eine Challenge nach Wahl</li><li>Schnell &amp; knackig</li><li>Bonus-Ticket bei Erfolg 🎟️</li></ul>
+        <a href="/contact/" class="btn btn--ghost btn--sm">Ich nehme die Challenge an</a>
+      </article>
+      <article class="plan plan--featured reveal">
+        <span class="plan__flag">Am beliebtesten</span>
+        <p class="plan__tag" data-arcade>Chill-Session</p>
+        <p class="plan__price">10<span>CHF</span></p><p class="plan__time">30 Min</p>
+        <ul class="plan__feat"><li>Freies Spiel in deinem Tempo</li><li>Deine Konsole nach Wahl</li><li>Ein Getränk gratis 🥤</li></ul>
+        <a href="/contact/" class="btn btn--gold btn--sm">Meine Session reservieren</a>
+      </article>
+      <article class="plan reveal">
+        <p class="plan__tag" data-arcade>Boss-Session</p>
+        <p class="plan__price">15<span>CHF</span></p><p class="plan__time">60 Min</p>
+        <ul class="plan__feat"><li>Volles Eintauchen</li><li>Snack inklusive 🍿</li><li>Getränk inklusive 🥤</li></ul>
+        <a href="/contact/" class="btn btn--ghost btn--sm">In den Boss-Modus wechseln</a>
+      </article>
+    </div>
+    <p class="plans__note reveal">🎮 <a href="/espace-gaming-immersif/">Den ganzen Gaming-Bereich entdecken</a> · Sa. 18–22 Uhr · So. 14–18 Uhr</p>
+  </div>
+</section>
+
+<!-- ===================== COFFRES MYSTÈRES ===================== -->
+<section class="section section--alt" id="coffres">
+  <div class="container split">
+    <div class="split__text reveal">
+      <p class="kicker">Mystery-Truhen</p>
+      <h2>Jeder Einkauf, jede Challenge bringt dich dem Schatz näher</h2>
+      <p>Bei jedem Einkauf und jeder gemeisterten Challenge gewinnst du Tickets. Sammle sie und öffne eine <strong>Mystery-Truhe</strong>, um mit der Belohnung nach Hause zu gehen, die sich darin verbirgt.</p>
+      <ul class="ticks">
+        <li>Gewinne Tickets mit deinen Einkäufen im Shop</li>
+        <li>Meistere Gaming-Challenges, um mehr davon zu sammeln</li>
+        <li>Tausche deine Tickets gegen die Öffnung einer Truhe</li>
+      </ul>
+      <a href="/contact/" class="btn btn--gold">Ich will meine Tickets 🎟️</a>
+    </div>
+    <div class="split__visual reveal">
+      <div class="illus"><img src="/assets/brand/joueurscarte.png" alt="Zwei Kartenspieler im Coffre à Dom vereint" loading="lazy" /></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== VIP + PRIVATISATION ===================== -->
+<section class="section" id="vip">
+  <div class="container">
+    <div class="duo">
+      <article class="feature reveal">
+        <p class="feature__tag" data-arcade>VIP-Programm</p>
+        <h3>Tritt dem Kreis der Eingeweihten bei</h3>
+        <p>Ein exklusives Abo mit Vorteilen jeden Monat&nbsp;: privilegierter Zugang, Belohnungen und Überraschungen nur für Mitglieder des Coffre.</p>
+        <a href="/boutique/vip/" class="link-arrow">VIP werden <span>→</span></a>
+      </article>
+      <article class="feature reveal">
+        <p class="feature__tag" data-arcade>Privatanlässe</p>
+        <h3>Der Coffre nur für euch</h3>
+        <p>Geburtstage, Teambuildings, Abende mit Freunden oder Firmenevents&nbsp;: Miete den Ort für ein massgeschneidertes Spielerlebnis.</p>
+        <a href="/privatisation-evenement-particulier/" class="link-arrow">Offerte anfragen <span>→</span></a>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== ÉVÉNEMENTS ===================== -->
+<section class="section section--alt" id="evenements">
+  <div class="container">
+    <header class="section__head reveal">
+      <p class="kicker">Agenda</p>
+      <h2>Die nächsten Termine</h2>
+    </header>
+    <div class="egrid reveal">{{EVENT_LIST}}</div>
+  </div>
+</section>
+
+<!-- ===================== BLOG ===================== -->
+<section class="section" id="blog">
+  <div class="container">
+    <header class="section__head reveal">
+      <p class="kicker">Geek-Blog</p>
+      <h2>Lesestoff aus dem Coffre</h2>
+    </header>
+    <div class="bgrid reveal">{{POST_LIST}}</div>
+    <div class="center reveal"><a href="/blog-geek/" class="btn btn--ghost">Zum ganzen Blog →</a></div>
+  </div>
+</section>
+
+<!-- ===================== INFOS / CTA ===================== -->
+<section class="section section--alt" id="infos">
+  <div class="container">
+    <header class="section__head reveal">
+      <p class="kicker">So findest du uns</p>
+      <h2>Der Rückzugsort erwartet dich</h2>
+    </header>
+    <div class="infos">
+      <div class="info-card reveal"><div class="info-card__icon">📍</div><h3>Adresse</h3><p>Route des Îles 84<br />1897 Le Bouveret, Schweiz</p><a class="link-arrow" href="https://maps.google.com/?q=Route+des+Îles+84+1897+Bouveret" target="_blank" rel="noopener">In Maps öffnen <span>→</span></a></div>
+      <div class="info-card reveal"><div class="info-card__icon">🕑</div><h3>Öffnungszeiten</h3><ul class="hours"><li><span>Woche</span><b>Auf Reservierung</b></li><li><span>Samstag</span><b>18 – 22 Uhr</b></li><li><span>Sonntag</span><b>14 – 18 Uhr</b></li></ul></div>
+      <div class="info-card reveal"><div class="info-card__icon">🎟️</div><h3>Lust vorbeizukommen&nbsp;?</h3><p>Reserviere deine Session, miete den Ort oder stelle deine Frage.</p><a class="btn btn--gold btn--sm" href="/contact/">Kontaktiere uns</a></div>
+    </div>
+    <div class="map reveal">
+      <iframe title="Karte — Coffre à Dom, Le Bouveret" src="https://www.openstreetmap.org/export/embed.html?bbox=6.83%2C46.38%2C6.87%2C46.40&layer=mapnik&marker=46.3905%2C6.855" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+    </div>
+  </div>
+</section>

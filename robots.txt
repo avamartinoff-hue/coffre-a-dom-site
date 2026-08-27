@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Disallow: /admin/
+
+# Fichier pour les IA / moteurs conversationnels
+# LLM-Content: https://coffreadom.ch/llms.txt
+
+Sitemap: https://coffreadom.ch/sitemap.xml

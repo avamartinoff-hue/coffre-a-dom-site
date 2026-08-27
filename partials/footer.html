@@ -1,0 +1,61 @@
+<footer class="footer">
+  <!-- Newsletter (Brevo) -->
+  <div class="container footer__news">
+    <div class="footer__news-text">
+      <h3>{{t:foot.news_title}}</h3>
+      <p>{{t:foot.news_txt}}</p>
+    </div>
+    <form class="news-form" id="newsForm" novalidate>
+      <label class="hidden" for="newsEmail">{{t:foot.news_label}}</label>
+      <input type="email" id="newsEmail" name="email" placeholder="{{t:foot.news_ph}}" required autocomplete="email" />
+      <button type="submit" class="btn btn--gold">{{t:foot.news_btn}}</button>
+    </form>
+    <p class="news-msg" data-news-msg role="status" aria-live="polite"></p>
+  </div>
+
+  <div class="container footer__inner">
+    <div class="footer__brand">
+      <img class="brand__logo footer__logo" src="/assets/brand/logo.png" alt="Coffre à Dom" />
+      <p class="footer__tag">{{t:foot.tag1}}</p>
+      <p class="footer__tag">{{t:foot.tag2}}</p>
+    </div>
+
+    <div class="footer__col">
+      <h4>{{t:foot.col_shop}}</h4>
+      <a href="/boutique/">{{t:foot.shop_all}}</a>
+      <a href="/boutique/pokemon-cartes/">{{t:foot.shop_pokemon}}</a>
+      <a href="/boutique/one-piece/">One Piece</a>
+      <a href="/boutique/magic-the-gathering/">Magic</a>
+      <a href="/boutique/promo/">{{t:foot.shop_promo}}</a>
+    </div>
+
+    <div class="footer__col">
+      <h4>{{t:foot.col_universe}}</h4>
+      <a href="/a-propos-coffre-a-dom/">{{t:foot.about}}</a>
+      <a href="/espace-gaming-immersif/">{{t:foot.gaming}}</a>
+      <a href="/blog-geek/">{{t:foot.blog}}</a>
+      <a href="/privatisation-evenement-particulier/">{{t:foot.private}}</a>
+      <a href="/boutique/vip/">{{t:foot.vip}}</a>
+    </div>
+
+    <div class="footer__col">
+      <h4>{{t:foot.col_info}}</h4>
+      <p>Route des Îles 84<br />1897 Le Bouveret</p>
+      <p>{{t:foot.hours}}<br />{{t:foot.hours2}}</p>
+      <a href="tel:+41789418538">+41 78 941 85 38</a>
+      <a href="mailto:coffreadom@hotmail.com">coffreadom@hotmail.com</a>
+      <a href="/contact/">{{t:foot.contact_us}}</a>
+    </div>
+  </div>
+
+  <div class="footer__bottom container">
+    <p>© {{YEAR}} Coffre à Dom — {{t:foot.rights}}</p>
+    <nav class="footer__legal" aria-label="Legal">
+      <a href="/mentions-legales/">{{t:foot.legal_notice}}</a>
+      <a href="/politique-de-confidentialite/">{{t:foot.privacy}}</a>
+      <a href="/politique-cookies/">{{t:foot.cookies}}</a>
+      <a href="/conditions-generales-de-vente/">{{t:foot.terms}}</a>
+    </nav>
+    <p class="footer__credit">{{t:foot.credit}} <a href="https://makeyourcom.ch" target="_blank" rel="noopener">Make Your Com</a></p>
+  </div>
+</footer>

@@ -1,0 +1,36 @@
+<section class="section section--page">
+  <div class="container">
+    <header class="page-hero page-hero--left" data-admin-hero>
+      <span class="page-hero__icon">🛠️</span>
+      <h1>Back office</h1>
+      <p>Espace réservé — commandes, stock, produits et statistiques du Coffre.</p>
+    </header>
+
+    <!-- Login -->
+    <form class="form admin-login" data-admin-login>
+      <label class="field"><span>Mot de passe administrateur</span><input type="password" name="password" autocomplete="current-password" required /></label>
+      <p class="form__msg" data-admin-msg role="status" aria-live="polite"></p>
+      <button type="submit" class="btn btn--gold">Se connecter</button>
+    </form>
+
+    <!-- Dashboard -->
+    <div data-admin-dash hidden>
+      <nav class="admin-tabs">
+        <button type="button" class="admin-tab is-active" data-tab="stats">📊 Tableau de bord</button>
+        <button type="button" class="admin-tab" data-tab="orders">📦 Commandes</button>
+        <button type="button" class="admin-tab" data-tab="products">🛍️ Produits</button>
+        <button type="button" class="admin-tab" data-tab="categories">🗂️ Catégories</button>
+        <span class="admin-tabs__spacer"></span>
+        <button type="button" class="btn btn--gold btn--sm" data-admin-republish>🚀 Publier les changements</button>
+        <button type="button" class="btn btn--ghost btn--sm" data-admin-logout>Déconnexion</button>
+      </nav>
+      <p class="admin-flash" data-admin-flash hidden></p>
+
+      <div data-panel="stats"></div>
+      <div data-panel="orders" hidden></div>
+      <div data-panel="products" hidden></div>
+      <div data-panel="categories" hidden></div>
+    </div>
+  </div>
+</section>
+<script src="/admin.js" defer></script>

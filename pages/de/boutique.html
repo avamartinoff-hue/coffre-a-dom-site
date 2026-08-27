@@ -1,0 +1,58 @@
+<section class="section section--page">
+  <div class="container">
+    <nav class="crumb" aria-label="Brotkrumen-Navigation"><a href="/">Startseite</a><span class="crumb__sep">/</span><span>Shop</span></nav>
+    <header class="page-hero">
+      <span class="page-hero__icon">🃏</span>
+      <h1>Der Shop des Coffre</h1>
+      <p>Pokémon-, Magic-, One-Piece-, Dragon-Ball-, Naruto-Karten… einzeln, als Booster oder versiegelt, dazu Figuren, Boxen und Schutzhüllen. Abholung in Le Bouveret oder Postversand.</p>
+    </header>
+
+    <div class="shop" id="shop">
+      <aside class="shop__sidebar">
+        <div class="shop__search">
+          <input type="search" id="shopSearch" placeholder="🔍 Ein Stück suchen…" aria-label="Ein Stück suchen" autocomplete="off" />
+        </div>
+
+        <div class="shop__filter">
+          <h3 class="shop__filter-title">Kategorien</h3>
+          <div class="filter-list">{{SHOP_CATEGORIES}}</div>
+        </div>
+
+        <div class="shop__filter">
+          <h3 class="shop__filter-title">Verfügbarkeit</h3>
+          <label class="filter-check"><input type="checkbox" id="inStockOnly" /><span>Nur an Lager</span></label>
+          <label class="filter-check"><input type="checkbox" id="onSaleOnly" /><span>Im Angebot 🏷️</span></label>
+        </div>
+
+        <div class="shop__filter">
+          <h3 class="shop__filter-title">Preis (CHF)</h3>
+          <div class="filter-price">
+            <input type="number" id="priceMin" min="0" step="1" inputmode="numeric" placeholder="Min" aria-label="Mindestpreis" />
+            <span class="filter-price__sep">–</span>
+            <input type="number" id="priceMax" min="0" step="1" inputmode="numeric" placeholder="Max" aria-label="Höchstpreis" />
+          </div>
+        </div>
+
+        <button class="btn btn--ghost btn--sm" id="shopReset" type="button">Filter zurücksetzen</button>
+      </aside>
+
+      <div class="shop__main">
+        <div class="shop__bar">
+          <span class="shop__count" data-shop-count>Wird geladen…</span>
+          <label class="shop__sort">
+            <span class="shop__sort-label">Sortieren:</span>
+            <select id="shopSort" aria-label="Produkte sortieren">
+              <option value="recent">Neuheiten</option>
+              <option value="price-asc">Preis aufsteigend</option>
+              <option value="price-desc">Preis absteigend</option>
+              <option value="name">Name A–Z</option>
+            </select>
+          </label>
+        </div>
+        <div class="pgrid" id="shopGrid">{{ALL_PRODUCTS}}</div>
+        <p class="empty" data-shop-empty hidden>Kein Stück entspricht deiner Suche. <button type="button" class="linkbtn" id="shopReset2">Alle anzeigen</button></p>
+      </div>
+    </div>
+  </div>
+</section>
+<script src="/shop.js" defer></script>

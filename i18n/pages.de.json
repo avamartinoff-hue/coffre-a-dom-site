@@ -1,0 +1,22 @@
+{
+  "home.html": { "title": "Coffre à Dom — Shop & lebendiger Treffpunkt · Verspielte & Vintage-Welt · Le Bouveret", "desc": "Shop für Pokémon-Karten & Geek-Produkte, Gaming-Bereich, Mystery-Truhen und Events in Le Bouveret. Der Coffre ist offen, das Abenteuer ruft dich!" },
+  "a-propos.html": { "title": "Über uns — Dom, der Letzte Wächter | Coffre à Dom", "desc": "Die Geschichte von Coffre à Dom: von einer Leidenschaft der 90er zu einer Festung des Spiels und der Gemeinschaft in Le Bouveret." },
+  "boutique.html": { "title": "Shop — Sammelkarten & Geek-Produkte | Coffre à Dom", "desc": "Pokémon-, Magic-, One-Piece-Karten, versiegelte Boxen, Figuren und Schutzhüllen. Der ganze Shop des Coffre à Dom." },
+  "contact.html": { "title": "Kontakt & Reservierung | Coffre à Dom", "desc": "Reserviere eine Session, miete den Ort oder stelle deine Frage. Der Coffre antwortet dir." },
+  "blog.html": { "title": "Geek-Blog | Coffre à Dom", "desc": "News zu Karten, Gaming und Geek-Kultur vom Team des Coffre à Dom." },
+  "espace-gaming-immersif.html": { "title": "Immersiver Gaming-Bereich | Coffre à Dom", "desc": "PS5, Nintendo Switch, HD-Bildschirme und Simulatoren: der immersive Gaming-Bereich des Coffre à Dom, in Le Bouveret." },
+  "session-nintendo-retro.html": { "title": "Nintendo-Retro-Session | Coffre à Dom", "desc": "Entdecke die Nintendo-Klassiker in einer geselligen Retro-Session neu." },
+  "session-jeu-ps5-immersive.html": { "title": "Immersive PS5-Session | Coffre à Dom", "desc": "Eine immersive PS5-Session auf HD-Bildschirm, allein oder mit Freunden." },
+  "xbox-retro-gaming-suisse.html": { "title": "Xbox & Retro-Gaming in der Schweiz | Coffre à Dom", "desc": "Xbox- und Retro-Gaming-Sessions in Le Bouveret, Valais." },
+  "session-simulateur-suisse.html": { "title": "Rennsimulator-Session | Coffre à Dom", "desc": "Übernimm das Steuer auf unserem immersiven Rennsimulator." },
+  "experience-immersive-entreprise.html": { "title": "Immersives Firmenerlebnis (BtoB) | Coffre à Dom", "desc": "Teambuildings und Firmenanlässe, spielerisch und immersiv, im Coffre à Dom." },
+  "privatisation-evenement-particulier.html": { "title": "Privatanlass & private Feier | Coffre à Dom", "desc": "Geburtstage und Privatabende: Mieten Sie den Coffre für ein massgeschneidertes Erlebnis." },
+  "panier.html": { "title": "Mein Warenkorb | Coffre à Dom", "desc": "Ihr Warenkorb bei Coffre à Dom." },
+  "commander.html": { "title": "Bestellen | Coffre à Dom", "desc": "Schliessen Sie Ihre Bestellung bei Coffre à Dom ab." },
+  "mon-compte.html": { "title": "Mein Konto | Coffre à Dom", "desc": "Mitgliederbereich von Coffre à Dom." },
+  "merci.html": { "title": "Danke! | Coffre à Dom", "desc": "Nachricht gut erhalten." },
+  "cgv.html": { "title": "Allgemeine Geschäftsbedingungen | Coffre à Dom", "desc": "Allgemeine Geschäftsbedingungen von Coffre à Dom." },
+  "mentions-legales.html": { "title": "Impressum | Coffre à Dom", "desc": "Impressum von Coffre à Dom." },
+  "politique-de-confidentialite.html": { "title": "Datenschutzerklärung | Coffre à Dom", "desc": "Wie Coffre à Dom Ihre personenbezogenen Daten schützt." },
+  "politique-cookies.html": { "title": "Cookie-Richtlinie | Coffre à Dom", "desc": "Verwendung von Cookies auf der Website von Coffre à Dom." }
+}

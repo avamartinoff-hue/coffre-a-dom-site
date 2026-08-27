@@ -1,0 +1,30 @@
+# Dépendances
+node_modules/
+
+# Sortie générée par le build (Netlify la régénère à chaque déploiement)
+dist/
+
+# État local Netlify / CLI
+.netlify/
+
+# Variables d'environnement / secrets — NE JAMAIS committer
+.env
+.env.*
+*.env
+
+# Certificats / clés — sécurité (le .p12 TWINT reste hors du projet)
+*.p12
+*.pfx
+*.pem
+*.key
+*.cer
+*.crt
+
+# Système
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs
+npm-debug.log*
+*.log

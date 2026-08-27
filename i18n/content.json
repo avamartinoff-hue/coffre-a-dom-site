@@ -1,0 +1,201 @@
+{
+ "posts": {
+  "guide-debuter-collection-pokemon": {
+   "en": {
+    "title": "Starting your Pokémon collection without breaking the bank",
+    "excerpt": "Loose boosters, single cards, the sets to aim for first: our guide to getting off to a good start."
+   },
+   "it": {
+    "title": "Iniziare la tua collezione Pokémon senza spendere una fortuna",
+    "excerpt": "Bustine sfuse, carte singole, i set da puntare per primi: la nostra guida per partire con il piede giusto."
+   },
+   "de": {
+    "title": "Deine Pokémon-Sammlung starten, ohne dich zu ruinieren",
+    "excerpt": "Lose Booster, einzelne Karten, die Sets, die du zuerst anpeilen solltest: unser Leitfaden für einen guten Start."
+   }
+  },
+  "scelle-vs-loose-que-choisir": {
+   "en": {
+    "title": "Sealed or loose: which to choose to invest?",
+    "excerpt": "We compare buying sealed products versus loose boosters, the advantages and the pitfalls."
+   },
+   "it": {
+    "title": "Sigillato o sfuso: cosa scegliere per investire?",
+    "excerpt": "Confrontiamo l'acquisto di prodotti sigillati e di bustine sfuse, vantaggi e insidie."
+   },
+   "de": {
+    "title": "Versiegelt oder lose: was fürs Investieren wählen?",
+    "excerpt": "Wir vergleichen den Kauf von versiegelten Produkten und losen Boostern, Vorteile und Fallstricke."
+   }
+  },
+  "top-jeux-coop-canape": {
+   "en": {
+    "title": "Top 5 co-op games to try at the Coffre",
+    "excerpt": "PS5 or Switch, here are our five must-plays for two on the Coffre's couch."
+   },
+   "it": {
+    "title": "Top 5 dei giochi cooperativi da provare al Coffre",
+    "excerpt": "PS5 o Switch, ecco i nostri cinque imperdibili da giocare in due sul divano del Coffre."
+   },
+   "de": {
+    "title": "Die Top 5 Koop-Spiele zum Ausprobieren im Coffre",
+    "excerpt": "PS5 oder Switch, hier sind unsere fünf Must-plays zu zweit auf dem Sofa im Coffre."
+   }
+  },
+  "retrogaming-pourquoi-ca-cartonne": {
+   "en": {
+    "title": "Retro gaming: why it's still a hit",
+    "excerpt": "Nostalgia has its perks: a quick overview of the retro wave that isn't fading."
+   },
+   "it": {
+    "title": "Retrogaming: perché spopola ancora",
+    "excerpt": "La nostalgia ha i suoi lati positivi: una breve panoramica dell'ondata retro che non si affievolisce."
+   },
+   "de": {
+    "title": "Retro-Gaming: warum es immer noch ankommt",
+    "excerpt": "Nostalgie hat ihre guten Seiten: ein kurzer Überblick über die Retro-Welle, die nicht nachlässt."
+   }
+  },
+  "organiser-anniversaire-geek": {
+   "en": {
+    "title": "Organising a memorable geek birthday",
+    "excerpt": "Private hire, tournaments, mystery chests: the recipe for a birthday people keep talking about."
+   },
+   "it": {
+    "title": "Organizzare un compleanno geek memorabile",
+    "excerpt": "Esclusiva della sala, tornei, forzieri misteriosi: la ricetta di un compleanno di cui si continua a parlare."
+   },
+   "de": {
+    "title": "Einen unvergesslichen Geek-Geburtstag organisieren",
+    "excerpt": "Exklusive Anmietung, Turniere, Mystery-Truhen: das Rezept für einen Geburtstag, über den man noch lange spricht."
+   }
+  },
+  "coffres-mysteres-comment-ca-marche": {
+   "en": {
+    "title": "Mystery chests: how they really work",
+    "excerpt": "We explain the ticket system and how to maximise your chances at the Coffre."
+   },
+   "it": {
+    "title": "Forzieri misteriosi: come funzionano davvero",
+    "excerpt": "Ti spieghiamo il sistema di ticket e come massimizzare le tue possibilità al Coffre."
+   },
+   "de": {
+    "title": "Mystery-Truhen: wie sie wirklich funktionieren",
+    "excerpt": "Wir erklären dir das Ticketsystem und wie du deine Chancen im Coffre maximierst."
+   }
+  }
+ },
+ "blogCategories": {
+  "cartes-collection": {
+   "en": {
+    "name": "Cards & collecting"
+   },
+   "it": {
+    "name": "Carte e collezione"
+   },
+   "de": {
+    "name": "Karten & Sammeln"
+   }
+  },
+  "gaming": {
+   "en": {
+    "name": "Gaming"
+   },
+   "it": {
+    "name": "Gaming"
+   },
+   "de": {
+    "name": "Gaming"
+   }
+  },
+  "culture-geek": {
+   "en": {
+    "name": "Geek culture"
+   },
+   "it": {
+    "name": "Cultura geek"
+   },
+   "de": {
+    "name": "Geek-Kultur"
+   }
+  }
+ },
+ "authors": {
+  "dom": {
+   "en": {
+    "role": "Founder & Last Guardian",
+    "bio": "Born in the '90s, raised on video games and Pokémon cards. Dom watches over the Coffre and its community."
+   },
+   "it": {
+    "role": "Fondatore & Ultimo Guardiano",
+    "bio": "Nato negli anni '90, cresciuto a videogiochi e carte Pokémon. Dom veglia sul Coffre e sulla sua comunità."
+   },
+   "de": {
+    "role": "Gründer & Letzter Hüter",
+    "bio": "In den 90ern geboren, mit Videospielen und Pokémon-Karten aufgewachsen. Dom wacht über den Coffre und seine Community."
+   }
+  },
+  "equipe-coffre": {
+   "en": {
+    "role": "Editorial team",
+    "bio": "The enthusiasts who bring Coffre à Dom to life every day."
+   },
+   "it": {
+    "role": "Redazione",
+    "bio": "Gli appassionati che animano il Coffre à Dom ogni giorno."
+   },
+   "de": {
+    "role": "Redaktion",
+    "bio": "Die Begeisterten, die den Coffre à Dom jeden Tag zum Leben erwecken."
+   }
+  }
+ },
+ "events": {
+  "tournoi-pokemon-rentree": {
+   "en": {
+    "title": "Back-to-school Pokémon tournament",
+    "excerpt": "Take on the region's best trainers to win exclusive prizes and mystery chests.",
+    "place": "Coffre à Dom — Le Bouveret",
+    "price": "10 CHF / player",
+    "time": "2:00 pm"
+   },
+   "it": {
+    "title": "Torneo Pokémon di inizio stagione",
+    "excerpt": "Sfida i migliori allenatori della regione per vincere premi esclusivi e forzieri misteriosi.",
+    "place": "Coffre à Dom — Le Bouveret",
+    "price": "10 CHF / giocatore",
+    "time": "ore 14:00"
+   },
+   "de": {
+    "title": "Pokémon-Turnier zum Saisonstart",
+    "excerpt": "Tritt gegen die besten Trainer der Region an und gewinne exklusive Preise und Mystery-Truhen.",
+    "place": "Coffre à Dom — Le Bouveret",
+    "price": "10 CHF / Spieler",
+    "time": "14:00 Uhr"
+   }
+  },
+  "soiree-retro-gaming": {
+   "en": {
+    "title": "Retro gaming night",
+    "excerpt": "An evening devoted to the classics: retro consoles, snacks, arcade vibes and good times guaranteed.",
+    "place": "Coffre à Dom — Le Bouveret",
+    "price": "Free entry",
+    "time": "6:00 pm"
+   },
+   "it": {
+    "title": "Serata retrogaming",
+    "excerpt": "Una serata dedicata ai classici: console retro, snack, atmosfera arcade e buon umore garantito.",
+    "place": "Coffre à Dom — Le Bouveret",
+    "price": "Ingresso libero",
+    "time": "ore 18:00"
+   },
+   "de": {
+    "title": "Retro-Gaming-Abend",
+    "excerpt": "Ein Abend ganz im Zeichen der Klassiker: Retro-Konsolen, Snacks, Arcade-Atmosphäre und gute Laune garantiert.",
+    "place": "Coffre à Dom — Le Bouveret",
+    "price": "Freier Eintritt",
+    "time": "18:00 Uhr"
+   }
+  }
+ }
+}
