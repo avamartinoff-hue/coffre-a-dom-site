@@ -30,6 +30,7 @@ const T = {
     cart_cta: 'Finaliser ma commande',
     shop_cta: 'Voir la boutique', help: 'Une question ? Répondez à cet e-mail, nous sommes là pour vous.',
     signoff: 'À très vite,\nL\'équipe Coffre à Dom',
+    hours_label: 'Horaires', hours: 'Ma–Je 13h30–16h30 · Sa 18h–22h · Di 14h–18h (Lu & Ve fermé)',
   },
   en: {
     hi: 'Hello', thanks: 'Thank you for your order!', order: 'Order', ref: 'Reference',
@@ -49,6 +50,7 @@ const T = {
     cart_cta: 'Complete my order',
     shop_cta: 'Visit the shop', help: 'A question? Reply to this email, we\'re here to help.',
     signoff: 'See you soon,\nThe Coffre à Dom team',
+    hours_label: 'Opening hours', hours: 'Tue–Thu 13:30–16:30 · Sat 18:00–22:00 · Sun 14:00–18:00 (closed Mon & Fri)',
   },
   it: {
     hi: 'Ciao', thanks: 'Grazie per il tuo ordine!', order: 'Ordine', ref: 'Riferimento',
@@ -68,6 +70,7 @@ const T = {
     cart_cta: 'Completa l\'ordine',
     shop_cta: 'Vai al negozio', help: 'Una domanda? Rispondi a questa e-mail, siamo qui per te.',
     signoff: 'A presto,\nIl team Coffre à Dom',
+    hours_label: 'Orari', hours: 'Ma–Gio 13:30–16:30 · Sa 18:00–22:00 · Do 14:00–18:00 (Lu e Ve chiuso)',
   },
   de: {
     hi: 'Hallo', thanks: 'Vielen Dank für deine Bestellung!', order: 'Bestellung', ref: 'Referenz',
@@ -87,21 +90,26 @@ const T = {
     cart_cta: 'Bestellung abschliessen',
     shop_cta: 'Zum Shop', help: 'Eine Frage? Antworte auf diese E-Mail, wir helfen gerne.',
     signoff: 'Bis bald,\nDein Coffre à Dom Team',
+    hours_label: 'Öffnungszeiten', hours: 'Di–Do 13:30–16:30 · Sa 18:00–22:00 · So 14:00–18:00 (Mo & Fr geschlossen)',
   },
 };
 
 // ---- coquille HTML commune ----
-function shell(inner) {
+function shell(inner, lang) {
+  const t = T[L(lang)];
   return `<!doctype html><html><body style="margin:0;background:#f6f1e7;font-family:Arial,Helvetica,sans-serif;color:${DARK};">
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f6f1e7;padding:24px 0;">
     <tr><td align="center">
       <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;background:#ffffff;border-radius:14px;overflow:hidden;border:1px solid #ece2d0;">
         <tr><td style="background:${DARK};padding:20px 28px;text-align:center;">
-          <img src="${SITE}/assets/brand/logo.png" alt="Coffre à Dom" width="150" style="max-width:150px;height:auto;" />
+          <img src="${SITE}/assets/brand/logo.png" alt="Coffre à Dom" width="180" style="max-width:180px;height:auto;color:${GOLD};font-size:24px;font-weight:bold;font-family:Georgia,serif;" />
         </td></tr>
         <tr><td style="padding:28px;">${inner}</td></tr>
-        <tr><td style="background:#faf6ee;padding:18px 28px;text-align:center;font-size:12px;color:#8a7a63;">
-          Coffre à Dom · Le Bouveret, Valais (Suisse) · <a href="${SITE}" style="color:${GOLD};text-decoration:none;">coffreadom.ch</a>
+        <tr><td style="background:#faf6ee;padding:22px 28px;text-align:center;font-size:12px;color:#8a7a63;line-height:1.8;border-top:1px solid #f0e9db;">
+          <strong style="color:${DARK};font-size:13px;">Coffre à Dom</strong><br>
+          📍 Route des Îles 84, 1897 Le Bouveret (Valais, Suisse)<br>
+          📞 +41 78 941 85 38 &nbsp;·&nbsp; ✉ <a href="mailto:coffreadom@hotmail.com" style="color:${GOLD};text-decoration:none;">coffreadom@hotmail.com</a> &nbsp;·&nbsp; 🌐 <a href="${SITE}" style="color:${GOLD};text-decoration:none;">coffreadom.ch</a><br>
+          🕐 <strong>${esc(t.hours_label)} :</strong> ${esc(t.hours)}
         </td></tr>
       </table>
     </td></tr>
@@ -157,7 +165,7 @@ function orderConfirmation(order, items) {
     p(`<b>${t.order} ${esc(order.order_number)}</b> · ${t.paid}`) +
     itemsTable(items, t) + totals(order, t) + addrBlock(order, t) +
     btn(`${SITE}/`, t.shop_cta) + p(t.help) + sign(t);
-  return { subject: t.confirm_sub(order.order_number), html: shell(inner) };
+  return { subject: t.confirm_sub(order.order_number), html: shell(inner, order.lang) };
 }
 
 function orderShipped(order) {
@@ -168,7 +176,7 @@ function orderShipped(order) {
     p(`<b>${t.order} ${esc(order.order_number)}</b>`) +
     (poste ? addrBlock(order, t) : '') +
     btn(`${SITE}/`, t.shop_cta) + p(t.help) + sign(t);
-  return { subject: (poste ? t.ship_sub_poste : t.ship_sub_retrait)(order.order_number), html: shell(inner) };
+  return { subject: (poste ? t.ship_sub_poste : t.ship_sub_retrait)(order.order_number), html: shell(inner, order.lang) };
 }
 
 function orderCancelled(order) {
@@ -176,7 +184,7 @@ function orderCancelled(order) {
   const inner = h(t.cancel_sub(order.order_number)) + greeting(order, t) +
     p(t.cancel_body) + p(`<b>${t.order} ${esc(order.order_number)}</b> · ${chf(order.total)}`) +
     sign(t);
-  return { subject: t.cancel_sub(order.order_number), html: shell(inner) };
+  return { subject: t.cancel_sub(order.order_number), html: shell(inner, order.lang) };
 }
 
 function abandonedCart(cart) {
@@ -185,7 +193,7 @@ function abandonedCart(cart) {
   const inner = h(t.cart_sub) + p(`${t.hi},`) + p(t.cart_body) +
     itemsTable(items, t) +
     btn(`${SITE}/commander/`, t.cart_cta) + p(t.help) + sign(t);
-  return { subject: t.cart_sub, html: shell(inner) };
+  return { subject: t.cart_sub, html: shell(inner, cart.lang) };
 }
 
 // e-mail interne au commerçant (toujours en français)
@@ -204,7 +212,7 @@ function merchantNewOrder(order, items) {
     p(`<b>Total : ${chf(order.total)}</b>`) +
     (order.note ? p(`<b>Note :</b> ${esc(order.note)}`) : '') +
     btn(`${SITE}/admin/`, 'Ouvrir le back office');
-  return { subject: `🎉 Nouvelle commande ${order.order_number} — ${chf(order.total)}`, html: shell(inner) };
+  return { subject: `🎉 Nouvelle commande ${order.order_number} — ${chf(order.total)}`, html: shell(inner, 'fr') };
 }
 
 module.exports = { orderConfirmation, orderShipped, orderCancelled, abandonedCart, merchantNewOrder };
