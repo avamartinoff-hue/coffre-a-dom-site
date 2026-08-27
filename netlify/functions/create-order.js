@@ -62,6 +62,7 @@ exports.handler = async (event) => {
   const c = payload.customer || {};
   const method = payload.method === 'sumup' ? 'sumup' : 'twint';
   const mode = c.mode === 'poste' ? 'poste' : 'retrait';
+  const lang = ['fr', 'en', 'it', 'de'].includes(payload.lang) ? payload.lang : 'fr';
 
   if (!items.length) return json(400, { ok: false, error: 'Panier vide.' });
   if (!c.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(c.email)) return json(400, { ok: false, error: 'E-mail invalide.' });
@@ -107,7 +108,7 @@ exports.handler = async (event) => {
     const num = orderNumber();
     const [order] = await db.post('orders', {
       order_number: num, email: c.email.trim().toLowerCase(), phone: c.telephone || null,
-      full_name: c.nom, shipping_mode: mode, payment_method: method,
+      full_name: c.nom, shipping_mode: mode, payment_method: method, lang,
       subtotal, shipping_fee: shipping, total, note: noteBits.length ? noteBits.join(' · ') : null,
       shipping_address: mode === 'poste' ? { rue: String(c.rue || '').trim(), numero: String(c.numero || '').trim(), npa, localite: String(c.localite || '').trim(), pays: 'CH' } : null,
     });

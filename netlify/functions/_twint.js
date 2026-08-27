@@ -128,12 +128,17 @@ async function startOrder({ reference, amount }) {
   };
 }
 
-// MonitorOrder : renvoie le statut courant de la commande
-async function monitorOrder({ orderUuid }) {
+// MonitorOrder : renvoie le statut courant de la commande.
+// Accepte soit { orderUuid }, soit { reference } (MerchantTransactionReference)
+// — utile pour la réconciliation serveur quand on n'a pas l'OrderUuid.
+async function monitorOrder({ orderUuid, reference }) {
+  const idXml = orderUuid
+    ? '<m:OrderUuid>' + esc(orderUuid) + '</m:OrderUuid>'
+    : '<m:MerchantTransactionReference>' + esc(reference) + '</m:MerchantTransactionReference>';
   const body =
     '<m:MonitorOrderRequestElement>' +
       merchantInfoXml() +
-      '<m:OrderUuid>' + esc(orderUuid) + '</m:OrderUuid>' +
+      idXml +
       '<m:WaitForResponse>false</m:WaitForResponse>' +
     '</m:MonitorOrderRequestElement>';
   const { status, body: xml } = await soapCall('MonitorOrder', body);

@@ -18,6 +18,14 @@
 [functions]
   directory = "netlify/functions"
 
+# Filet de sécurité paiements : re-vérifie les commandes en attente toutes les 15 min
+[functions."reconcile-payments"]
+  schedule = "*/15 * * * *"
+
+# Relance des paniers abandonnés : une fois par heure
+[functions."abandoned-reminder"]
+  schedule = "17 * * * *"
+
 # ---------- En-têtes ----------
 [[headers]]
   for = "/*"

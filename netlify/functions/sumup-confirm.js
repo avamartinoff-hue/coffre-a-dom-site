@@ -6,6 +6,7 @@
    POST { orderId, checkoutId }
    Env : SUPABASE_URL, SUPABASE_SECRET_KEY, SUMUP_SECRET_KEY
    ========================================================= */
+const notify = require('./_notify.js');
 const H = { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Headers': 'Content-Type', 'Access-Control-Allow-Methods': 'POST, OPTIONS' };
 const json = (c, b) => ({ statusCode: c, headers: H, body: JSON.stringify(b) });
 
@@ -29,7 +30,7 @@ exports.handler = async (event) => {
 
   const db = sb();
   try {
-    const [order] = await db.get(`orders?select=id,order_number,total,payment_status&id=eq.${encodeURIComponent(orderId)}`);
+    const [order] = await db.get(`orders?select=*&id=eq.${encodeURIComponent(orderId)}`);
     if (!order) return json(404, { ok: false, error: 'Commande introuvable.' });
     if (order.payment_status === 'paid') return json(200, { ok: true, paid: true }); // idempotent
 
@@ -48,7 +49,7 @@ exports.handler = async (event) => {
 
     // Paiement confirmé → commande payée + décrément du stock suivi
     await db.patch(`orders?id=eq.${order.id}`, { payment_status: 'paid', paid_at: new Date().toISOString() });
-    const items = await db.get(`order_items?select=product_slug,qty&order_id=eq.${order.id}`);
+    const items = await db.get(`order_items?select=product_slug,qty,name,line_total&order_id=eq.${order.id}`);
     for (const it of items) {
       if (!it.product_slug) continue;
       const [p] = await db.get(`products?select=stock_qty&slug=eq.${encodeURIComponent(it.product_slug)}`);
@@ -56,6 +57,11 @@ exports.handler = async (event) => {
         const left = Math.max(0, p.stock_qty - it.qty);
         await db.patch(`products?slug=eq.${encodeURIComponent(it.product_slug)}`, { stock_qty: left, in_stock: left > 0 });
       }
+    }
+    // E-mails + Brevo (une seule fois, jamais bloquant)
+    if (!order.confirmation_sent_at) {
+      await notify.afterPaid({ ...order, payment_status: 'paid' }, items);
+      await db.patch(`orders?id=eq.${order.id}`, { confirmation_sent_at: new Date().toISOString() }).catch(() => {});
     }
     return json(200, { ok: true, paid: true });
   } catch (e) {

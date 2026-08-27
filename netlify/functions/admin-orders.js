@@ -6,6 +6,7 @@
           → sur "paid" : paid_at + décrément du stock suivi.
    Env : SUPABASE_URL, SUPABASE_SECRET_KEY, ADMIN_PASSWORD
    ========================================================= */
+const notify = require('./_notify.js');
 const H = { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Headers': 'Content-Type, x-admin-password', 'Access-Control-Allow-Methods': 'GET, POST, OPTIONS' };
 const json = (code, body) => ({ statusCode: code, headers: H, body: JSON.stringify(body) });
 
@@ -35,12 +36,14 @@ exports.handler = async (event) => {
       if (action === 'set-status') {
         const allowed = ['paid', 'pending', 'failed', 'cancelled'];
         if (!orderId || !allowed.includes(status)) return json(400, { ok: false, error: 'Paramètres invalides.' });
+        const [order] = await db.get(`orders?select=*&id=eq.${encodeURIComponent(orderId)}`);
+        if (!order) return json(404, { ok: false, error: 'Commande introuvable.' });
         const patch = { payment_status: status, paid_at: status === 'paid' ? new Date().toISOString() : null };
         await db.patch(`orders?id=eq.${orderId}`, patch);
 
         if (status === 'paid') {
           // décrément du stock suivi (stock_qty non null)
-          const items = await db.get(`order_items?select=product_slug,qty&order_id=eq.${orderId}`);
+          const items = await db.get(`order_items?select=product_slug,qty,name,line_total&order_id=eq.${orderId}`);
           for (const it of items) {
             if (!it.product_slug) continue;
             const [p] = await db.get(`products?select=stock_qty&slug=eq.${encodeURIComponent(it.product_slug)}`);
@@ -49,6 +52,13 @@ exports.handler = async (event) => {
               await db.patch(`products?slug=eq.${encodeURIComponent(it.product_slug)}`, { stock_qty: left, in_stock: left > 0 });
             }
           }
+          // confirmation + notif + Brevo (validation manuelle depuis le back office), une seule fois
+          if (!order.confirmation_sent_at) {
+            await notify.afterPaid({ ...order, payment_status: 'paid' }, items);
+            await db.patch(`orders?id=eq.${orderId}`, { confirmation_sent_at: new Date().toISOString() }).catch(() => {});
+          }
+        } else if (status === 'cancelled' || status === 'failed') {
+          await notify.afterCancelled(order);
         }
         return json(200, { ok: true });
       }
@@ -56,6 +66,10 @@ exports.handler = async (event) => {
         const { fulfilled } = JSON.parse(event.body || '{}');
         if (!orderId) return json(400, { ok: false, error: 'orderId requis.' });
         await db.patch(`orders?id=eq.${orderId}`, { fulfilled_at: fulfilled ? new Date().toISOString() : null });
+        if (fulfilled) {
+          const [order] = await db.get(`orders?select=*&id=eq.${encodeURIComponent(orderId)}`);
+          if (order) await notify.afterShipped(order);
+        }
         return json(200, { ok: true });
       }
       return json(400, { ok: false, error: 'Action inconnue.' });

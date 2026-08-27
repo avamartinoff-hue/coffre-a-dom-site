@@ -23,6 +23,29 @@
 
   function setMsg(t, ok) { if (msg) { msg.textContent = t; msg.className = 'form__msg ' + (ok ? 'is-ok' : 'is-err'); } }
 
+  // Capture du panier pour relance si abandon (dès qu'un e-mail valide est saisi)
+  var emailField = form.querySelector('input[name=email]');
+  var captured = '';
+  function captureCart() {
+    if (/^(localhost|127\.0\.0\.1)$/.test(location.hostname)) return;
+    var email = (emailField && emailField.value || '').trim().toLowerCase();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || email === captured) return;
+    var cart = (window.CADCart && window.CADCart.load()) || [];
+    if (!cart.length) return;
+    captured = email;
+    var payload = { email: email, lang: (document.documentElement.lang || 'fr').slice(0, 2),
+      items: cart.map(function (i) { return { name: i.name, qty: i.qty, price: i.price }; }) };
+    try {
+      fetch('/.netlify/functions/cart-capture', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload), keepalive: true }).catch(function () {});
+    } catch (e) { /* ignore */ }
+  }
+  if (emailField) {
+    var ct;
+    emailField.addEventListener('blur', captureCart);
+    emailField.addEventListener('input', function () { clearTimeout(ct); ct = setTimeout(captureCart, 1500); });
+  }
+
   function items() {
     var cart = (window.CADCart && window.CADCart.load()) || [];
     return cart.map(function (i) { return { slug: i.slug, qty: i.qty, preorder: !!i.preorder }; });
@@ -173,7 +196,7 @@
 
     fetch('/.netlify/functions/create-order', {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ items: list, customer: customer, method: method }),
+      body: JSON.stringify({ items: list, customer: customer, method: method, lang: (document.documentElement.lang || 'fr').slice(0, 2) }),
     }).then(function (r) { return r.json(); }).then(function (d) {
       if (d && d.ok) {
         if (d.method === 'sumup' && d.sumup && d.sumup.configured && d.sumup.checkoutId) showSumupWidget(d);
