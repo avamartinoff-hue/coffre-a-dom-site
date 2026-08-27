@@ -17,11 +17,16 @@ exports.handler = async function (event) {
   if (event.httpMethod !== 'POST') return json(405, { ok: false, error: 'Méthode non autorisée.' });
   if (!brevo.hasKey()) return json(500, { ok: false, error: 'Service indisponible (clé manquante).' });
 
-  let email = '';
-  try { email = (JSON.parse(event.body || '{}').email || '').trim().toLowerCase(); } catch (e) { /* ignore */ }
+  let payload = {};
+  try { payload = JSON.parse(event.body || '{}'); } catch (e) { /* ignore */ }
+
+  // Diagnostic (ne révèle aucun secret) : valide la clé + l'ID de liste.
+  if (payload.diag) return json(200, { ok: true, diag: await brevo.checkKey() });
+
+  const email = (payload.email || '').trim().toLowerCase();
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return json(400, { ok: false, error: 'Adresse e-mail invalide.' });
 
   const r = await brevo.addContact({ email, attributes: { OPT_IN: true, SOURCE: 'newsletter' } });
   if (r.ok) return json(200, { ok: true, message: r.existed ? 'Vous êtes déjà inscrit·e.' : 'Inscription confirmée.' });
-  return json(502, { ok: false, error: 'Inscription impossible pour le moment.' });
+  return json(502, { ok: false, error: 'Inscription impossible pour le moment.', brevoStatus: r.status, brevoCode: r.code });
 };
