@@ -5,23 +5,23 @@
 
   <div class="hero__inner hero--split">
     <div class="hero__text">
-      <p class="eyebrow reveal">Shop &amp; lebendiger Treffpunkt — Le Bouveret 🇨🇭</p>
+      <p class="eyebrow reveal">Online-Shop · Le Bouveret 🇨🇭</p>
       <h1 class="hero__title reveal">
-        Der Coffre ist offen,<br />
-        <span class="grad">das Abenteuer ruft dich&nbsp;!</span>
+        Pokémon-Karten, TCG &amp;<br />
+        <span class="grad">Geek-Schätze zum Sammeln</span>
       </h1>
       <p class="hero__sub reveal">
-        Ein verspielter &amp; nostalgischer Rückzugsort, wo man seine Pokémon-Karten holt,
-        eine Konsole herausfordert, eine Mystery-Truhe öffnet und vor allem&nbsp;: zusammenkommt.
+        Einzelkarten, versiegelte Boxen, Figuren und Vintage-Lieblinge.
+        Online bestellen&nbsp;: Abholung in Le Bouveret oder Lieferung in die ganze Schweiz.
       </p>
       <div class="hero__actions reveal">
         <a href="/boutique/" class="btn btn--gold">Shop entdecken 🃏</a>
-        <a href="/espace-gaming-immersif/" class="btn btn--ghost">Session reservieren ⚔️</a>
+        <a href="#univers" class="btn btn--ghost">Der Ort &amp; das Gaming</a>
       </div>
       <div class="hero__stats reveal">
-        <div class="stat"><span class="stat__num">{{PRODUCT_COUNT}}</span><span class="stat__label">Schätze im Shop</span></div>
-        <div class="stat"><span class="stat__num">4</span><span class="stat__label">Säulen des Coffre</span></div>
-        <div class="stat"><span class="stat__num">∞</span><span class="stat__label">Partien zu spielen</span></div>
+        <div class="stat"><span class="stat__num">{{PRODUCT_COUNT}}</span><span class="stat__label">Produkte im Shop</span></div>
+        <div class="stat"><span class="stat__num">🇨🇭</span><span class="stat__label">Lieferung in der Schweiz</span></div>
+        <div class="stat"><span class="stat__num">🔒</span><span class="stat__label">Sichere Zahlung</span></div>
       </div>
     </div>
     <div class="hero__art reveal">
@@ -40,15 +40,33 @@
   </div>
 </div>
 
-<!-- ===================== PILIERS ===================== -->
-<section class="section" id="univers">
+<!-- ===================== BOUTIQUE : CATÉGORIES (prioritaire) ===================== -->
+<section class="section" id="boutique">
   <div class="container">
     <header class="section__head reveal">
-      <p class="kicker">Die Welt</p>
-      <h2>Vier Säulen, ein Rückzugsort</h2>
+      <p class="kicker">Online-Shop</p>
+      <h2>Finde deine Sammlerstücke</h2>
+      <p class="section__lead">Einzelkarten, versiegelte Boxen, Figuren und Schutzhüllen&nbsp;: Entdecke die Welten des Coffre und bestelle mit wenigen Klicks.</p>
+    </header>
+    <div class="ccard-grid reveal">{{CATEGORY_GRID}}</div>
+
+    <header class="section__head section__head--sm reveal" style="margin-top:64px">
+      <h2>Aktuelle Favoriten</h2>
+    </header>
+    <div class="pgrid reveal">{{FEATURED_PRODUCTS}}</div>
+    <div class="center reveal"><a href="/boutique/" class="btn btn--gold">Zum ganzen Shop →</a></div>
+  </div>
+</section>
+
+<!-- ===================== LE LIEU (secondaire) ===================== -->
+<section class="section section--alt" id="univers">
+  <div class="container">
+    <header class="section__head reveal">
+      <p class="kicker">Der Ort</p>
+      <h2>Ein Shop, und noch viel mehr</h2>
       <p class="section__lead">
-        Coffre à Dom ist nicht nur ein Shop&nbsp;: Es ist eine Festung des Spiels und der Gemeinschaft,
-        bewacht von einem Enthusiasten, der den Zauber des Zusammenkommens nicht erlöschen lassen will.
+        Über den Online-Shop hinaus ist Coffre à Dom ein echter Spiele-Treffpunkt in Le Bouveret&nbsp;:
+        Gaming-Bereich, Mystery-Truhen und Treffen für Fans.
       </p>
     </header>
     <div class="pillars">
@@ -57,24 +75,6 @@
       <a class="pillar reveal" href="/#coffres"><div class="pillar__icon">🗝️</div><h3>Die Mystery-Truhen</h3><p>Überraschungsstücke, die du direkt in unserem Laden in Le Bouveret entdeckst.</p></a>
       <a class="pillar reveal" href="/blog-geek/"><div class="pillar__icon">🏆</div><h3>Die Community</h3><p>Turniere, Events und Begegnungen&nbsp;: Hier heisst spielen zusammenkommen.</p></a>
     </div>
-  </div>
-</section>
-
-<!-- ===================== BOUTIQUE : CATÉGORIES ===================== -->
-<section class="section section--alt" id="boutique">
-  <div class="container">
-    <header class="section__head reveal">
-      <p class="kicker">Der Shop</p>
-      <h2>Schätze zum Sammeln</h2>
-      <p class="section__lead">Einzelkarten, versiegelte Boxen, Figuren und Schutzhüllen&nbsp;: Entdecke die Welten des Coffre.</p>
-    </header>
-    <div class="ccard-grid reveal">{{CATEGORY_GRID}}</div>
-
-    <header class="section__head section__head--sm reveal" style="margin-top:64px">
-      <h2>Aktuelle Favoriten</h2>
-    </header>
-    <div class="pgrid reveal">{{FEATURED_PRODUCTS}}</div>
-    <div class="center reveal"><a href="/boutique/" class="btn btn--ghost">Zum ganzen Shop →</a></div>
   </div>
 </section>
 
