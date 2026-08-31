@@ -16,6 +16,7 @@
   var modeSel = form.querySelector('[data-mode]');
   var addrField = form.querySelector('[data-address-field]');
   var chf = function (n) { return 'CHF ' + Number(n).toFixed(2); };
+  function promoNote(d) { return (d && d.discount > 0) ? ' · <span class="confirm__promo">' + T('discount', 'Remise') + ' −' + chf(d.discount) + (d.promoCode ? ' (' + d.promoCode + ')' : '') + '</span>' : ''; }
 
   // Adresse visible seulement si livraison postale
   function syncAddr() { if (addrField) addrField.hidden = modeSel.value !== 'poste'; }
@@ -51,6 +52,31 @@
     return cart.map(function (i) { return { slug: i.slug, qty: i.qty, preorder: !!i.preorder }; });
   }
 
+  // Code promo
+  var appliedPromo = null;
+  var promoInput = form.querySelector('[data-promo-input]');
+  var promoBtn = form.querySelector('[data-promo-apply]');
+  var promoMsg = form.querySelector('[data-promo-msg]');
+  function setPromoMsg(t, cls) { if (promoMsg) { promoMsg.textContent = t; promoMsg.className = 'promo-msg' + (cls ? ' ' + cls : ''); } }
+  function applyPromo() {
+    var code = (promoInput && promoInput.value || '').trim().toUpperCase();
+    if (!code) { appliedPromo = null; setPromoMsg(''); return; }
+    var subtotal = window.CADCart ? window.CADCart.total() : 0;
+    if (!subtotal) { appliedPromo = null; setPromoMsg(T('summary_empty', 'Votre panier est vide.'), 'is-err'); return; }
+    if (promoBtn) promoBtn.disabled = true;
+    setPromoMsg(T('promo_checking', 'Vérification…'), '');
+    fetch('/.netlify/functions/promo-check', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ code: code, subtotal: subtotal }) })
+      .then(function (r) { return r.json(); }).then(function (d) {
+        if (promoBtn) promoBtn.disabled = false;
+        if (d && d.valid) {
+          appliedPromo = { code: d.code, discount: d.discount };
+          setPromoMsg('✅ ' + T('promo_applied', 'Code appliqué :') + ' −' + chf(d.discount), 'is-ok');
+        } else { appliedPromo = null; setPromoMsg((d && d.message) || T('promo_invalid', 'Code invalide.'), 'is-err'); }
+      }).catch(function () { if (promoBtn) promoBtn.disabled = false; setPromoMsg(T('net_error', '⚠️ Erreur réseau. Réessayez.'), 'is-err'); });
+  }
+  if (promoBtn) promoBtn.addEventListener('click', applyPromo);
+  document.addEventListener('cart:change', function () { if (appliedPromo && promoInput && promoInput.value) applyPromo(); });
+
   function loadSumupSdk(cb) {
     if (window.SumUpCard) return cb();
     var s = document.createElement('script');
@@ -68,7 +94,7 @@
     confirmBox.innerHTML =
       '<div class="confirm confirm--pay">' +
         '<h2>' + T('pay_card_title', 'Paiement par carte') + '</h2>' +
-        '<p class="confirm__num">' + T('reference', 'Référence :') + ' <b>' + data.orderNumber + '</b> · ' + T('total_label', 'Total :') + ' <b>' + chf(data.total) + '</b></p>' +
+        '<p class="confirm__num">' + T('reference', 'Référence :') + ' <b>' + data.orderNumber + '</b> · ' + T('total_label', 'Total :') + ' <b>' + chf(data.total) + '</b>' + promoNote(data) + '</p>' +
         '<div id="sumup-card"></div>' +
         '<p class="confirm__twint-note" data-sumup-msg role="status" aria-live="polite"></p>' +
       '</div>';
@@ -104,7 +130,7 @@
     confirmBox.innerHTML =
       '<div class="confirm confirm--pay">' +
         '<h2>' + T('twint_pay_title', 'Paiement TWINT') + '</h2>' +
-        '<p class="confirm__num">' + T('reference', 'Référence :') + ' <b>' + data.orderNumber + '</b> · ' + T('total_label', 'Total :') + ' <b>' + chf(data.total) + '</b></p>' +
+        '<p class="confirm__num">' + T('reference', 'Référence :') + ' <b>' + data.orderNumber + '</b> · ' + T('total_label', 'Total :') + ' <b>' + chf(data.total) + '</b>' + promoNote(data) + '</p>' +
         '<div class="twint-qr" data-twint-qr></div>' +
         '<p class="confirm__twint-note" data-twint-msg role="status" aria-live="polite">' + T('twint_scan', 'Scannez ce QR code avec votre app TWINT pour payer.') + '</p>' +
       '</div>';
@@ -154,7 +180,7 @@
       '<div class="confirm">' +
         '<div class="confirm__check">✅</div>' +
         '<h2>' + T('thanks', 'Merci, commande enregistrée !') + '</h2>' +
-        '<p class="confirm__num">' + T('reference', 'Référence :') + ' <b>' + data.orderNumber + '</b> · ' + T('total_label', 'Total :') + ' <b>' + chf(data.total) + '</b></p>' +
+        '<p class="confirm__num">' + T('reference', 'Référence :') + ' <b>' + data.orderNumber + '</b> · ' + T('total_label', 'Total :') + ' <b>' + chf(data.total) + '</b>' + promoNote(data) + '</p>' +
         twintHtml +
         '<div class="confirm__actions"><a href="' + B + '/" class="btn btn--ghost">' + T('home', 'Accueil') + '</a><a href="' + B + '/boutique/" class="btn btn--gold">' + T('continue', 'Continuer mes achats') + '</a></div>' +
       '</div>';
@@ -196,7 +222,7 @@
 
     fetch('/.netlify/functions/create-order', {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ items: list, customer: customer, method: method, lang: (document.documentElement.lang || 'fr').slice(0, 2) }),
+      body: JSON.stringify({ items: list, customer: customer, method: method, lang: (document.documentElement.lang || 'fr').slice(0, 2), promoCode: appliedPromo ? appliedPromo.code : null }),
     }).then(function (r) { return r.json(); }).then(function (d) {
       if (d && d.ok) {
         if (d.method === 'sumup' && d.sumup && d.sumup.configured && d.sumup.checkoutId) showSumupWidget(d);

@@ -14,7 +14,7 @@ const L = (lang) => (T[lang] ? lang : 'fr');
 const T = {
   fr: {
     hi: 'Bonjour', thanks: 'Merci pour votre commande !', order: 'Commande', ref: 'Référence',
-    article: 'Article', qty: 'Qté', price: 'Prix', subtotal: 'Sous-total', shipping: 'Livraison', total: 'Total',
+    article: 'Article', qty: 'Qté', price: 'Prix', subtotal: 'Sous-total', shipping: 'Livraison', discount: 'Remise', total: 'Total',
     free: 'Offerte', retrait: 'Retrait en boutique (Le Bouveret)', poste: 'Livraison postale',
     addr: 'Adresse de livraison', pay: 'Paiement', paid: 'Payé ✅',
     confirm_sub: (n) => `Confirmation de votre commande ${n} — Coffre à Dom`,
@@ -34,7 +34,7 @@ const T = {
   },
   en: {
     hi: 'Hello', thanks: 'Thank you for your order!', order: 'Order', ref: 'Reference',
-    article: 'Item', qty: 'Qty', price: 'Price', subtotal: 'Subtotal', shipping: 'Shipping', total: 'Total',
+    article: 'Item', qty: 'Qty', price: 'Price', subtotal: 'Subtotal', shipping: 'Shipping', discount: 'Discount', total: 'Total',
     free: 'Free', retrait: 'In-store pickup (Le Bouveret)', poste: 'Postal delivery',
     addr: 'Delivery address', pay: 'Payment', paid: 'Paid ✅',
     confirm_sub: (n) => `Order confirmation ${n} — Coffre à Dom`,
@@ -54,7 +54,7 @@ const T = {
   },
   it: {
     hi: 'Ciao', thanks: 'Grazie per il tuo ordine!', order: 'Ordine', ref: 'Riferimento',
-    article: 'Articolo', qty: 'Qtà', price: 'Prezzo', subtotal: 'Subtotale', shipping: 'Spedizione', total: 'Totale',
+    article: 'Articolo', qty: 'Qtà', price: 'Prezzo', subtotal: 'Subtotale', shipping: 'Spedizione', discount: 'Sconto', total: 'Totale',
     free: 'Gratuita', retrait: 'Ritiro in negozio (Le Bouveret)', poste: 'Consegna postale',
     addr: 'Indirizzo di consegna', pay: 'Pagamento', paid: 'Pagato ✅',
     confirm_sub: (n) => `Conferma del tuo ordine ${n} — Coffre à Dom`,
@@ -74,7 +74,7 @@ const T = {
   },
   de: {
     hi: 'Hallo', thanks: 'Vielen Dank für deine Bestellung!', order: 'Bestellung', ref: 'Referenz',
-    article: 'Artikel', qty: 'Menge', price: 'Preis', subtotal: 'Zwischensumme', shipping: 'Versand', total: 'Total',
+    article: 'Artikel', qty: 'Menge', price: 'Preis', subtotal: 'Zwischensumme', shipping: 'Versand', discount: 'Rabatt', total: 'Total',
     free: 'Kostenlos', retrait: 'Abholung im Laden (Le Bouveret)', poste: 'Postversand',
     addr: 'Lieferadresse', pay: 'Zahlung', paid: 'Bezahlt ✅',
     confirm_sub: (n) => `Bestellbestätigung ${n} — Coffre à Dom`,
@@ -138,9 +138,13 @@ function itemsTable(items, t) {
 function totals(order, t) {
   const line = (k, v, b) => `<tr><td style="font-size:14px;padding:3px 0;${b ? 'font-weight:bold;font-size:16px;' : ''}">${k}</td><td align="right" style="font-size:14px;padding:3px 0;${b ? 'font-weight:bold;font-size:16px;' : ''}">${v}</td></tr>`;
   const ship = Number(order.shipping_fee) > 0 ? chf(order.shipping_fee) : t.free;
+  const disc = Number(order.discount) > 0
+    ? line(t.discount + (order.promo_code ? ` (${esc(order.promo_code)})` : ''), '−' + chf(order.discount))
+    : '';
   return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:6px 0 10px;">
     ${line(t.subtotal, chf(order.subtotal))}
     ${line(t.shipping, ship)}
+    ${disc}
     ${line(t.total, chf(order.total), true)}
   </table>`;
 }

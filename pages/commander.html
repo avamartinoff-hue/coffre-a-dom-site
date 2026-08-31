@@ -38,6 +38,15 @@
       </div>
       <label class="field"><span>Remarque</span><textarea name="remarque" rows="2" placeholder="Une précision sur votre commande ?"></textarea></label>
 
+      <div class="field promo-field">
+        <span>Code promo</span>
+        <div class="promo-row">
+          <input type="text" data-promo-input placeholder="Votre code" autocomplete="off" style="text-transform:uppercase" />
+          <button type="button" class="btn btn--ghost btn--sm" data-promo-apply>Appliquer</button>
+        </div>
+        <p class="promo-msg" data-promo-msg role="status" aria-live="polite"></p>
+      </div>
+
       <fieldset class="pay-methods">
         <legend>Mode de paiement</legend>
         <label class="pay-opt">

@@ -42,7 +42,7 @@
 
   /* ---------- Onglets ---------- */
   var tabs = document.querySelectorAll('.admin-tab');
-  var panels = { stats: document.querySelector('[data-panel="stats"]'), orders: document.querySelector('[data-panel="orders"]'), products: document.querySelector('[data-panel="products"]'), categories: document.querySelector('[data-panel="categories"]') };
+  var panels = { stats: document.querySelector('[data-panel="stats"]'), orders: document.querySelector('[data-panel="orders"]'), products: document.querySelector('[data-panel="products"]'), categories: document.querySelector('[data-panel="categories"]'), promos: document.querySelector('[data-panel="promos"]') };
   var loaded = {};
   function switchTab(name) {
     tabs.forEach(function (t) { t.classList.toggle('is-active', t.getAttribute('data-tab') === name); });
@@ -51,6 +51,7 @@
     if (name === 'orders') loadOrders();
     if (name === 'products') loadProducts();
     if (name === 'categories') loadCategoriesTab();
+    if (name === 'promos') loadPromos();
   }
   tabs.forEach(function (t) { t.addEventListener('click', function () { switchTab(t.getAttribute('data-tab')); }); });
 
@@ -109,9 +110,59 @@
     return '<div class="' + cls + '"' + attr + '><span class="stat-card__label">' + label + '</span><span class="stat-card__value">' + value + '</span><span class="stat-card__sub">' + sub + '</span></div>';
   }
 
+  /* ========== CODES PROMO ========== */
+  function loadPromos() {
+    panels.promos.innerHTML = '<p class="empty">Chargement…</p>';
+    api('GET', 'admin-promos').then(function (d) {
+      if (!d || !d.ok) { panels.promos.innerHTML = '<p class="empty">Erreur. As-tu joué la migration <b>supabase/promo.sql</b> ?</p>'; return; }
+      PROMOS = d.codes || [];
+      var head = '<div class="promo-head"><p class="ord-stage__hint">Codes en % ou en CHF, avec panier minimum, date d\'expiration et limite d\'utilisation.</p>' +
+        '<button class="btn btn--gold btn--sm" data-promonew>+ Nouveau code</button></div>';
+      if (!PROMOS.length) { panels.promos.innerHTML = head + '<p class="empty">Aucun code promo pour l\'instant.</p>'; return; }
+      var rows = PROMOS.map(function (p) {
+        var val = p.kind === 'fixed' ? chf(p.value) : (p.value + ' %');
+        var conds = [];
+        if (p.min_amount > 0) conds.push('min ' + chf(p.min_amount));
+        if (p.expires_at) conds.push('exp. ' + p.expires_at);
+        var uses = p.used_count + (p.max_uses != null ? ' / ' + p.max_uses : '');
+        return '<tr' + (p.active ? '' : ' class="promo-off"') + '>' +
+          '<td><b>' + esc(p.code) + '</b></td><td>' + val + '</td><td>' + (conds.join(' · ') || '—') + '</td><td>' + uses + '</td>' +
+          '<td><label class="tgl"><input type="checkbox" data-promotoggle="' + p.id + '"' + (p.active ? ' checked' : '') + '><span></span></label></td>' +
+          '<td class="promo-actions"><button class="linkbtn" data-promoedit="' + p.id + '">Modifier</button> · <button class="linkbtn" data-promodel="' + p.id + '">Suppr.</button></td></tr>';
+      }).join('');
+      panels.promos.innerHTML = head + '<div class="promo-table-wrap"><table class="promo-table"><thead><tr><th>Code</th><th>Remise</th><th>Conditions</th><th>Util.</th><th>Actif</th><th></th></tr></thead><tbody>' + rows + '</tbody></table></div>';
+    }).catch(function () { panels.promos.innerHTML = '<p class="empty">Erreur.</p>'; });
+  }
+  function promoModal(p) {
+    var isNew = !p;
+    p = p || { code: '', kind: 'percent', value: '', min_amount: 0, expires_at: '', max_uses: '', active: true };
+    var ov = document.createElement('div'); ov.className = 'modal-ov';
+    ov.innerHTML = '<div class="modal"><button class="modal__x" data-mx>✕</button>' +
+      '<h3>' + (isNew ? 'Nouveau code promo' : 'Modifier le code') + '</h3>' +
+      '<label class="field"><span>Code</span><input data-pf="code" value="' + esc(p.code) + '" placeholder="Ex. BIENVENUE10" style="text-transform:uppercase"></label>' +
+      '<div class="form__row"><label class="field"><span>Type</span><select data-pf="kind"><option value="percent"' + (p.kind !== 'fixed' ? ' selected' : '') + '>Pourcentage (%)</option><option value="fixed"' + (p.kind === 'fixed' ? ' selected' : '') + '>Montant fixe (CHF)</option></select></label>' +
+        '<label class="field"><span>Valeur</span><input data-pf="value" type="number" step="0.01" value="' + esc(p.value) + '"></label></div>' +
+      '<div class="form__row"><label class="field"><span>Panier minimum (CHF)</span><input data-pf="min_amount" type="number" step="0.05" value="' + esc(p.min_amount || 0) + '"></label>' +
+        '<label class="field"><span>Limite d\'utilisations</span><input data-pf="max_uses" type="number" value="' + esc(p.max_uses == null ? '' : p.max_uses) + '" placeholder="illimité"></label></div>' +
+      '<label class="field"><span>Date d\'expiration (optionnel)</span><input data-pf="expires_at" type="date" value="' + esc(p.expires_at || '') + '"></label>' +
+      '<div class="modal__checks"><label><input type="checkbox" data-pf="active"' + (p.active ? ' checked' : '') + '> Actif</label></div>' +
+      '<div class="modal__foot">' + (isNew ? '' : '<button class="btn btn--ghost btn--sm pt-del" data-pdel>Supprimer</button>') + '<span style="flex:1"></span><button class="btn btn--gold" data-psave>' + (isNew ? 'Créer' : 'Enregistrer') + '</button></div></div>';
+    document.body.appendChild(ov);
+    function close() { ov.remove(); }
+    ov.addEventListener('click', function (e) { if (e.target === ov || e.target.hasAttribute('data-mx')) close(); });
+    ov.querySelector('[data-psave]').addEventListener('click', function () {
+      var g = function (n) { var el = ov.querySelector('[data-pf="' + n + '"]'); if (!el) return ''; return el.type === 'checkbox' ? el.checked : el.value; };
+      var fields = { code: g('code'), kind: g('kind'), value: g('value'), min_amount: g('min_amount'), max_uses: g('max_uses'), expires_at: g('expires_at'), active: g('active') };
+      var btn = ov.querySelector('[data-psave]'); btn.disabled = true;
+      var req = isNew ? api('POST', 'admin-promos', { action: 'create', fields: fields }) : api('POST', 'admin-promos', { action: 'update', id: p.id, fields: fields });
+      req.then(function (r) { if (r && r.ok) { close(); showFlash(isNew ? 'Code créé.' : 'Code enregistré.', true); loadPromos(); } else { btn.disabled = false; showFlash((r && r.error) || 'Erreur.', false); } });
+    });
+    if (!isNew) ov.querySelector('[data-pdel]').addEventListener('click', function () { if (!confirm('Supprimer ce code ?')) return; api('POST', 'admin-promos', { action: 'delete', id: p.id }).then(function (r) { if (r && r.ok) { close(); showFlash('Code supprimé.', true); loadPromos(); } }); });
+  }
+
   /* ========== COMMANDES (suivi par étapes) ========== */
   var STATUS = { pending: '⏳ En attente', paid: '✅ Payée', failed: '❌ Échec', cancelled: '🚫 Annulée' };
-  var ORDERS = [];
+  var ORDERS = [], PROMOS = [];
   // Étape de traitement d'une commande
   function orderStage(o) {
     if (o.payment_status === 'cancelled' || o.payment_status === 'failed') return 'archived';
@@ -509,6 +560,12 @@
     // Statistiques : sélecteur de période
     var sp = e.target.closest('[data-statsperiod]');
     if (sp) loadStats(parseInt(sp.getAttribute('data-statsperiod'), 10));
+    // Codes promo
+    if (e.target.closest('[data-promonew]')) promoModal();
+    var ped = e.target.closest('[data-promoedit]');
+    if (ped) { var pc = PROMOS.filter(function (x) { return x.id === ped.getAttribute('data-promoedit'); })[0]; if (pc) promoModal(pc); }
+    var pdl = e.target.closest('[data-promodel]');
+    if (pdl) { if (confirm('Supprimer ce code promo ?')) api('POST', 'admin-promos', { action: 'delete', id: pdl.getAttribute('data-promodel') }).then(function (r) { if (r && r.ok) { showFlash('Code supprimé.', true); loadPromos(); } }); }
     // Produits : éditer
     var pe = e.target.closest('[data-pedit]');
     if (pe) { var pr = PRODUCTS.filter(function (x) { return x.slug === pe.getAttribute('data-pedit'); })[0]; if (pr) productModal(pr); }
@@ -543,6 +600,8 @@
     if (ps) { SELECTED[ps.getAttribute('data-psel')] = ps.checked; renderProducts(); }
     var pa = e.target.closest('[data-psel-all]');
     if (pa) { PRODUCTS.forEach(function (p) { SELECTED[p.slug] = pa.checked; }); renderProducts(); }
+    var pt = e.target.closest('[data-promotoggle]');
+    if (pt) { pt.disabled = true; api('POST', 'admin-promos', { action: 'toggle', id: pt.getAttribute('data-promotoggle'), active: pt.checked }).then(function (r) { pt.disabled = false; if (!r || !r.ok) { pt.checked = !pt.checked; showFlash('Erreur.', false); } }); }
   });
 
   /* ---------- Login ---------- */

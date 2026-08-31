@@ -7,6 +7,7 @@
    Env requis : SUPABASE_URL, SUPABASE_SECRET_KEY
    Env optionnels : TWINT_PHONE, SHIPPING_POSTE_FEE
    ========================================================= */
+const { validatePromo, bumpUsage } = require('./_promo.js');
 const H = { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Headers': 'Content-Type', 'Access-Control-Allow-Methods': 'POST, OPTIONS' };
 const json = (code, body) => ({ statusCode: code, headers: H, body: JSON.stringify(body) });
 
@@ -97,7 +98,14 @@ exports.handler = async (event) => {
     }
     subtotal = Math.round(subtotal * 100) / 100;
     const shipping = mode === 'poste' ? Number(process.env.SHIPPING_POSTE_FEE || 8.9) : 0;
-    const total = Math.round((subtotal + shipping) * 100) / 100;
+
+    // Code promo (re-validé côté serveur — jamais la valeur du client)
+    let discount = 0, promoApplied = null;
+    if (payload.promoCode) {
+      const pr = await validatePromo(payload.promoCode, subtotal);
+      if (pr.valid) { discount = pr.discount; promoApplied = pr; }
+    }
+    const total = Math.max(0, Math.round((subtotal + shipping - discount) * 100) / 100);
 
     const noteBits = [];
     if (c.remarque) noteBits.push(c.remarque);
@@ -107,8 +115,10 @@ exports.handler = async (event) => {
       order_number: num, email: c.email.trim().toLowerCase(), phone: c.telephone || null,
       full_name: c.nom, shipping_mode: mode, payment_method: method, lang,
       subtotal, shipping_fee: shipping, total, note: noteBits.length ? noteBits.join(' · ') : null,
+      promo_code: promoApplied ? promoApplied.code : null, discount,
       shipping_address: mode === 'poste' ? { rue: String(c.rue || '').trim(), numero: String(c.numero || '').trim(), npa, localite: String(c.localite || '').trim(), pays: 'CH' } : null,
     });
+    if (promoApplied) bumpUsage(promoApplied.id);
 
     try {
       await db.post('order_items', lines.map((l) => ({ ...l, order_id: order.id })), 'return=minimal');
@@ -117,7 +127,7 @@ exports.handler = async (event) => {
       throw e;
     }
 
-    const resp = { ok: true, orderId: order.id, orderNumber: num, total, method };
+    const resp = { ok: true, orderId: order.id, orderNumber: num, total, method, discount, promoCode: promoApplied ? promoApplied.code : null };
     if (method === 'twint') {
       resp.twint = {
         // auto = paiement TWINT automatique (QR + confirmation) si les clés API sont posées ;
