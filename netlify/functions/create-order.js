@@ -85,24 +85,21 @@ exports.handler = async (event) => {
 
     const lines = [];
     let subtotal = 0;
-    let hasPreorder = false;
     for (const it of items) {
       const p = bySlug[it.slug];
       const qty = Math.max(1, Math.min(99, parseInt(it.qty, 10) || 1));
       if (!p || !p.visible) return json(400, { ok: false, error: `Produit indisponible : ${it.slug}` });
       if (p.price <= 0) return json(400, { ok: false, error: `Produit sur demande : ${p.name}` });
-      const preorderLine = !p.in_stock || it.preorder;
-      if (preorderLine) hasPreorder = true;
+      if (!p.in_stock) return json(400, { ok: false, error: `Produit en rupture de stock : ${p.name}` });
       const line = Math.round(Number(p.price) * qty * 100) / 100;
       subtotal += line;
-      lines.push({ product_slug: p.slug, name: (preorderLine ? '⏳ ' : '') + p.name, unit_price: Number(p.price), qty, line_total: line });
+      lines.push({ product_slug: p.slug, name: p.name, unit_price: Number(p.price), qty, line_total: line });
     }
     subtotal = Math.round(subtotal * 100) / 100;
     const shipping = mode === 'poste' ? Number(process.env.SHIPPING_POSTE_FEE || 8.9) : 0;
     const total = Math.round((subtotal + shipping) * 100) / 100;
 
     const noteBits = [];
-    if (hasPreorder) noteBits.push('⏳ PRÉCOMMANDE — pièce(s) à réserver / payée(s) d\'avance');
     if (c.remarque) noteBits.push(c.remarque);
 
     const num = orderNumber();

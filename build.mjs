@@ -322,11 +322,8 @@ const pDesc = (p) => { const tr = p.translations && p.translations[LANG]; return
 const isPreorder = (p) => /pr[ée]command|disponibilit[ée] pr[ée]vu/i.test(p.desc || '');
 const releaseDate = (p) => ((p.desc || '').match(/(\d{1,2}[.\/]\d{1,2}[.\/]\d{2,4})/) || [])[1] || null;
 function productBadges(p) {
-  const pre = isPreorder(p);
   return (p.onSale ? `<span class="pcard__badge pcard__badge--sale">${t('badge.sale')}</span>` : '') +
-    (!p.inStock ? (pre
-      ? `<span class="pcard__badge pcard__badge--pre">${t('badge.preorder')}</span>`
-      : `<span class="pcard__badge pcard__badge--out">${t('badge.out')}</span>`) : '');
+    (!p.inStock ? `<span class="pcard__badge pcard__badge--out">${t('badge.out')}</span>` : '');
 }
 function productCard(p) {
   const cat = catBySlug[p.category];
@@ -336,12 +333,11 @@ function productCard(p) {
     ? `<img class="pcard__img" src="${esc(imgDisplay(p.image, 440))}" alt="${esc(nm)}" loading="lazy" decoding="async" />`
     : `<span class="pcard__emoji">${icon}</span>`;
   const canBuy = p.inStock && p.price > 0;
-  const canPre = !p.inStock && p.price > 0;
   const action = canBuy
     ? `<button class="pcard__add" type="button" data-add data-slug="${esc(p.slug)}" data-name="${esc(nm)}" data-price="${p.price}" aria-label="${esc(t('card.add_aria', { name: nm }))}">${t('card.add')}</button>`
-    : canPre
-      ? `<button class="pcard__add pcard__add--pre" type="button" data-add data-preorder="1" data-slug="${esc(p.slug)}" data-name="${esc(nm)}" data-price="${p.price}" aria-label="${esc(t('card.preorder_aria', { name: nm }))}">${t('card.preorder')}</button>`
-      : `<span class="pcard__soldout">${t('card.on_request')}</span>`;
+    : (p.price > 0
+      ? `<span class="pcard__soldout">${t('badge.out')}</span>`
+      : `<span class="pcard__soldout">${t('card.on_request')}</span>`);
   const chain = catChain(p.category);
   return `<a class="pcard" href="${prodUrl(p.slug)}" data-name="${esc(nm)}" data-cats="${chain.join(' ')}" data-stock="${p.inStock ? 1 : 0}" data-sale="${p.onSale ? 1 : 0}" data-price="${Number(p.price) || 0}" data-created="${p.createdAt ? (Date.parse(p.createdAt) || 0) : 0}">
     <div class="pcard__media${p.image ? ' has-img' : ''}">${productBadges(p)}${media}</div>
@@ -567,15 +563,7 @@ for (const p of products) {
     ? `<div class="product__actions">${qtyBlock}
             <button class="btn btn--gold" type="button" data-add data-slug="${esc(p.slug)}" data-name="${esc(nm)}" data-price="${p.price}" data-qty-source>${t('prod.add_cart')}</button>
           </div>`
-    : (p.price > 0
-      ? `<div class="product__actions">${qtyBlock}
-            <button class="btn btn--gold" type="button" data-add data-preorder="1" data-slug="${esc(p.slug)}" data-name="${esc(nm)}" data-price="${p.price}" data-qty-source>${t('prod.preorder')}</button>
-          </div>
-          <div class="preorder-note">
-            <p><strong>${pre ? t('prod.pre_title') : t('prod.oncmd_title')}${release ? ` — ${t('prod.pre_avail')} ${esc(release)}` : ''}.</strong> ${t('prod.pre_body')}</p>
-            <p class="preorder-note__alt">${t('prod.pre_alt')}</p>
-          </div>`
-      : `<p class="product__unavailable">${t('prod.unavail')}</p>`);
+    : `<p class="product__unavailable">${p.price > 0 ? t('badge.out') : t('prod.unavail')}</p>`;
   const body = `
   <section class="section section--page">
     <div class="container">
@@ -793,12 +781,9 @@ const feedItems = products
   .map((p) => {
     const link = SITE + prodUrl(p.slug);
     const image = /^https?:/.test(p.image) ? p.image : SITE + '/' + p.image;
-    const pre = isPreorder(p);
-    const relISO = releaseISO(p);
-    // preorder valide seulement avec une date d'annonce ; sinon on retombe sur les stocks réels
-    let availability, availDate = '';
-    if (pre && relISO) { availability = 'preorder'; availDate = `\n      <g:availability_date>${relISO}</g:availability_date>`; }
-    else availability = p.inStock ? 'in_stock' : 'out_of_stock';
+    // Pas de précommande : disponibilité = en stock / rupture uniquement
+    const availability = p.inStock ? 'in_stock' : 'out_of_stock';
+    const availDate = '';
     const desc = (p.seoDesc && p.seoDesc.trim()) ? p.seoDesc.trim() : (p.desc || p.name);
     const type = catPath(p.category);
     return `    <item>
