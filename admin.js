@@ -62,30 +62,40 @@
       return '<div class="chart__col" title="' + d + ' : ' + (fmt ? fmt(v) : v) + '"><span class="chart__bar" style="height:' + Math.max(2, h) + '%"></span></div>';
     }).join('') + '</div>';
   }
-  function loadStats() {
+  var STATS_PERIOD = 30;
+  var PERIOD_LABELS = { 1: 'Aujourd\'hui', 7: '7 jours', 30: '30 jours', 90: '90 jours' };
+  function periodSelector() {
+    return '<div class="period-sel">' + [1, 7, 30, 90].map(function (n) {
+      return '<button type="button" class="period-btn' + (n === STATS_PERIOD ? ' is-active' : '') + '" data-statsperiod="' + n + '">' + PERIOD_LABELS[n] + '</button>';
+    }).join('') + '</div>';
+  }
+  function loadStats(days) {
+    if (days) STATS_PERIOD = days;
     panels.stats.innerHTML = '<p class="empty">Chargement…</p>';
-    api('GET', 'admin-stats').then(function (d) {
+    api('GET', 'admin-stats?days=' + STATS_PERIOD).then(function (d) {
       if (!d || !d.ok) { panels.stats.innerHTML = '<p class="empty">Erreur de chargement.</p>'; return; }
       var v = d.visits;
       var toValidate = d.toValidate || 0, toShip = d.toShip || 0;
+      var lbl = PERIOD_LABELS[d.periodDays] || (d.periodDays + ' j');
+      var lblLow = d.periodDays === 1 ? 'aujourd\'hui' : ('sur ' + lbl.toLowerCase());
       panels.stats.innerHTML =
         '<p class="dash-section-label">À traiter</p>' +
         '<div class="stat-cards stat-cards--actions">' +
           statCard('À valider', toValidate, 'paiement à confirmer', 'action' + (toValidate ? ' is-alert' : ''), 'orders') +
           statCard('À livrer', toShip, 'payées, à expédier / remettre', 'action' + (toShip ? ' is-alert' : ''), 'orders') +
         '</div>' +
-        '<p class="dash-section-label">Chiffres</p>' +
+        '<div class="dash-period"><p class="dash-section-label">Période</p>' + periodSelector() + '</div>' +
         '<div class="stat-cards">' +
+          statCard('CA ' + lbl, chf(d.revenuePeriod), d.ordersPeriod + ' commande' + (d.ordersPeriod > 1 ? 's' : '') + ' ' + lblLow) +
+          statCard('Visites ' + lbl, v ? v.period : '—', v ? (v.today + ' aujourd\'hui') : 'compteur à activer') +
           statCard('CA aujourd\'hui', chf(d.revenueToday), d.ordersToday + ' commande' + (d.ordersToday > 1 ? 's' : '') + ' ce jour') +
           statCard('Chiffre d\'affaires', chf(d.revenue), 'total encaissé') +
-          statCard('CA 30 jours', chf(d.revenue30), 'sur les 30 derniers jours') +
           statCard('Commandes', d.ordersTotal, d.byStatus.paid + ' payées · ' + d.byStatus.pending + ' en attente') +
           statCard('Produits en ligne', d.products.visible + '/' + d.products.total, d.products.inStock + ' en stock') +
-          statCard('Visites', v ? v.total : '—', v ? (v.today + ' aujourd\'hui') : 'compteur à activer') +
         '</div>' +
         '<div class="dash-grid">' +
-          '<div class="dash-box"><h3>Chiffre d\'affaires (30 j)</h3>' + bars(d.revenueByDay, chf) + '</div>' +
-          (v ? '<div class="dash-box"><h3>Visites (30 j)</h3>' + bars(v.last30) + '</div>' : '') +
+          '<div class="dash-box"><h3>Chiffre d\'affaires (' + lbl + ')</h3>' + bars(d.revenueByDay, chf) + '</div>' +
+          (v ? '<div class="dash-box"><h3>Visites (' + lbl + ')</h3>' + bars(v.byDay) + '</div>' : '') +
         '</div>' +
         '<div class="dash-grid">' +
           '<div class="dash-box"><h3>Top produits (payés)</h3>' + (d.topProducts.length ? '<ul class="rank">' + d.topProducts.map(function (p) { return '<li><span>' + esc(p.name) + '</span><b>' + chf(p.revenue) + '</b><small>' + p.qty + ' vendus</small></li>'; }).join('') + '</ul>' : '<p class="empty">Aucune vente payée pour l\'instant.</p>') + '</div>' +
@@ -496,6 +506,9 @@
     // Carte statistique cliquable → onglet
     var gt = e.target.closest('[data-goto]');
     if (gt) switchTab(gt.getAttribute('data-goto'));
+    // Statistiques : sélecteur de période
+    var sp = e.target.closest('[data-statsperiod]');
+    if (sp) loadStats(parseInt(sp.getAttribute('data-statsperiod'), 10));
     // Produits : éditer
     var pe = e.target.closest('[data-pedit]');
     if (pe) { var pr = PRODUCTS.filter(function (x) { return x.slug === pe.getAttribute('data-pedit'); })[0]; if (pr) productModal(pr); }

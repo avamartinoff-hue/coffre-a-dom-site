@@ -28,12 +28,16 @@ exports.handler = async (event) => {
     }
     const products = await db.get('products?select=in_stock,visible&limit=5000');
 
+    // Période demandée (nombre de jours) : 1 (aujourd'hui) · 7 · 30 · 90 · 365. Défaut 30.
+    const qsDays = parseInt((event.queryStringParameters || {}).days, 10);
+    const N = [1, 7, 30, 90].includes(qsDays) ? qsDays : 30;
+
     const byStatus = { pending: 0, paid: 0, failed: 0, cancelled: 0 };
-    let revenue = 0, revenue30 = 0;
+    let revenue = 0, revenuePeriod = 0, ordersPeriod = 0;
     let toValidate = 0, toShip = 0; // à valider (paiement en attente) · à livrer (payée, non expédiée)
     const today = dayStr(new Date());
     let revenueToday = 0, ordersToday = 0;
-    const days = {}; for (let i = 29; i >= 0; i--) { const d = new Date(); d.setUTCDate(d.getUTCDate() - i); days[dayStr(d)] = 0; }
+    const days = {}; for (let i = N - 1; i >= 0; i--) { const d = new Date(); d.setUTCDate(d.getUTCDate() - i); days[dayStr(d)] = 0; }
 
     orders.forEach((o) => {
       byStatus[o.payment_status] = (byStatus[o.payment_status] || 0) + 1;
@@ -41,10 +45,11 @@ exports.handler = async (event) => {
       if (o.payment_status === 'paid' && !o.fulfilled_at) toShip++;
       const d = (o.created_at || '').slice(0, 10);
       if (d === today) ordersToday++;
+      if (d in days) ordersPeriod++;
       if (o.payment_status === 'paid') {
         const t = Number(o.total) || 0;
         revenue += t;
-        if (d in days) { days[d] += t; revenue30 += t; }
+        if (d in days) { days[d] += t; revenuePeriod += t; }
         if (d === today) revenueToday += t;
       }
     });
@@ -67,25 +72,27 @@ exports.handler = async (event) => {
     let visits = null;
     try {
       const pv = await db.get('page_views?select=path,day&limit=100000');
-      const vDays = {}; for (let i = 29; i >= 0; i--) { const d = new Date(); d.setUTCDate(d.getUTCDate() - i); vDays[dayStr(d)] = 0; }
+      const vDays = {}; for (let i = N - 1; i >= 0; i--) { const d = new Date(); d.setUTCDate(d.getUTCDate() - i); vDays[dayStr(d)] = 0; }
       const paths = {};
-      let total = 0, visitsToday = 0;
+      let total = 0, visitsToday = 0, visitsPeriod = 0;
       pv.forEach((v) => {
         total++;
-        if (v.day in vDays) vDays[v.day]++;
+        if (v.day in vDays) { vDays[v.day]++; visitsPeriod++; }
         if (v.day === today) visitsToday++;
         const p = v.path || '/'; paths[p] = (paths[p] || 0) + 1;
       });
       const topPaths = Object.entries(paths).sort((a, b) => b[1] - a[1]).slice(0, 8).map(([path, n]) => ({ path, n }));
-      visits = { total, today: visitsToday, last30: vDays, topPaths };
+      visits = { total, today: visitsToday, period: visitsPeriod, byDay: vDays, topPaths };
     } catch (e) { visits = null; }
 
     return json(200, {
       ok: true,
+      periodDays: N,
       revenue: Math.round(revenue * 100) / 100,
-      revenue30: Math.round(revenue30 * 100) / 100,
+      revenuePeriod: Math.round(revenuePeriod * 100) / 100,
       revenueToday: Math.round(revenueToday * 100) / 100,
       ordersTotal: orders.length,
+      ordersPeriod,
       ordersToday,
       byStatus,
       toValidate,
