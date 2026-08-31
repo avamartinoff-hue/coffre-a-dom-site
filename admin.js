@@ -101,6 +101,7 @@
 
   /* ========== COMMANDES (suivi par étapes) ========== */
   var STATUS = { pending: '⏳ En attente', paid: '✅ Payée', failed: '❌ Échec', cancelled: '🚫 Annulée' };
+  var ORDERS = [];
   // Étape de traitement d'une commande
   function orderStage(o) {
     if (o.payment_status === 'cancelled' || o.payment_status === 'failed') return 'archived';
@@ -132,6 +133,7 @@
       a += '<button class="btn btn--gold btn--sm" data-oset="paid" data-id="' + o.id + '">✓ Marquer payée</button>';
       a += '<button class="btn btn--ghost btn--sm" data-oset="pending" data-id="' + o.id + '">↩ En attente</button>';
     }
+    a += '<button class="btn btn--ghost btn--sm" data-oedit="' + o.id + '">✏️ Modifier</button>';
     var badge = STATUS[o.payment_status] || o.payment_status;
     if (o.fulfilled_at) badge += ' · ' + (o.shipping_mode === 'poste' ? '📦 Expédiée' : '🏪 Remise');
     return '<article class="ord ord--' + o.payment_status + (o.fulfilled_at ? ' ord--fulfilled' : '') + '">' +
@@ -148,6 +150,7 @@
     panels.orders.innerHTML = '<p class="empty">Chargement…</p>';
     api('GET', 'admin-orders').then(function (d) {
       if (!d || !d.ok) { panels.orders.innerHTML = '<p class="empty">Erreur.</p>'; return; }
+      ORDERS = d.orders || [];
       if (!d.orders.length) { panels.orders.innerHTML = '<p class="empty">Aucune commande pour l\'instant.</p>'; return; }
       var groups = { validate: [], ship: [], done: [], archived: [] };
       d.orders.forEach(function (o) { groups[orderStage(o)].push(o); });
@@ -164,6 +167,47 @@
           body + '</section>';
       }).join('');
     }).catch(function () {});
+  }
+
+  function orderModal(o) {
+    var a = o.shipping_address || {};
+    var isPoste = o.shipping_mode === 'poste';
+    var ov = document.createElement('div');
+    ov.className = 'modal-ov';
+    ov.innerHTML =
+      '<div class="modal"><button class="modal__x" data-mx>✕</button>' +
+        '<h3>Modifier la commande ' + esc(o.order_number) + '</h3>' +
+        '<label class="field"><span>Nom du client</span><input data-of="full_name" value="' + esc(o.full_name || '') + '"></label>' +
+        '<div class="form__row"><label class="field"><span>E-mail</span><input data-of="email" type="email" value="' + esc(o.email || '') + '"></label>' +
+          '<label class="field"><span>Téléphone</span><input data-of="phone" value="' + esc(o.phone || '') + '"></label></div>' +
+        '<label class="field"><span>Livraison</span><select data-of="shipping_mode"><option value="retrait"' + (!isPoste ? ' selected' : '') + '>Retrait en boutique</option><option value="poste"' + (isPoste ? ' selected' : '') + '>Livraison postale</option></select></label>' +
+        '<div data-oaddr' + (isPoste ? '' : ' hidden') + '>' +
+          '<div class="form__row"><label class="field"><span>Rue</span><input data-oa="rue" value="' + esc(a.rue || '') + '"></label>' +
+            '<label class="field"><span>N°</span><input data-oa="numero" value="' + esc(a.numero || '') + '"></label></div>' +
+          '<div class="form__row"><label class="field"><span>NPA</span><input data-oa="npa" inputmode="numeric" maxlength="4" value="' + esc(a.npa || '') + '"></label>' +
+            '<label class="field"><span>Localité</span><input data-oa="localite" value="' + esc(a.localite || '') + '"></label></div>' +
+        '</div>' +
+        '<label class="field"><span>Total (CHF) <em class="seo-hint">sous-total recalculé automatiquement</em></span><input data-of="total" type="number" step="0.05" value="' + esc(o.total) + '"></label>' +
+        '<label class="field"><span>Note interne</span><textarea data-of="note" rows="2">' + esc(o.note || '') + '</textarea></label>' +
+        '<div class="modal__foot"><span style="flex:1"></span><button class="btn btn--gold" data-osave>Enregistrer</button></div>' +
+      '</div>';
+    document.body.appendChild(ov);
+    function close() { ov.remove(); }
+    ov.addEventListener('click', function (e) { if (e.target === ov || e.target.hasAttribute('data-mx')) close(); });
+    ov.querySelector('[data-of="shipping_mode"]').addEventListener('change', function (e) { ov.querySelector('[data-oaddr]').hidden = e.target.value !== 'poste'; });
+    ov.querySelector('[data-osave]').addEventListener('click', function () {
+      var g = function (n) { var el = ov.querySelector('[data-of="' + n + '"]'); return el ? el.value : ''; };
+      var fields = { full_name: g('full_name'), email: g('email'), phone: g('phone'), shipping_mode: g('shipping_mode'), note: g('note'), total: g('total') };
+      if (fields.shipping_mode === 'poste') {
+        var ga = function (n) { var el = ov.querySelector('[data-oa="' + n + '"]'); return el ? el.value.trim() : ''; };
+        fields.shipping_address = { rue: ga('rue'), numero: ga('numero'), npa: ga('npa'), localite: ga('localite') };
+      } else { fields.shipping_address = null; }
+      var btn = ov.querySelector('[data-osave]'); btn.disabled = true; btn.textContent = 'Enregistrement…';
+      api('POST', 'admin-orders', { action: 'update-order', orderId: o.id, fields: fields }).then(function (r) {
+        if (r && r.ok) { close(); showFlash('Commande mise à jour.', true); loadOrders(); }
+        else { btn.disabled = false; btn.textContent = 'Enregistrer'; showFlash((r && r.error) || 'Erreur.', false); }
+      }).catch(function () { btn.disabled = false; btn.textContent = 'Enregistrer'; });
+    });
   }
 
   /* ========== PRODUITS ========== */
@@ -446,6 +490,9 @@
     // Commandes : expédition / remise
     var of = e.target.closest('[data-ofulfill]');
     if (of) { of.disabled = true; api('POST', 'admin-orders', { action: 'set-fulfillment', orderId: of.getAttribute('data-id'), fulfilled: of.getAttribute('data-ofulfill') === '1' }).then(function (r) { if (r && r.ok) loadOrders(); else of.disabled = false; }); }
+    // Commandes : édition
+    var oe = e.target.closest('[data-oedit]');
+    if (oe) { var ord = ORDERS.filter(function (x) { return x.id === oe.getAttribute('data-oedit'); })[0]; if (ord) orderModal(ord); }
     // Carte statistique cliquable → onglet
     var gt = e.target.closest('[data-goto]');
     if (gt) switchTab(gt.getAttribute('data-goto'));

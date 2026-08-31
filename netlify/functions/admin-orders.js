@@ -62,6 +62,28 @@ exports.handler = async (event) => {
         }
         return json(200, { ok: true });
       }
+      if (action === 'update-order') {
+        const f = JSON.parse(event.body || '{}').fields || {};
+        if (!orderId) return json(400, { ok: false, error: 'orderId requis.' });
+        const patch = {};
+        if (typeof f.full_name === 'string' && f.full_name.trim()) patch.full_name = f.full_name.trim();
+        if (typeof f.email === 'string' && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(f.email.trim())) patch.email = f.email.trim().toLowerCase();
+        if ('phone' in f) patch.phone = f.phone ? String(f.phone).trim() : null;
+        if (f.shipping_mode === 'poste' || f.shipping_mode === 'retrait') patch.shipping_mode = f.shipping_mode;
+        if ('shipping_address' in f) {
+          const a = f.shipping_address;
+          patch.shipping_address = (a && (a.rue || a.localite)) ? { rue: String(a.rue || '').trim(), numero: String(a.numero || '').trim(), npa: String(a.npa || '').trim(), localite: String(a.localite || '').trim(), pays: 'CH' } : null;
+        }
+        if ('note' in f) patch.note = f.note ? String(f.note).trim() : null;
+        if (f.total != null && f.total !== '' && !isNaN(Number(f.total))) {
+          const [o] = await db.get(`orders?select=shipping_fee&id=eq.${encodeURIComponent(orderId)}`);
+          patch.total = Math.round(Number(f.total) * 100) / 100;
+          patch.subtotal = Math.max(0, Math.round((patch.total - Number((o && o.shipping_fee) || 0)) * 100) / 100);
+        }
+        if (!Object.keys(patch).length) return json(400, { ok: false, error: 'Rien à modifier.' });
+        await db.patch(`orders?id=eq.${encodeURIComponent(orderId)}`, patch);
+        return json(200, { ok: true });
+      }
       if (action === 'set-fulfillment') {
         const { fulfilled } = JSON.parse(event.body || '{}');
         if (!orderId) return json(400, { ok: false, error: 'orderId requis.' });
