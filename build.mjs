@@ -190,27 +190,19 @@ const footerTpl = read('partials/footer.html');
 
 /* mega-menu built from the category tree */
 function buildMegaMenu() {
-  const col = (parentSlug) => {
-    const parent = catBySlug[parentSlug];
-    const kids = childrenOf(parentSlug).filter(catVisible);
-    return `<div class="mega__col">
-      <a class="mega__title" href="${catUrl(parentSlug)}">${esc(cName(parent))}</a>
-      <ul>${kids.map((k) => `<li><a href="${catUrl(k.slug)}">${esc(cName(k))}</a></li>`).join('')}</ul>
-    </div>`;
+  const MAX = 7; // menu épuré : on ne montre que les principales, « Tout voir » pour le reste
+  const li = (k, withIcon) => `<li><a href="${catUrl(k.slug)}">${withIcon && k.icon ? esc(k.icon) + ' ' : ''}${esc(cName(k))}</a></li>`;
+  const listCol = (titleHtml, titleUrl, items, moreUrl, withIcon) => {
+    const shown = items.slice(0, MAX).map((k) => li(k, withIcon)).join('');
+    const more = items.length > MAX ? `<li class="mega__more"><a href="${moreUrl}">${t('mega.see_all')}</a></li>` : '';
+    return `<div class="mega__col"><a class="mega__title" href="${titleUrl}">${titleHtml}</a><ul>${shown}${more}</ul></div>`;
   };
   const cardsUmbrella = 'jeu-de-cartes-a-collectionner';
-  const pokemon = col('pokemon-cartes');
-  // "autres univers" = children of umbrella except pokemon-cartes
+  const pokemon = listCol(esc(cName(catBySlug['pokemon-cartes'])), catUrl('pokemon-cartes'), childrenOf('pokemon-cartes').filter(catVisible), catUrl('pokemon-cartes'), false);
   const autres = childrenOf(cardsUmbrella).filter((c) => c.slug !== 'pokemon-cartes' && catVisible(c));
-  const autresCol = `<div class="mega__col">
-      <a class="mega__title" href="${catUrl(cardsUmbrella)}">${t('mega.others')}</a>
-      <ul>${autres.map((k) => `<li><a href="${catUrl(k.slug)}">${esc(cName(k))}</a></li>`).join('')}</ul>
-    </div>`;
+  const autresCol = listCol(t('mega.others'), catUrl(cardsUmbrella), autres, catUrl(cardsUmbrella), false);
   const horsCartes = topCats.filter((c) => c.slug !== cardsUmbrella && catVisible(c));
-  const horsCol = `<div class="mega__col">
-      <a class="mega__title" href="/boutique/">${t('mega.non_cards')}</a>
-      <ul>${horsCartes.map((k) => `<li><a href="${catUrl(k.slug)}">${esc(k.icon || '')} ${esc(cName(k))}</a></li>`).join('')}</ul>
-    </div>`;
+  const horsCol = listCol(t('mega.non_cards'), '/boutique/', horsCartes, '/boutique/', true);
   return `<div class="mega">${pokemon}${autresCol}${horsCol}
       <div class="mega__promo">
         <p class="mega__promo-k">${t('mega.mystery_k')}</p>

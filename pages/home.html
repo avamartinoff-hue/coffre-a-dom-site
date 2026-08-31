@@ -5,23 +5,23 @@
 
   <div class="hero__inner hero--split">
     <div class="hero__text">
-      <p class="eyebrow reveal">Boutique &amp; Lieu Vivant — Le Bouveret 🇨🇭</p>
+      <p class="eyebrow reveal">Boutique en ligne · Le Bouveret 🇨🇭</p>
       <h1 class="hero__title reveal">
-        Le Coffre est ouvert,<br />
-        <span class="grad">l'aventure vous appelle&nbsp;!</span>
+        Cartes Pokémon, TCG &amp;<br />
+        <span class="grad">trésors geek à collectionner</span>
       </h1>
       <p class="hero__sub reveal">
-        Un repaire ludique &amp; vintage où l'on vient chercher ses cartes Pokémon,
-        défier une console, ouvrir un coffre mystère et surtout&nbsp;: se rassembler.
+        Cartes à l'unité, coffrets scellés, figurines et coups de cœur vintage.
+        Commandez en ligne&nbsp;: retrait au Bouveret ou livraison dans toute la Suisse.
       </p>
       <div class="hero__actions reveal">
         <a href="/boutique/" class="btn btn--gold">Explorer la boutique 🃏</a>
-        <a href="/espace-gaming-immersif/" class="btn btn--ghost">Réserver une session ⚔️</a>
+        <a href="#univers" class="btn btn--ghost">Le lieu &amp; le gaming</a>
       </div>
       <div class="hero__stats reveal">
-        <div class="stat"><span class="stat__num">{{PRODUCT_COUNT}}</span><span class="stat__label">Trésors en boutique</span></div>
-        <div class="stat"><span class="stat__num">4</span><span class="stat__label">Piliers du Coffre</span></div>
-        <div class="stat"><span class="stat__num">∞</span><span class="stat__label">Parties à jouer</span></div>
+        <div class="stat"><span class="stat__num">{{PRODUCT_COUNT}}</span><span class="stat__label">Produits en boutique</span></div>
+        <div class="stat"><span class="stat__num">🇨🇭</span><span class="stat__label">Livraison en Suisse</span></div>
+        <div class="stat"><span class="stat__num">🔒</span><span class="stat__label">Paiement sécurisé</span></div>
       </div>
     </div>
     <div class="hero__art reveal">
@@ -40,15 +40,33 @@
   </div>
 </div>
 
-<!-- ===================== PILIERS ===================== -->
-<section class="section" id="univers">
+<!-- ===================== BOUTIQUE : CATÉGORIES (prioritaire) ===================== -->
+<section class="section" id="boutique">
   <div class="container">
     <header class="section__head reveal">
-      <p class="kicker">L'univers</p>
-      <h2>Quatre piliers, un même repaire</h2>
+      <p class="kicker">La boutique en ligne</p>
+      <h2>Trouvez vos trésors à collectionner</h2>
+      <p class="section__lead">Cartes à l'unité, coffrets scellés, figurines et protections&nbsp;: parcourez les univers du Coffre et commandez en quelques clics.</p>
+    </header>
+    <div class="ccard-grid reveal">{{CATEGORY_GRID}}</div>
+
+    <header class="section__head section__head--sm reveal" style="margin-top:64px">
+      <h2>Coups de cœur du moment</h2>
+    </header>
+    <div class="pgrid reveal">{{FEATURED_PRODUCTS}}</div>
+    <div class="center reveal"><a href="/boutique/" class="btn btn--gold">Voir toute la boutique →</a></div>
+  </div>
+</section>
+
+<!-- ===================== LE LIEU (secondaire) ===================== -->
+<section class="section section--alt" id="univers">
+  <div class="container">
+    <header class="section__head reveal">
+      <p class="kicker">Le lieu</p>
+      <h2>Une boutique, et bien plus encore</h2>
       <p class="section__lead">
-        Coffre à Dom n'est pas qu'une boutique&nbsp;: c'est une citadelle du jeu et du partage,
-        gardée par un passionné qui refuse de laisser s'éteindre la magie du rassemblement.
+        Au-delà de la boutique en ligne, Coffre à Dom est un vrai repaire ludique au Bouveret&nbsp;:
+        espace gaming, coffres mystères et rendez-vous entre passionnés.
       </p>
     </header>
     <div class="pillars">
@@ -60,24 +78,6 @@
   </div>
 </section>
 
-<!-- ===================== BOUTIQUE : CATÉGORIES ===================== -->
-<section class="section section--alt" id="boutique">
-  <div class="container">
-    <header class="section__head reveal">
-      <p class="kicker">La boutique</p>
-      <h2>Des trésors à collectionner</h2>
-      <p class="section__lead">Cartes à l'unité, coffrets scellés, figurines et protections&nbsp;: parcours les univers du Coffre.</p>
-    </header>
-    <div class="ccard-grid reveal">{{CATEGORY_GRID}}</div>
-
-    <header class="section__head section__head--sm reveal" style="margin-top:64px">
-      <h2>Coups de cœur du moment</h2>
-    </header>
-    <div class="pgrid reveal">{{FEATURED_PRODUCTS}}</div>
-    <div class="center reveal"><a href="/boutique/" class="btn btn--ghost">Voir toute la boutique →</a></div>
-  </div>
-</section>
-
 <!-- ===================== GAMING ===================== -->
 <section class="section" id="gaming">
   <div class="container">
@@ -86,13 +86,10 @@
       <h2>Choisis ta formule, relève le défi</h2>
       <p class="section__lead">PS5, Nintendo Switch et écrans HD t'attendent. En semaine sur réservation, en accès libre le week-end.</p>
     </header>
-    <div class="plans" style="max-width:380px;margin-inline:auto;">
-      <article class="plan plan--featured reveal">
-        <p class="plan__tag" data-arcade>Session gaming</p>
-        <p class="plan__price">15<span>CHF</span></p><p class="plan__time">60 min</p>
-        <ul class="plan__feat"><li>Immersion complète</li><li>Ta console au choix</li><li>Snack inclus 🍿</li><li>Boisson incluse 🥤</li></ul>
-        <a href="/contact/" class="btn btn--gold btn--sm">Réserver ma session</a>
-      </article>
+    <div class="game-offer reveal">
+      <div class="game-offer__price"><b>15</b><small>CHF · 60 min</small></div>
+      <div class="game-offer__info"><h3>Session gaming</h3><p>Immersion complète · ta console au choix · snack &amp; boisson inclus 🍿🥤</p></div>
+      <a href="/contact/" class="btn btn--gold">Réserver ma session</a>
     </div>
     <p class="plans__note reveal">🎮 <a href="/espace-gaming-immersif/">Découvrir tout l'espace gaming</a> · Sam. 18h–22h · Dim. 14h–18h</p>
   </div>

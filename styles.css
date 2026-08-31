@@ -477,6 +477,7 @@ blockquote{
 .mega__title{ font-family:var(--font-display); font-weight:700; font-size:.95rem; color:var(--gold); }
 .mega__col li a{ color:var(--muted); font-size:.88rem; transition:color .2s; }
 .mega__col li a:hover{ color:var(--text); }
+.mega__more a{ color:var(--gold) !important; font-weight:600; font-size:.82rem; }
 .mega__promo{ background:linear-gradient(160deg,rgba(245,196,81,.12),rgba(177,76,255,.1)); border:1px solid var(--line); border-radius:16px; padding:20px; }
 .mega__promo-k{ font-family:var(--font-arcade); font-size:.55rem; color:var(--gold); letter-spacing:.05em; margin-bottom:10px; }
 .mega__promo p{ color:var(--text); font-size:.9rem; margin-bottom:14px; }
@@ -858,6 +859,16 @@ h1,h2,h3{ letter-spacing:0; }                 /* DM Serif respire mieux sans tra
 .cart-row__qty button:hover{ background:var(--gold); color:#fff; }
 .toast{ color:#fff; }
 .plan__flag{ color:#fff; }
+/* Bandeau offre gaming (unique, épuré) */
+.game-offer{ display:flex; align-items:center; gap:26px; flex-wrap:wrap; justify-content:center; max-width:660px; margin:26px auto 0; padding:24px 30px; background:var(--surface); border:1px solid var(--line-strong); border-radius:var(--radius-lg); box-shadow:0 2px 14px rgba(0,0,0,.35); }
+.game-offer__price{ display:flex; flex-direction:column; align-items:center; line-height:1; color:var(--gold); flex:0 0 auto; }
+.game-offer__price b{ font-family:var(--font-display); font-size:2.8rem; }
+.game-offer__price small{ color:var(--muted); font-size:.72rem; letter-spacing:.06em; text-transform:uppercase; margin-top:6px; }
+.game-offer__info{ flex:1; min-width:210px; text-align:left; }
+.game-offer__info h3{ margin:0 0 5px; }
+.game-offer__info p{ color:var(--muted); font-size:.92rem; margin:0; }
+.game-offer .btn{ flex:0 0 auto; }
+@media (max-width:560px){ .game-offer{ text-align:center; } .game-offer__info{ text-align:center; min-width:0; } }
 .chip--active{ color:#fff; background:var(--gold); border-color:var(--gold); }
 .blockquote,blockquote{ background:rgba(234,147,0,.08); }
 .notice{ background:rgba(47,156,203,.10); border-color:rgba(47,156,203,.3); }
