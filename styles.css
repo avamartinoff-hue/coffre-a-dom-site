@@ -4,16 +4,16 @@
    ========================================================= */
 
 :root{
-  --bg:            #fdf8f0;   /* crème chaud */
-  --bg-2:          #ffffff;
-  --bg-alt:        #f7eee0;   /* crème plus soutenu (footer, section alt) */
-  --surface:       #ffffff;
-  --surface-2:     #fdf5ea;
-  --line:          rgba(58,42,22,.12);
-  --line-strong:   rgba(58,42,22,.22);
+  --bg:            #17110c;   /* brun très foncé, chaud (thème sombre) */
+  --bg-2:          #1e1710;
+  --bg-alt:        #120d09;   /* plus foncé (footer, section alt) */
+  --surface:       #241c14;   /* carte / surface */
+  --surface-2:     #2d2318;
+  --line:          rgba(245,230,205,.12);
+  --line-strong:   rgba(245,230,205,.24);
 
-  --text:          #2a2016;   /* brun quasi noir */
-  --muted:         #7c6c56;   /* brun doux */
+  --text:          #f4ebdd;   /* crème clair (texte) */
+  --muted:         #b6a488;   /* brun clair doux */
 
   --gold:          #ea9300;   /* ORANGE marque (primaire) */
   --gold-2:        #ffab19;   /* orange clair */
@@ -808,40 +808,40 @@ h1,h2,h3{ letter-spacing:0; }                 /* DM Serif respire mieux sans tra
 .grad{ background:linear-gradient(100deg,var(--gold),var(--magenta) 70%,var(--violet)); -webkit-background-clip:text; background-clip:text; color:transparent; }
 
 /* Boutons : texte blanc sur orange */
-.btn--gold{ color:#fff; box-shadow:0 10px 28px rgba(234,147,0,.30); }
-.btn--gold:hover{ box-shadow:0 16px 40px rgba(234,147,0,.42); }
-.btn--ghost{ background:#fff; border-color:var(--line-strong); color:var(--text); }
+.btn--gold{ color:#fff; box-shadow:0 10px 28px rgba(234,147,0,.35); }
+.btn--gold:hover{ box-shadow:0 16px 40px rgba(234,147,0,.5); }
+.btn--ghost{ background:var(--surface); border-color:var(--line-strong); color:var(--text); }
 .btn--ghost:hover{ background:var(--surface-2); border-color:var(--gold); }
 .nav__cta{ color:#fff !important; }
 
-/* Nav clair */
-.nav.scrolled{ background:rgba(255,255,255,.85); border-bottom:1px solid var(--line); box-shadow:0 6px 24px rgba(58,42,22,.06); }
+/* Nav sombre */
+.nav.scrolled{ background:rgba(23,17,12,.88); border-bottom:1px solid var(--line); box-shadow:0 6px 24px rgba(0,0,0,.45); backdrop-filter:blur(10px); }
 .nav__links a{ color:var(--muted); }
-.nav__links a:hover{ color:var(--text); background:rgba(58,42,22,.05); }
-.nav__links [data-k].is-active{ color:var(--gold); background:rgba(234,147,0,.10); }
-.cart-btn{ background:#fff; }
+.nav__links a:hover{ color:var(--text); background:rgba(245,230,205,.06); }
+.nav__links [data-k].is-active{ color:var(--gold); background:rgba(234,147,0,.14); }
+.cart-btn{ background:var(--surface); }
 .cart-btn:hover{ background:var(--surface-2); }
 .cart-count{ color:#fff; }
 
-/* Méga-menu & dropdown : panneaux clairs */
-.mega, .drop{ background:#fff; border:1px solid var(--line-strong); box-shadow:0 24px 60px rgba(58,42,22,.16); backdrop-filter:none; }
+/* Méga-menu & dropdown : panneaux sombres */
+.mega, .drop{ background:var(--surface); border:1px solid var(--line-strong); box-shadow:0 24px 60px rgba(0,0,0,.55); backdrop-filter:none; }
 .drop a{ color:var(--muted); }
 .drop a:hover{ background:var(--surface-2); color:var(--text); }
-.mega__promo{ background:linear-gradient(160deg,rgba(234,147,0,.12),rgba(255,122,89,.12)); border-color:var(--line); }
-.nav__links.open{ background:#fff; }
-@media (max-width:900px){ .nav__links{ background:#fff; } .nav__item{ border-top:1px solid var(--line); } }
+.mega__promo{ background:linear-gradient(160deg,rgba(234,147,0,.16),rgba(255,122,89,.14)); border-color:var(--line); }
+.nav__links.open{ background:var(--bg-2); }
+@media (max-width:900px){ .nav__links{ background:var(--bg-2); } .nav__item{ border-top:1px solid var(--line); } }
 
-/* Hero clair */
-.hero__grid{ background-image:linear-gradient(rgba(58,42,22,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(58,42,22,.05) 1px,transparent 1px); }
-.hero__stars{ display:none; }
-.eyebrow{ background:#fff; border-color:var(--line-strong); color:var(--gold-2); }
+/* Hero sombre */
+.hero__grid{ background-image:linear-gradient(rgba(245,230,205,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(245,230,205,.05) 1px,transparent 1px); }
+.hero__stars{ display:block; }
+.eyebrow{ background:var(--surface); border-color:var(--line-strong); color:var(--gold-2); }
 .hero__scroll{ border-color:var(--line-strong); }
 
-/* Surfaces claires diverses */
+/* Surfaces diverses */
 .marquee{ background:var(--bg-alt); border-color:var(--line); }
 .section--alt{ background:var(--bg-alt); }
-.pay__list li,.chip{ background:#fff; }
-.pcard__add{ background:#fff; }
+.pay__list li,.chip{ background:var(--surface); }
+.pcard__add{ background:var(--surface-2); }
 .pcard__add:hover{ background:var(--gold); color:#fff; }
 .pcard__badge{ color:#fff; }
 .pcard__media.has-img,.product__media.has-img{ background:#fff; }
@@ -850,18 +850,18 @@ h1,h2,h3{ letter-spacing:0; }                 /* DM Serif respire mieux sans tra
 .toast{ color:#fff; }
 .plan__flag{ color:#fff; }
 .chip--active{ color:#fff; background:var(--gold); border-color:var(--gold); }
-.blockquote,blockquote{ background:rgba(234,147,0,.06); }
-.notice{ background:rgba(47,156,203,.08); border-color:rgba(47,156,203,.25); }
-.confirm__twint{ background:rgba(47,156,203,.07); border-color:rgba(47,156,203,.25); }
+.blockquote,blockquote{ background:rgba(234,147,0,.08); }
+.notice{ background:rgba(47,156,203,.10); border-color:rgba(47,156,203,.3); }
+.confirm__twint{ background:rgba(47,156,203,.10); border-color:rgba(47,156,203,.3); }
 
-/* Cartes : ombre douce au lieu du glow sombre */
-.pillar,.card,.pcard,.ccard,.bcard,.ecard,.info-card,.feature,.plan,.ord,.admin-pill{ box-shadow:0 2px 10px rgba(58,42,22,.05); }
-.pillar:hover,.card:hover,.pcard:hover,.ccard:hover,.bcard:hover,.ecard:hover,.info-card:hover,.feature:hover{ box-shadow:0 14px 34px rgba(58,42,22,.10); }
+/* Cartes : ombre profonde sur fond sombre */
+.pillar,.card,.pcard,.ccard,.bcard,.ecard,.info-card,.feature,.plan,.ord,.admin-pill{ box-shadow:0 2px 12px rgba(0,0,0,.35); }
+.pillar:hover,.card:hover,.pcard:hover,.ccard:hover,.bcard:hover,.ecard:hover,.info-card:hover,.feature:hover{ box-shadow:0 16px 40px rgba(0,0,0,.5); }
 
-/* Cookie banner clair */
-.cookie-banner{ background:#fff; border-color:var(--line-strong); box-shadow:0 24px 60px rgba(58,42,22,.18); backdrop-filter:none; }
+/* Cookie banner sombre */
+.cookie-banner{ background:var(--surface); border-color:var(--line-strong); box-shadow:0 24px 60px rgba(0,0,0,.6); backdrop-filter:none; }
 
-/* Footer chaleureux */
+/* Footer */
 .footer{ background:var(--bg-alt); border-top:1px solid var(--line); }
 .admin-pill--warn{ color:#fff; }
 
@@ -988,10 +988,10 @@ h1,h2,h3{ letter-spacing:0; }                 /* DM Serif respire mieux sans tra
 .pcard__soldout{ padding:8px 0; }
 
 /* Header : bouton panier soigné */
-.cart-btn{ width:44px; height:44px; border-radius:50%; border:1px solid var(--line-strong); background:#fff; color:var(--text); box-shadow:0 2px 8px rgba(58,42,22,.07); transition:transform .2s var(--ease), box-shadow .25s, border-color .2s, color .2s; }
+.cart-btn{ width:44px; height:44px; border-radius:50%; border:1px solid var(--line-strong); background:var(--surface); color:var(--text); box-shadow:0 2px 8px rgba(0,0,0,.3); transition:transform .2s var(--ease), box-shadow .25s, border-color .2s, color .2s; }
 .cart-btn:hover{ border-color:var(--gold); color:var(--gold); box-shadow:0 8px 18px rgba(234,147,0,.20); transform:translateY(-1px); }
 .cart-btn__icon{ width:20px; height:20px; display:block; }
-.cart-count{ top:-5px; right:-5px; min-width:18px; height:18px; padding:0 5px; background:var(--gold); color:#fff; font-size:.66rem; font-weight:700; border:2px solid #fff; box-shadow:0 2px 6px rgba(234,147,0,.35); }
+.cart-count{ top:-5px; right:-5px; min-width:18px; height:18px; padding:0 5px; background:var(--gold); color:#1a1006; font-size:.66rem; font-weight:700; border:2px solid var(--bg-2); box-shadow:0 2px 6px rgba(234,147,0,.35); }
 .cart-count.is-empty{ display:none; }
 
 /* Header : bouton Réserver soigné + aligné */
