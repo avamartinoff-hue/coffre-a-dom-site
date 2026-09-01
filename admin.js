@@ -197,6 +197,7 @@
     }
     a += '<button class="btn btn--ghost btn--sm" data-oedit="' + o.id + '">✏️ Modifier</button>';
     if (o.email) a += '<button class="btn btn--ghost btn--sm" data-oresend="' + o.id + '">📧 Renvoyer</button>';
+    if (o.shipping_mode === 'poste' && o.shipping_address) a += '<button class="btn btn--ghost btn--sm" data-olabel="' + o.id + '">🏷️ Étiquette' + (o.label_generated_at ? ' ↻' : '') + '</button>';
     var badge = STATUS[o.payment_status] || o.payment_status;
     if (o.fulfilled_at) badge += ' · ' + (o.shipping_mode === 'poste' ? '📦 Expédiée' : '🏪 Remise');
     return '<article class="ord ord--' + o.payment_status + (o.fulfilled_at ? ' ord--fulfilled' : '') + '">' +
@@ -204,7 +205,7 @@
       '<div class="ord__grid">' +
         '<div><span class="ord__k">Client</span>' + (o.email ? '<button class="linkbtn" data-oclient="' + esc(o.email) + '">' + esc(o.full_name) + '</button>' : esc(o.full_name)) + '<br>' + esc(o.email) + (o.phone ? '<br>' + esc(o.phone) : '') + '</div>' +
         '<div><span class="ord__k">Articles</span>' + (items || '—') + '</div>' +
-        '<div><span class="ord__k">Livraison</span>' + (o.shipping_mode === 'poste' ? '📦 Poste' : '🏪 Retrait') + fmtAddr(o.shipping_address) + '<br><span class="ord__k">Paiement</span>' + (o.payment_method === 'twint' ? '📱 TWINT' : '💳 SumUp') + '</div>' +
+        '<div><span class="ord__k">Livraison</span>' + (o.shipping_mode === 'poste' ? '📦 Poste' : '🏪 Retrait') + fmtAddr(o.shipping_address) + (o.tracking_number ? '<br><span class="ord__k">Suivi</span>' + esc(o.tracking_number) : '') + '<br><span class="ord__k">Paiement</span>' + (o.payment_method === 'twint' ? '📱 TWINT' : '💳 SumUp') + '</div>' +
         '<div><span class="ord__k">Total</span><b>' + chf(o.total) + '</b><br><span class="ord__date">' + frDate(o.created_at) + '</span></div>' +
       '</div>' + (o.note ? '<p class="ord__note">📝 ' + esc(o.note) + '</p>' : '') +
       '<div class="ord__actions">' + a + '</div></article>';
@@ -422,6 +423,59 @@
         if (r && r.ok) { close(); showFlash('Commande mise à jour.', true); loadOrders(); }
         else { btn.disabled = false; btn.textContent = 'Enregistrer'; showFlash((r && r.error) || 'Erreur.', false); }
       }).catch(function () { btn.disabled = false; btn.textContent = 'Enregistrer'; });
+    });
+  }
+
+  /* ===== Étiquettes La Poste ===== */
+  function openPdfBase64(b64, name) {
+    try {
+      var bin = atob(b64), len = bin.length, bytes = new Uint8Array(len);
+      for (var i = 0; i < len; i++) bytes[i] = bin.charCodeAt(i);
+      var url = URL.createObjectURL(new Blob([bytes], { type: 'application/pdf' }));
+      var w = window.open(url, '_blank');
+      if (!w) { var aEl = document.createElement('a'); aEl.href = url; aEl.download = (name || 'etiquette') + '.pdf'; document.body.appendChild(aEl); aEl.click(); aEl.remove(); }
+      setTimeout(function () { URL.revokeObjectURL(url); }, 60000);
+    } catch (e) { showFlash('Impossible d\'ouvrir le PDF.', false); }
+  }
+  function labelModal(o) {
+    var x = o.shipping_address || {};
+    var addr = [[x.rue, x.numero].filter(Boolean).join(' '), [x.npa, x.localite].filter(Boolean).join(' ')].filter(Boolean).join(', ');
+    var has = !!o.label_generated_at;
+    var ov = document.createElement('div'); ov.className = 'modal-ov';
+    ov.innerHTML = '<div class="modal"><button class="modal__x" data-mx>✕</button>' +
+      '<h3>🏷️ Étiquette La Poste — ' + esc(o.order_number) + '</h3>' +
+      '<p class="seo-hint">' + esc(o.full_name || '') + (addr ? ' · ' + esc(addr) : '') + '</p>' +
+      (o.tracking_number ? '<p class="lbl-track">Dernier n° de suivi : <b>' + esc(o.tracking_number) + '</b></p>' : '') +
+      '<div class="form__row"><label class="field"><span>Produit</span><select data-lf="product"><option value="PRI">PostPac Priority (rapide)</option><option value="ECO">PostPac Economy (éco)</option></select></label>' +
+        '<label class="field"><span>Poids (g)</span><input data-lf="weight" type="number" min="1" step="50" value="1000"></label></div>' +
+      '<div class="modal__foot">' +
+        (has ? '<button class="btn btn--ghost btn--sm" data-lreprint>↻ Réimprimer la dernière</button>' : '') +
+        '<span style="flex:1"></span>' +
+        '<button class="btn btn--gold" data-lgen>' + (has ? 'Générer une nouvelle' : 'Générer l\'étiquette') + '</button>' +
+      '</div>' +
+      '<p class="seo-hint">Le PDF s\'ouvre dans un nouvel onglet, prêt à imprimer (A6).</p>' +
+      '</div>';
+    document.body.appendChild(ov);
+    function close() { ov.remove(); }
+    ov.addEventListener('click', function (e) {
+      if (e.target === ov || e.target.closest('[data-mx]')) { close(); return; }
+      if (e.target.closest('[data-lreprint]')) {
+        var b = e.target.closest('[data-lreprint]'); b.disabled = true;
+        api('POST', 'admin-label', { action: 'reprint', orderId: o.id }).then(function (r) {
+          b.disabled = false;
+          if (r && r.ok) openPdfBase64(r.pdf, o.order_number); else showFlash((r && r.error) || 'Erreur.', false);
+        }).catch(function () { b.disabled = false; showFlash('Erreur réseau.', false); });
+        return;
+      }
+      if (e.target.closest('[data-lgen]')) {
+        var g = function (n) { var el = ov.querySelector('[data-lf="' + n + '"]'); return el ? el.value : ''; };
+        var btn = e.target.closest('[data-lgen]'); btn.disabled = true; btn.textContent = 'Génération…';
+        api('POST', 'admin-label', { action: 'generate', orderId: o.id, product: g('product'), weight: g('weight'), force: true }).then(function (r) {
+          if (r && r.ok) { openPdfBase64(r.pdf, o.order_number); showFlash('Étiquette générée ✅' + (r.tracking ? ' · suivi ' + r.tracking : ''), true); close(); loadOrders(); }
+          else { btn.disabled = false; btn.textContent = 'Générer l\'étiquette'; showFlash((r && r.error) || 'Erreur.', false); }
+        }).catch(function () { btn.disabled = false; btn.textContent = 'Générer l\'étiquette'; showFlash('Erreur réseau.', false); });
+        return;
+      }
     });
   }
 
@@ -723,6 +777,8 @@
     }
     var ocl = e.target.closest('[data-oclient]');
     if (ocl) clientModal(ocl.getAttribute('data-oclient'));
+    var olb = e.target.closest('[data-olabel]');
+    if (olb) { var oL = ORDERS.filter(function (x) { return x.id === olb.getAttribute('data-olabel'); })[0]; if (oL) labelModal(oL); }
     if (e.target.closest('[data-onew]')) newOrderModal();
     if (e.target.closest('[data-oclients]')) clientsModal();
     // Carte statistique cliquable → onglet

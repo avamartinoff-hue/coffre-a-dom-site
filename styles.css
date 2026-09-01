@@ -1200,3 +1200,5 @@ h1,h2,h3{ letter-spacing:0; }                 /* DM Serif respire mieux sans tra
 .no-qty{ width:58px; padding:6px 8px; border-radius:8px; border:1px solid var(--line-strong); background:var(--bg); color:var(--text); font:inherit; text-align:center; }
 .no-total{ font-size:1.05rem; text-align:right; }
 .no-total b{ color:var(--gold); font-family:var(--font-display); font-size:1.3rem; }
+.lbl-track{ font-size:.9rem; color:var(--text); margin:2px 0 12px; }
+.lbl-track b{ color:var(--gold); font-family:var(--font-mono,monospace); letter-spacing:.02em; }

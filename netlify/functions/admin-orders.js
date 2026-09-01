@@ -37,7 +37,8 @@ exports.handler = async (event) => {
   const db = sb();
   try {
     if (event.httpMethod === 'GET') {
-      const orders = await db.get('orders?select=*,order_items(name,qty,unit_price,line_total)&order=created_at.desc&limit=200');
+      const cols = 'id,order_number,email,phone,full_name,shipping_mode,shipping_address,payment_method,payment_status,subtotal,shipping_fee,total,note,created_at,paid_at,discount,promo_code,lang,confirmation_sent_at,fulfilled_at,tracking_number,label_generated_at';
+      const orders = await db.get('orders?select=' + cols + ',order_items(name,qty,unit_price,line_total)&order=created_at.desc&limit=200');
       return json(200, { ok: true, orders });
     }
     if (event.httpMethod === 'POST') {
