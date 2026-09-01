@@ -7,6 +7,8 @@
    Env : SUPABASE_URL, SUPABASE_SECRET_KEY, ADMIN_PASSWORD
    ========================================================= */
 const notify = require('./_notify.js');
+const E = require('./_emails.js');
+const brevo = require('./_brevo.js');
 const H = { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Headers': 'Content-Type, x-admin-password', 'Access-Control-Allow-Methods': 'GET, POST, OPTIONS' };
 const json = (code, body) => ({ statusCode: code, headers: H, body: JSON.stringify(body) });
 
@@ -15,8 +17,15 @@ function sb() {
   const headers = { apikey: key, Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' };
   return {
     async get(p) { const r = await fetch(`${url}/rest/v1/${p}`, { headers }); if (!r.ok) throw new Error(`GET ${p} ${r.status}`); return r.json(); },
+    async post(p, body, prefer = 'return=representation') { const r = await fetch(`${url}/rest/v1/${p}`, { method: 'POST', headers: { ...headers, Prefer: prefer }, body: JSON.stringify(body) }); if (!r.ok) throw new Error(`POST ${p} ${r.status} ${await r.text()}`); return prefer.includes('representation') ? r.json() : null; },
     async patch(p, body) { const r = await fetch(`${url}/rest/v1/${p}`, { method: 'PATCH', headers: { ...headers, Prefer: 'return=minimal' }, body: JSON.stringify(body) }); if (!r.ok) throw new Error(`PATCH ${p} ${r.status}`); },
   };
+}
+
+function orderNumber() {
+  const t = Date.now().toString(36).toUpperCase().slice(-6);
+  const r = Math.floor(Math.random() * 46656).toString(36).toUpperCase().padStart(3, '0');
+  return `CAD-${t}${r}`;
 }
 
 exports.handler = async (event) => {
@@ -83,6 +92,72 @@ exports.handler = async (event) => {
         if (!Object.keys(patch).length) return json(400, { ok: false, error: 'Rien à modifier.' });
         await db.patch(`orders?id=eq.${encodeURIComponent(orderId)}`, patch);
         return json(200, { ok: true });
+      }
+      if (action === 'resend-email') {
+        if (!orderId) return json(400, { ok: false, error: 'orderId requis.' });
+        const [order] = await db.get(`orders?select=*&id=eq.${encodeURIComponent(orderId)}`);
+        if (!order) return json(404, { ok: false, error: 'Commande introuvable.' });
+        if (!order.email) return json(400, { ok: false, error: 'Cette commande n’a pas d’e-mail.' });
+        const items = await db.get(`order_items?select=name,qty,line_total&order_id=eq.${encodeURIComponent(orderId)}`);
+        const m = E.orderConfirmation(order, items);
+        const r = await brevo.sendEmail({ to: order.email, toName: order.full_name, subject: m.subject, html: m.html, tag: 'order-confirmation-resend' });
+        if (r && r.ok === false) return json(502, { ok: false, error: 'Envoi refusé.', detail: r.detail || r.error });
+        return json(200, { ok: true, sentTo: order.email });
+      }
+      if (action === 'create-manual') {
+        const b = JSON.parse(event.body || '{}');
+        const c = b.customer || {};
+        if (!c.nom || !c.nom.trim()) return json(400, { ok: false, error: 'Nom du client requis.' });
+        const email = String(c.email || '').trim().toLowerCase();
+        const wantEmail = b.sendEmail !== false;
+        if (wantEmail && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return json(400, { ok: false, error: 'E-mail invalide (requis pour envoyer la confirmation).' });
+        const rawItems = Array.isArray(b.items) ? b.items : [];
+        if (!rawItems.length) return json(400, { ok: false, error: 'Ajoutez au moins un article.' });
+
+        // Prix depuis la base (jamais la valeur du client)
+        const slugs = [...new Set(rawItems.map((i) => String(i.slug || '').trim()).filter(Boolean))];
+        if (!slugs.length) return json(400, { ok: false, error: 'Aucun article valide.' });
+        const inList = slugs.map((s) => `"${s.replace(/"/g, '')}"`).join(',');
+        const prods = await db.get(`products?select=slug,name,price&slug=in.(${encodeURIComponent(inList)})`);
+        const bySlug = Object.fromEntries(prods.map((p) => [p.slug, p]));
+        const lines = []; let subtotal = 0;
+        for (const it of rawItems) {
+          const p = bySlug[String(it.slug || '').trim()];
+          if (!p) continue;
+          const qty = Math.max(1, Math.min(99, parseInt(it.qty, 10) || 1));
+          const line = Math.round(Number(p.price) * qty * 100) / 100;
+          subtotal += line;
+          lines.push({ product_slug: p.slug, name: p.name, unit_price: Number(p.price), qty, line_total: line });
+        }
+        if (!lines.length) return json(400, { ok: false, error: 'Aucun article valide.' });
+        subtotal = Math.round(subtotal * 100) / 100;
+
+        const mode = c.mode === 'poste' ? 'poste' : 'retrait';
+        const shipping = mode === 'poste' ? Number(process.env.SHIPPING_POSTE_FEE || 8.9) : 0;
+        const total = Math.max(0, Math.round((subtotal + shipping) * 100) / 100);
+        const status = b.status === 'pending' ? 'pending' : 'paid';
+        const num = orderNumber();
+
+        const [order] = await db.post('orders', {
+          order_number: num, email: email || null, phone: c.telephone ? String(c.telephone).trim() : null,
+          full_name: c.nom.trim(), shipping_mode: mode, payment_method: 'manuel', lang: c.lang || 'fr',
+          subtotal, shipping_fee: shipping, total, discount: 0,
+          note: c.remarque ? String(c.remarque).trim() : 'Commande créée au back office',
+          payment_status: status, paid_at: status === 'paid' ? new Date().toISOString() : null,
+          confirmation_sent_at: (status === 'paid' && wantEmail) ? new Date().toISOString() : null,
+          shipping_address: mode === 'poste' ? { rue: String(c.rue || '').trim(), numero: String(c.numero || '').trim(), npa: String(c.npa || '').trim(), localite: String(c.localite || '').trim(), pays: 'CH' } : null,
+        });
+        try {
+          await db.post('order_items', lines.map((l) => ({ ...l, order_id: order.id })), 'return=minimal');
+        } catch (e) {
+          await fetch(`${process.env.SUPABASE_URL}/rest/v1/orders?id=eq.${order.id}`, { method: 'DELETE', headers: { apikey: process.env.SUPABASE_SECRET_KEY, Authorization: `Bearer ${process.env.SUPABASE_SECRET_KEY}` } }).catch(() => {});
+          throw e;
+        }
+        // Confirmation + notif commerçant + Brevo si payé et e-mail fourni
+        if (status === 'paid' && wantEmail) {
+          await notify.afterPaid({ ...order }, lines).catch(() => {});
+        }
+        return json(200, { ok: true, orderId: order.id, orderNumber: num, total, status });
       }
       if (action === 'set-fulfillment') {
         const { fulfilled } = JSON.parse(event.body || '{}');

@@ -6,6 +6,7 @@
   var login = document.querySelector('[data-admin-login]');
   if (!login) return;
   var KEY = 'cad_admin_pwd';
+  var SHIP_POSTE = 8.9; // affichage indicatif — le serveur recalcule le total réel
   var dash = document.querySelector('[data-admin-dash]');
   var hero = document.querySelector('[data-admin-hero]');
   var msg = document.querySelector('[data-admin-msg]');
@@ -195,39 +196,192 @@
       a += '<button class="btn btn--ghost btn--sm" data-oset="pending" data-id="' + o.id + '">↩ En attente</button>';
     }
     a += '<button class="btn btn--ghost btn--sm" data-oedit="' + o.id + '">✏️ Modifier</button>';
+    if (o.email) a += '<button class="btn btn--ghost btn--sm" data-oresend="' + o.id + '">📧 Renvoyer</button>';
     var badge = STATUS[o.payment_status] || o.payment_status;
     if (o.fulfilled_at) badge += ' · ' + (o.shipping_mode === 'poste' ? '📦 Expédiée' : '🏪 Remise');
     return '<article class="ord ord--' + o.payment_status + (o.fulfilled_at ? ' ord--fulfilled' : '') + '">' +
       '<div class="ord__head"><b>' + esc(o.order_number) + '</b><span class="ord__status">' + badge + '</span></div>' +
       '<div class="ord__grid">' +
-        '<div><span class="ord__k">Client</span>' + esc(o.full_name) + '<br>' + esc(o.email) + (o.phone ? '<br>' + esc(o.phone) : '') + '</div>' +
+        '<div><span class="ord__k">Client</span>' + (o.email ? '<button class="linkbtn" data-oclient="' + esc(o.email) + '">' + esc(o.full_name) + '</button>' : esc(o.full_name)) + '<br>' + esc(o.email) + (o.phone ? '<br>' + esc(o.phone) : '') + '</div>' +
         '<div><span class="ord__k">Articles</span>' + (items || '—') + '</div>' +
         '<div><span class="ord__k">Livraison</span>' + (o.shipping_mode === 'poste' ? '📦 Poste' : '🏪 Retrait') + fmtAddr(o.shipping_address) + '<br><span class="ord__k">Paiement</span>' + (o.payment_method === 'twint' ? '📱 TWINT' : '💳 SumUp') + '</div>' +
         '<div><span class="ord__k">Total</span><b>' + chf(o.total) + '</b><br><span class="ord__date">' + frDate(o.created_at) + '</span></div>' +
       '</div>' + (o.note ? '<p class="ord__note">📝 ' + esc(o.note) + '</p>' : '') +
       '<div class="ord__actions">' + a + '</div></article>';
   }
+  var ORDER_Q = '';
+  function orderToolbar() {
+    return '<div class="ord-toolbar">' +
+      '<input class="ord-search" data-osearch placeholder="🔎 Nom, e-mail ou n° de commande…" value="' + esc(ORDER_Q) + '">' +
+      '<button class="btn btn--gold btn--sm" data-onew>➕ Nouvelle commande</button>' +
+      '<button class="btn btn--ghost btn--sm" data-oclients>👤 Clients</button>' +
+      '</div>';
+  }
+  function renderOrderBody() {
+    var body = document.getElementById('ord-body'); if (!body) return;
+    if (!ORDERS.length) { body.innerHTML = '<p class="empty">Aucune commande pour l\'instant.</p>'; return; }
+    var q = ORDER_Q.trim().toLowerCase();
+    var list = ORDERS.filter(function (o) {
+      if (!q) return true;
+      return (o.order_number || '').toLowerCase().indexOf(q) !== -1
+        || (o.full_name || '').toLowerCase().indexOf(q) !== -1
+        || (o.email || '').toLowerCase().indexOf(q) !== -1
+        || (o.phone || '').toLowerCase().indexOf(q) !== -1;
+    });
+    if (!list.length) { body.innerHTML = '<p class="empty">Aucune commande ne correspond à « ' + esc(ORDER_Q.trim()) + ' ».</p>'; return; }
+    var groups = { validate: [], ship: [], done: [], archived: [] };
+    list.forEach(function (o) { groups[orderStage(o)].push(o); });
+    body.innerHTML = STAGES.map(function (s) {
+      var g = groups[s.key];
+      // Étapes actives toujours affichées (même vides) ; terminées/annulées seulement si non vides
+      if (!g.length && s.collapsed) return '';
+      var inner = g.length
+        ? '<div class="ord-list">' + g.map(orderCard).join('') + '</div>'
+        : '<p class="empty empty--sm">Aucune commande à cette étape. 👍</p>';
+      return '<section class="ord-stage ord-stage--' + s.key + '">' +
+        '<div class="ord-stage__head"><h3>' + s.label + ' <span class="ord-stage__n">' + g.length + '</span></h3>' +
+        (s.hint ? '<p class="ord-stage__hint">' + s.hint + '</p>' : '') + '</div>' +
+        inner + '</section>';
+    }).join('');
+  }
   function loadOrders() {
-    panels.orders.innerHTML = '<p class="empty">Chargement…</p>';
+    panels.orders.innerHTML = orderToolbar() + '<div id="ord-body"><p class="empty">Chargement…</p></div>';
     api('GET', 'admin-orders').then(function (d) {
-      if (!d || !d.ok) { panels.orders.innerHTML = '<p class="empty">Erreur.</p>'; return; }
+      if (!d || !d.ok) { var b = document.getElementById('ord-body'); if (b) b.innerHTML = '<p class="empty">Erreur.</p>'; return; }
       ORDERS = d.orders || [];
-      if (!d.orders.length) { panels.orders.innerHTML = '<p class="empty">Aucune commande pour l\'instant.</p>'; return; }
-      var groups = { validate: [], ship: [], done: [], archived: [] };
-      d.orders.forEach(function (o) { groups[orderStage(o)].push(o); });
-      panels.orders.innerHTML = STAGES.map(function (s) {
-        var list = groups[s.key];
-        // Étapes actives toujours affichées (même vides) ; terminées/annulées seulement si non vides
-        if (!list.length && s.collapsed) return '';
-        var body = list.length
-          ? '<div class="ord-list">' + list.map(orderCard).join('') + '</div>'
-          : '<p class="empty empty--sm">Aucune commande à cette étape. 👍</p>';
-        return '<section class="ord-stage ord-stage--' + s.key + '">' +
-          '<div class="ord-stage__head"><h3>' + s.label + ' <span class="ord-stage__n">' + list.length + '</span></h3>' +
-          (s.hint ? '<p class="ord-stage__hint">' + s.hint + '</p>' : '') + '</div>' +
-          body + '</section>';
-      }).join('');
+      renderOrderBody();
     }).catch(function () {});
+  }
+
+  /* ===== Historique & dépenses par client ===== */
+  function clientsAgg() {
+    var map = {};
+    ORDERS.forEach(function (o) {
+      var k = (o.email || '').toLowerCase(); if (!k) return;
+      var m = map[k] || (map[k] = { email: o.email, name: o.full_name, orders: 0, spent: 0, last: o.created_at, phone: o.phone });
+      m.orders++;
+      if (o.payment_status === 'paid') m.spent += Number(o.total || 0);
+      if (o.created_at > m.last) { m.last = o.created_at; m.name = o.full_name; m.phone = o.phone; }
+    });
+    return Object.keys(map).map(function (k) { return map[k]; }).sort(function (a, b) { return b.spent - a.spent; });
+  }
+  function clientsModal() {
+    var rows = clientsAgg();
+    var ov = document.createElement('div'); ov.className = 'modal-ov';
+    ov.innerHTML = '<div class="modal modal--lg"><button class="modal__x" data-mx>✕</button>' +
+      '<h3>👤 Clients <small class="seo-hint">' + rows.length + ' client' + (rows.length > 1 ? 's' : '') + ' · triés par dépenses</small></h3>' +
+      (rows.length ? '<table class="cli-table"><thead><tr><th>Client</th><th>Commandes</th><th>Dépensé</th><th>Dernière</th></tr></thead><tbody>' +
+        rows.map(function (m) {
+          return '<tr><td><button class="linkbtn" data-oclient="' + esc(m.email) + '">' + esc(m.name || m.email) + '</button><br><small>' + esc(m.email) + '</small></td>' +
+            '<td>' + m.orders + '</td><td><b>' + chf(m.spent) + '</b></td><td><small>' + frDate(m.last) + '</small></td></tr>';
+        }).join('') + '</tbody></table>' : '<p class="empty">Aucun client avec e-mail pour l\'instant.</p>') +
+      '</div>';
+    document.body.appendChild(ov);
+    ov.addEventListener('click', function (e) { if (e.target === ov || e.target.closest('[data-mx]')) ov.remove(); });
+  }
+  function clientModal(email) {
+    var mine = ORDERS.filter(function (o) { return (o.email || '').toLowerCase() === String(email).toLowerCase(); })
+      .sort(function (a, b) { return b.created_at < a.created_at ? -1 : 1; });
+    if (!mine.length) return;
+    var spent = mine.filter(function (o) { return o.payment_status === 'paid'; }).reduce(function (s, o) { return s + Number(o.total || 0); }, 0);
+    var last = mine[0];
+    var ov = document.createElement('div'); ov.className = 'modal-ov';
+    ov.innerHTML = '<div class="modal modal--lg"><button class="modal__x" data-mx>✕</button>' +
+      '<h3>' + esc(last.full_name || email) + '</h3>' +
+      '<p class="seo-hint">' + esc(email) + (last.phone ? ' · ' + esc(last.phone) : '') + '</p>' +
+      '<div class="cli-kpis"><div><b>' + mine.length + '</b><span>commande' + (mine.length > 1 ? 's' : '') + '</span></div>' +
+        '<div><b>' + chf(spent) + '</b><span>dépensé (payé)</span></div>' +
+        '<div><b>' + frDate(last.created_at) + '</b><span>dernière commande</span></div></div>' +
+      '<table class="cli-table"><thead><tr><th>N°</th><th>Date</th><th>Statut</th><th>Total</th></tr></thead><tbody>' +
+      mine.map(function (o) {
+        return '<tr><td><b>' + esc(o.order_number) + '</b></td><td><small>' + frDate(o.created_at) + '</small></td>' +
+          '<td>' + (STATUS[o.payment_status] || o.payment_status) + (o.fulfilled_at ? ' · ' + (o.shipping_mode === 'poste' ? '📦' : '🏪') : '') + '</td>' +
+          '<td>' + chf(o.total) + '</td></tr>';
+      }).join('') + '</tbody></table></div>';
+    document.body.appendChild(ov);
+    ov.addEventListener('click', function (e) { if (e.target === ov || e.target.closest('[data-mx]')) ov.remove(); });
+  }
+
+  /* ===== Création manuelle d'une commande ===== */
+  function newOrderModal() {
+    var picked = {}; // slug -> {name, price, qty}
+    var ov = document.createElement('div'); ov.className = 'modal-ov';
+    ov.innerHTML = '<div class="modal modal--lg"><button class="modal__x" data-mx>✕</button>' +
+      '<h3>➕ Nouvelle commande</h3>' +
+      '<label class="field"><span>Nom du client *</span><input data-nf="nom" placeholder="Prénom Nom"></label>' +
+      '<div class="form__row"><label class="field"><span>E-mail</span><input data-nf="email" type="email" placeholder="client@exemple.ch"></label>' +
+        '<label class="field"><span>Téléphone</span><input data-nf="telephone" placeholder="+41…"></label></div>' +
+      '<label class="field"><span>Remise / retrait</span><select data-nf="mode"><option value="retrait">Retrait en boutique</option><option value="poste">Livraison postale</option></select></label>' +
+      '<div data-naddr hidden>' +
+        '<div class="form__row"><label class="field"><span>Rue</span><input data-na="rue"></label><label class="field"><span>N°</span><input data-na="numero"></label></div>' +
+        '<div class="form__row"><label class="field"><span>NPA</span><input data-na="npa" inputmode="numeric" maxlength="4"></label><label class="field"><span>Localité</span><input data-na="localite"></label></div>' +
+      '</div>' +
+      '<div class="no-picker"><span class="ord__k">Articles</span>' +
+        '<input class="ord-search" data-nsearch placeholder="🔎 Rechercher un produit…">' +
+        '<div class="no-results" data-nresults hidden></div>' +
+        '<div class="no-cart" data-ncart><p class="empty empty--sm">Aucun article. Cherchez un produit ci-dessus.</p></div>' +
+      '</div>' +
+      '<div class="form__row"><label class="field"><span>Statut</span><select data-nf="status"><option value="paid">Payée</option><option value="pending">En attente de paiement</option></select></label>' +
+        '<label class="field field--check"><input type="checkbox" data-nf="sendEmail" checked><span>Envoyer l\'e-mail de confirmation</span></label></div>' +
+      '<p class="no-total">Total : <b data-ntotal>CHF 0.00</b> <small class="seo-hint" data-nship></small></p>' +
+      '<div class="modal__foot"><span style="flex:1"></span><button class="btn btn--gold" data-ncreate>Créer la commande</button></div>' +
+      '</div>';
+    document.body.appendChild(ov);
+    var results = ov.querySelector('[data-nresults]'), cartEl = ov.querySelector('[data-ncart]');
+    function shipFee() { return ov.querySelector('[data-nf="mode"]').value === 'poste' ? Number(SHIP_POSTE) : 0; }
+    function subtotal() { return Object.keys(picked).reduce(function (s, k) { return s + picked[k].price * picked[k].qty; }, 0); }
+    function renderCart() {
+      var keys = Object.keys(picked);
+      cartEl.innerHTML = keys.length ? keys.map(function (k) {
+        var it = picked[k];
+        return '<div class="no-line"><span class="no-line__n">' + esc(it.name) + '</span>' +
+          '<span class="no-line__p">' + chf(it.price) + '</span>' +
+          '<input class="no-qty" type="number" min="1" max="99" value="' + it.qty + '" data-nqty="' + esc(k) + '">' +
+          '<button class="linkbtn" data-ndel="' + esc(k) + '">✕</button></div>';
+      }).join('') : '<p class="empty empty--sm">Aucun article. Cherchez un produit ci-dessus.</p>';
+      var st = subtotal(), tot = st + shipFee();
+      ov.querySelector('[data-ntotal]').textContent = chf(tot);
+      ov.querySelector('[data-nship]').textContent = shipFee() > 0 ? '(dont ' + chf(shipFee()) + ' de port)' : '';
+    }
+    function renderResults(q) {
+      q = (q || '').trim().toLowerCase();
+      if (!q) { results.hidden = true; results.innerHTML = ''; return; }
+      var list = PRODUCTS.filter(function (p) { return (p.name || '').toLowerCase().indexOf(q) !== -1; }).slice(0, 8);
+      results.hidden = false;
+      results.innerHTML = list.length ? list.map(function (p) {
+        return '<button class="no-res" data-nadd="' + esc(p.slug) + '"><span>' + esc(p.name) + '</span><b>' + chf(p.price) + '</b></button>';
+      }).join('') : '<p class="empty empty--sm">Aucun produit.</p>';
+    }
+    ov.querySelector('[data-nf="mode"]').addEventListener('change', function (e) { ov.querySelector('[data-naddr]').hidden = e.target.value !== 'poste'; renderCart(); });
+    ov.querySelector('[data-nsearch]').addEventListener('input', function (e) { renderResults(e.target.value); });
+    ov.addEventListener('click', function (e) {
+      if (e.target === ov || e.target.closest('[data-mx]')) { ov.remove(); return; }
+      var add = e.target.closest('[data-nadd]');
+      if (add) {
+        var slug = add.getAttribute('data-nadd'); var p = PRODUCTS.filter(function (x) { return x.slug === slug; })[0];
+        if (p) { if (picked[slug]) picked[slug].qty++; else picked[slug] = { name: p.name, price: Number(p.price), qty: 1 }; renderCart(); }
+        ov.querySelector('[data-nsearch]').value = ''; results.hidden = true; results.innerHTML = ''; return;
+      }
+      var del = e.target.closest('[data-ndel]');
+      if (del) { delete picked[del.getAttribute('data-ndel')]; renderCart(); return; }
+      if (e.target.closest('[data-ncreate]')) {
+        var g = function (n) { var el = ov.querySelector('[data-nf="' + n + '"]'); return el ? (el.type === 'checkbox' ? el.checked : el.value.trim()) : ''; };
+        var mode = g('mode');
+        var customer = { nom: g('nom'), email: g('email'), telephone: g('telephone'), mode: mode };
+        if (mode === 'poste') { var ga = function (n) { var el = ov.querySelector('[data-na="' + n + '"]'); return el ? el.value.trim() : ''; }; customer.rue = ga('rue'); customer.numero = ga('numero'); customer.npa = ga('npa'); customer.localite = ga('localite'); }
+        var items = Object.keys(picked).map(function (k) { return { slug: k, qty: picked[k].qty }; });
+        if (!customer.nom) { showFlash('Nom du client requis.', false); return; }
+        if (!items.length) { showFlash('Ajoutez au moins un article.', false); return; }
+        var btn = ov.querySelector('[data-ncreate]'); btn.disabled = true; btn.textContent = 'Création…';
+        api('POST', 'admin-orders', { action: 'create-manual', customer: customer, items: items, status: g('status'), sendEmail: g('sendEmail') }).then(function (r) {
+          if (r && r.ok) { ov.remove(); showFlash('Commande ' + r.orderNumber + ' créée ✅', true); loadOrders(); }
+          else { btn.disabled = false; btn.textContent = 'Créer la commande'; showFlash((r && r.error) || 'Erreur.', false); }
+        }).catch(function () { btn.disabled = false; btn.textContent = 'Créer la commande'; });
+        return;
+      }
+    });
+    renderCart();
+    if (!PRODUCTS.length) api('GET', 'admin-products').then(function (d) { if (d && d.ok) { PRODUCTS = d.products || []; CATEGORIES = d.categories || CATEGORIES; } });
   }
 
   function orderModal(o) {
@@ -544,6 +698,10 @@
   }
 
   /* ---------- Interactions globales ---------- */
+  document.addEventListener('input', function (e) {
+    var s = e.target.closest('[data-osearch]');
+    if (s) { ORDER_Q = s.value; renderOrderBody(); }
+  });
   document.addEventListener('click', function (e) {
     // Commandes : statut
     var os = e.target.closest('[data-oset]');
@@ -554,6 +712,19 @@
     // Commandes : édition
     var oe = e.target.closest('[data-oedit]');
     if (oe) { var ord = ORDERS.filter(function (x) { return x.id === oe.getAttribute('data-oedit'); })[0]; if (ord) orderModal(ord); }
+    var orr = e.target.closest('[data-oresend]');
+    if (orr) {
+      if (!confirm('Renvoyer l\'e-mail de confirmation au client ?')) return;
+      orr.disabled = true;
+      api('POST', 'admin-orders', { action: 'resend-email', orderId: orr.getAttribute('data-oresend') }).then(function (r) {
+        orr.disabled = false;
+        showFlash(r && r.ok ? 'E-mail renvoyé ✅' : ((r && r.error) || 'Échec de l\'envoi.'), !!(r && r.ok));
+      }).catch(function () { orr.disabled = false; showFlash('Échec de l\'envoi.', false); });
+    }
+    var ocl = e.target.closest('[data-oclient]');
+    if (ocl) clientModal(ocl.getAttribute('data-oclient'));
+    if (e.target.closest('[data-onew]')) newOrderModal();
+    if (e.target.closest('[data-oclients]')) clientsModal();
     // Carte statistique cliquable → onglet
     var gt = e.target.closest('[data-goto]');
     if (gt) switchTab(gt.getAttribute('data-goto'));
