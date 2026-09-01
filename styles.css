@@ -869,6 +869,36 @@ h1,h2,h3{ letter-spacing:0; }                 /* DM Serif respire mieux sans tra
 .game-offer__info p{ color:var(--muted); font-size:.92rem; margin:0; }
 .game-offer .btn{ flex:0 0 auto; }
 @media (max-width:560px){ .game-offer{ text-align:center; } .game-offer__info{ text-align:center; min-width:0; } }
+.game-offers{ display:grid; grid-template-columns:1fr 1fr; gap:18px; max-width:840px; margin:26px auto 0; }
+.game-offers .game-offer{ margin:0; max-width:none; }
+@media (max-width:640px){ .game-offers{ grid-template-columns:1fr; } }
+
+/* ===== Hero immersif plein écran ===== */
+.hero--cover{ position:relative; min-height:min(88vh,780px); display:flex; align-items:flex-end; overflow:hidden; padding:0; }
+.hero__cover{ position:absolute; inset:0; background-size:cover; background-position:center 42%; z-index:0; }
+.hero__cover-veil{ position:absolute; inset:0; z-index:1; background:linear-gradient(to bottom, rgba(20,14,9,.45) 0%, rgba(20,14,9,.10) 30%, rgba(20,14,9,.55) 68%, rgba(20,14,9,.95) 100%); }
+.hero--cover .hero__cover-inner{ position:relative; z-index:2; max-width:760px; margin:0 auto; padding:0 24px 60px; text-align:center; }
+.hero--cover .hero__title{ font-size:clamp(2rem,6vw,3.6rem); text-shadow:0 2px 24px rgba(0,0,0,.55); margin-bottom:16px; }
+.hero--cover .hero__sub{ max-width:650px; margin:0 auto 8px; color:#f5ecdf; text-shadow:0 1px 12px rgba(0,0,0,.65); }
+.hero--cover .hero__actions{ justify-content:center; margin-top:24px; }
+.hero--cover .eyebrow{ background:rgba(20,14,9,.5); border-color:rgba(245,230,205,.25); }
+
+/* ===== Bandeau avis Google ===== */
+.reviews-band{ padding-top:44px; padding-bottom:44px; }
+.reviews-card{ max-width:640px; margin:0 auto; text-align:center; background:var(--surface); border:1px solid var(--line-strong); border-radius:var(--radius-lg); padding:26px 28px; box-shadow:0 2px 14px rgba(0,0,0,.35); }
+.reviews-card__stars{ color:#ffc93c; font-size:1.9rem; letter-spacing:5px; }
+.reviews-card__text{ color:var(--muted); margin:12px 0 18px; }
+
+/* ===== Les 4 portes ===== */
+.doors{ display:grid; grid-template-columns:repeat(4,1fr); gap:18px; }
+.door{ display:flex; flex-direction:column; align-items:flex-start; gap:8px; padding:26px 22px; background:var(--surface); border:1px solid var(--line); border-radius:var(--radius-lg); box-shadow:0 2px 12px rgba(0,0,0,.35); transition:transform .2s var(--ease), box-shadow .25s, border-color .2s; }
+.door:hover{ transform:translateY(-4px); border-color:var(--gold); box-shadow:0 16px 40px rgba(0,0,0,.5); }
+.door__icon{ font-size:2.4rem; line-height:1; }
+.door h3{ margin:0; }
+.door p{ color:var(--muted); font-size:.9rem; margin:0; flex:1; }
+.door__go{ color:var(--gold); font-weight:600; font-size:.9rem; margin-top:4px; }
+@media (max-width:900px){ .doors{ grid-template-columns:repeat(2,1fr); } }
+@media (max-width:520px){ .doors{ grid-template-columns:1fr; } .hero--cover{ min-height:90vh; } }
 .chip--active{ color:#fff; background:var(--gold); border-color:var(--gold); }
 .blockquote,blockquote{ background:rgba(234,147,0,.08); }
 .notice{ background:rgba(47,156,203,.10); border-color:rgba(47,156,203,.3); }

@@ -1,28 +1,163 @@
 {
   "pages": [
-    { "file": "home.html", "url": "/", "title": "Coffre à Dom — Boutique & Lieu Vivant · Univers Ludique & Vintage · Le Bouveret", "desc": "Boutique de cartes Pokémon & produits geek, espace gaming, coffres mystères et événements au Bouveret. Le Coffre est ouvert, l'aventure vous appelle !", "nav": "accueil" },
-    { "file": "boutique.html", "url": "/boutique/", "title": "Boutique — Cartes à collectionner & produits geek | Coffre à Dom", "desc": "Cartes Pokémon, Magic, One Piece, coffrets scellés, figurines et protections. Toute la boutique du Coffre à Dom.", "nav": "boutique" },
-    { "file": "panier.html", "url": "/panier/", "title": "Mon panier | Coffre à Dom", "desc": "Votre panier Coffre à Dom.", "nav": "boutique", "noindex": true },
-    { "file": "commander.html", "url": "/commander/", "title": "Commander | Coffre à Dom", "desc": "Finalisez votre commande Coffre à Dom.", "nav": "boutique", "noindex": true },
-    { "file": "mon-compte.html", "url": "/mon-compte/", "title": "Mon compte | Coffre à Dom", "desc": "Espace membre Coffre à Dom.", "nav": "boutique", "noindex": true },
-
-    { "file": "a-propos.html", "url": "/a-propos-coffre-a-dom/", "title": "À propos — Dom, le Dernier Gardien | Coffre à Dom", "desc": "L'histoire de Coffre à Dom : d'une passion des années 90 à une citadelle du jeu et du partage au Bouveret.", "nav": "univers" },
-    { "file": "contact.html", "url": "/contact/", "title": "Contact & réservation | Coffre à Dom", "desc": "Réservez une session, privatisez le lieu ou posez votre question. Le Coffre vous répond.", "nav": "contact" },
-    { "file": "cgv.html", "url": "/conditions-generales-de-vente/", "title": "Conditions générales de vente | Coffre à Dom", "desc": "Conditions générales de vente de Coffre à Dom.", "nav": "" },
-
-    { "file": "espace-gaming-immersif.html", "url": "/espace-gaming-immersif/", "title": "Espace gaming immersif | Coffre à Dom", "desc": "PS5, Nintendo Switch, écrans HD et simulateurs : l'espace gaming immersif du Coffre à Dom, au Bouveret.", "nav": "gaming" },
-    { "file": "session-nintendo-retro.html", "url": "/session-nintendo-retro/", "title": "Session Nintendo rétro | Coffre à Dom", "desc": "Redécouvrez les classiques Nintendo dans une session rétro conviviale.", "nav": "gaming" },
-    { "file": "session-jeu-ps5-immersive.html", "url": "/session-jeu-ps5-immersive/", "title": "Session PS5 immersive | Coffre à Dom", "desc": "Une session PS5 immersive sur écran HD, seul ou entre amis.", "nav": "gaming" },
-    { "file": "xbox-retro-gaming-suisse.html", "url": "/xbox-retro-gaming-suisse/", "title": "Xbox & rétro-gaming en Suisse | Coffre à Dom", "desc": "Sessions Xbox et rétro-gaming au Bouveret, Valais.", "nav": "gaming" },
-    { "file": "session-simulateur-suisse.html", "url": "/session-simulateur-suisse/", "title": "Session simulateur de course | Coffre à Dom", "desc": "Prenez le volant sur notre simulateur de course immersif.", "nav": "gaming" },
-    { "file": "experience-immersive-entreprise.html", "url": "/experience-immersive-entreprise/", "title": "Expérience immersive entreprise (BtoB) | Coffre à Dom", "desc": "Teambuildings et événements d'entreprise ludiques et immersifs au Coffre à Dom.", "nav": "gaming" },
-    { "file": "privatisation-evenement-particulier.html", "url": "/privatisation-evenement-particulier/", "title": "Privatisation & événement particulier | Coffre à Dom", "desc": "Anniversaires et soirées privées : privatisez le Coffre pour une expérience sur-mesure.", "nav": "gaming" },
-
-    { "file": "blog.html", "url": "/blog-geek/", "title": "Blog Geek | Coffre à Dom", "desc": "Actus cartes, gaming et culture geek par l'équipe du Coffre à Dom.", "nav": "univers" },
-    { "file": "merci.html", "url": "/merci/", "title": "Merci ! | Coffre à Dom", "desc": "Message bien reçu.", "nav": "", "noindex": true },
-    { "file": "mentions-legales.html", "url": "/mentions-legales/", "title": "Mentions légales | Coffre à Dom", "desc": "Mentions légales de Coffre à Dom.", "nav": "" },
-    { "file": "politique-de-confidentialite.html", "url": "/politique-de-confidentialite/", "title": "Politique de confidentialité | Coffre à Dom", "desc": "Comment Coffre à Dom protège vos données personnelles.", "nav": "" },
-    { "file": "politique-cookies.html", "url": "/politique-cookies/", "title": "Politique de cookies | Coffre à Dom", "desc": "Utilisation des cookies sur le site Coffre à Dom.", "nav": "" },
-    { "file": "admin.html", "url": "/admin/", "title": "Back office | Coffre à Dom", "desc": "Espace d'administration.", "nav": "", "noindex": true }
+    {
+      "file": "home.html",
+      "url": "/",
+      "title": "Coffre à Dom — Boutique & Lieu Vivant · Univers Ludique & Vintage · Le Bouveret",
+      "desc": "Boutique de cartes Pokémon & produits geek, espace gaming, coffres mystères et événements au Bouveret. Le Coffre est ouvert, l'aventure vous appelle !",
+      "nav": "accueil"
+    },
+    {
+      "file": "boutique.html",
+      "url": "/boutique/",
+      "title": "Boutique — Cartes à collectionner & produits geek | Coffre à Dom",
+      "desc": "Cartes Pokémon, Magic, One Piece, coffrets scellés, figurines et protections. Toute la boutique du Coffre à Dom.",
+      "nav": "boutique"
+    },
+    {
+      "file": "panier.html",
+      "url": "/panier/",
+      "title": "Mon panier | Coffre à Dom",
+      "desc": "Votre panier Coffre à Dom.",
+      "nav": "boutique",
+      "noindex": true
+    },
+    {
+      "file": "commander.html",
+      "url": "/commander/",
+      "title": "Commander | Coffre à Dom",
+      "desc": "Finalisez votre commande Coffre à Dom.",
+      "nav": "boutique",
+      "noindex": true
+    },
+    {
+      "file": "mon-compte.html",
+      "url": "/mon-compte/",
+      "title": "Mon compte | Coffre à Dom",
+      "desc": "Espace membre Coffre à Dom.",
+      "nav": "boutique",
+      "noindex": true
+    },
+    {
+      "file": "a-propos.html",
+      "url": "/a-propos-coffre-a-dom/",
+      "title": "À propos — Dom, le Dernier Gardien | Coffre à Dom",
+      "desc": "L'histoire de Coffre à Dom : d'une passion des années 90 à une citadelle du jeu et du partage au Bouveret.",
+      "nav": "univers"
+    },
+    {
+      "file": "contact.html",
+      "url": "/contact/",
+      "title": "Contact & réservation | Coffre à Dom",
+      "desc": "Réservez une session, privatisez le lieu ou posez votre question. Le Coffre vous répond.",
+      "nav": "contact"
+    },
+    {
+      "file": "cgv.html",
+      "url": "/conditions-generales-de-vente/",
+      "title": "Conditions générales de vente | Coffre à Dom",
+      "desc": "Conditions générales de vente de Coffre à Dom.",
+      "nav": ""
+    },
+    {
+      "file": "espace-gaming-immersif.html",
+      "url": "/espace-gaming-immersif/",
+      "title": "Espace gaming immersif | Coffre à Dom",
+      "desc": "PS5, Nintendo Switch, écrans HD et simulateurs : l'espace gaming immersif du Coffre à Dom, au Bouveret.",
+      "nav": "gaming"
+    },
+    {
+      "file": "session-nintendo-retro.html",
+      "url": "/session-nintendo-retro/",
+      "title": "Session Nintendo rétro | Coffre à Dom",
+      "desc": "Redécouvrez les classiques Nintendo dans une session rétro conviviale.",
+      "nav": "gaming"
+    },
+    {
+      "file": "session-jeu-ps5-immersive.html",
+      "url": "/session-jeu-ps5-immersive/",
+      "title": "Session PS5 immersive | Coffre à Dom",
+      "desc": "Une session PS5 immersive sur écran HD, seul ou entre amis.",
+      "nav": "gaming"
+    },
+    {
+      "file": "xbox-retro-gaming-suisse.html",
+      "url": "/xbox-retro-gaming-suisse/",
+      "title": "Xbox & rétro-gaming en Suisse | Coffre à Dom",
+      "desc": "Sessions Xbox et rétro-gaming au Bouveret, Valais.",
+      "nav": "gaming"
+    },
+    {
+      "file": "session-simulateur-suisse.html",
+      "url": "/session-simulateur-suisse/",
+      "title": "Session simulateur de course | Coffre à Dom",
+      "desc": "Prenez le volant sur notre simulateur de course immersif.",
+      "nav": "gaming"
+    },
+    {
+      "file": "experience-immersive-entreprise.html",
+      "url": "/experience-immersive-entreprise/",
+      "title": "Expérience immersive entreprise (BtoB) | Coffre à Dom",
+      "desc": "Teambuildings et événements d'entreprise ludiques et immersifs au Coffre à Dom.",
+      "nav": "gaming"
+    },
+    {
+      "file": "privatisation-evenement-particulier.html",
+      "url": "/privatisation-evenement-particulier/",
+      "title": "Privatisation & événement particulier | Coffre à Dom",
+      "desc": "Anniversaires et soirées privées : privatisez le Coffre pour une expérience sur-mesure.",
+      "nav": "gaming"
+    },
+    {
+      "file": "blog.html",
+      "url": "/blog-geek/",
+      "title": "Blog Geek | Coffre à Dom",
+      "desc": "Actus cartes, gaming et culture geek par l'équipe du Coffre à Dom.",
+      "nav": "univers"
+    },
+    {
+      "file": "merci.html",
+      "url": "/merci/",
+      "title": "Merci ! | Coffre à Dom",
+      "desc": "Message bien reçu.",
+      "nav": "",
+      "noindex": true
+    },
+    {
+      "file": "mentions-legales.html",
+      "url": "/mentions-legales/",
+      "title": "Mentions légales | Coffre à Dom",
+      "desc": "Mentions légales de Coffre à Dom.",
+      "nav": ""
+    },
+    {
+      "file": "politique-de-confidentialite.html",
+      "url": "/politique-de-confidentialite/",
+      "title": "Politique de confidentialité | Coffre à Dom",
+      "desc": "Comment Coffre à Dom protège vos données personnelles.",
+      "nav": ""
+    },
+    {
+      "file": "politique-cookies.html",
+      "url": "/politique-cookies/",
+      "title": "Politique de cookies | Coffre à Dom",
+      "desc": "Utilisation des cookies sur le site Coffre à Dom.",
+      "nav": ""
+    },
+    {
+      "file": "admin.html",
+      "url": "/admin/",
+      "title": "Back office | Coffre à Dom",
+      "desc": "Espace d'administration.",
+      "nav": "",
+      "noindex": true
+    },
+    {
+      "file": "votre-coffre.html",
+      "url": "/votre-coffre/",
+      "title": "Votre Coffre | Coffre à Dom",
+      "desc": "Votre Coffre accumule des pièces à chaque achat en boutique physique au Coffre à Dom, Le Bouveret.",
+      "nav": ""
+    }
   ]
 }

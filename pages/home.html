@@ -1,165 +1,51 @@
-<!-- ===================== HERO ===================== -->
-<section class="hero" id="accueil">
-  <div class="hero__glow" aria-hidden="true"></div>
-  <div class="hero__grid" aria-hidden="true"></div>
-
-  <div class="hero__inner hero--split">
-    <div class="hero__text">
-      <p class="eyebrow reveal">Boutique en ligne · Le Bouveret 🇨🇭</p>
-      <h1 class="hero__title reveal">
-        Cartes Pokémon, TCG &amp;<br />
-        <span class="grad">trésors geek à collectionner</span>
-      </h1>
-      <p class="hero__sub reveal">
-        Cartes à l'unité, coffrets scellés, figurines et coups de cœur vintage.
-        Commandez en ligne&nbsp;: retrait au Bouveret ou livraison dans toute la Suisse.
-      </p>
-      <div class="hero__actions reveal">
-        <a href="/boutique/" class="btn btn--gold">Explorer la boutique 🃏</a>
-        <a href="#univers" class="btn btn--ghost">Le lieu &amp; le gaming</a>
-      </div>
-      <div class="hero__stats reveal">
-        <div class="stat"><span class="stat__num">{{PRODUCT_COUNT}}</span><span class="stat__label">Produits en boutique</span></div>
-        <div class="stat"><span class="stat__num">🇨🇭</span><span class="stat__label">Livraison en Suisse</span></div>
-        <div class="stat"><span class="stat__num">🔒</span><span class="stat__label">Paiement sécurisé</span></div>
-      </div>
-    </div>
-    <div class="hero__art reveal">
-      <img src="/assets/brand/AA-02.png" alt="Un aventurier face au soleil couchant — l'univers du Coffre à Dom" />
+<!-- ===================== HERO IMMERSIF ===================== -->
+<section class="hero hero--cover" id="accueil">
+  <div class="hero__cover" style="background-image:url('/assets/brand/hero-refuge.jpg')" aria-hidden="true"></div>
+  <div class="hero__cover-veil" aria-hidden="true"></div>
+  <div class="hero__cover-inner">
+    <p class="eyebrow reveal">Boutique en ligne · Le Bouveret 🇨🇭</p>
+    <h1 class="hero__title reveal">Aventuriers, bienvenue dans le <span class="grad">Dernier Refuge</span>&nbsp;!</h1>
+    <p class="hero__sub reveal">
+      Bien plus qu'une boutique, le Coffre à Dom est le dernier trésor geek à découvrir.
+      Franchissez le pont et profitez d'items rares (Pokémon, One Piece, DBZ, Naruto) et d'un espace gaming immersif.
+      Commandez en ligne avec livraison dans toute la Suisse, ou venez tenter l'aventure au shop&nbsp;!
+    </p>
+    <div class="hero__actions reveal">
+      <a href="/boutique/" class="btn btn--gold">Explorer la boutique 🃏</a>
+      <a href="/contact/" class="btn btn--ghost">Venir au shop 📍</a>
     </div>
   </div>
-
-  <a href="#univers" class="hero__scroll" aria-label="Défiler vers le bas"><span></span></a>
 </section>
 
-<!-- ===================== MARQUEE ===================== -->
-<div class="marquee" aria-hidden="true">
-  <div class="marquee__track">
-    <span>CARTES POKÉMON ✦ COFFRETS SCELLÉS ✦ ESPACE GAMING ✦ PS5 ✦ NINTENDO SWITCH ✦ COFFRES MYSTÈRES ✦ PROGRAMME VIP ✦ PRIVATISATIONS ✦ VINTAGE &amp; GEEK ✦&nbsp;</span>
-    <span>CARTES POKÉMON ✦ COFFRETS SCELLÉS ✦ ESPACE GAMING ✦ PS5 ✦ NINTENDO SWITCH ✦ COFFRES MYSTÈRES ✦ PROGRAMME VIP ✦ PRIVATISATIONS ✦ VINTAGE &amp; GEEK ✦&nbsp;</span>
+<!-- ===================== AVIS GOOGLE ===================== -->
+<section class="section reviews-band" id="avis">
+  <div class="container">
+    <div class="reviews-card reveal">
+      <div class="reviews-card__stars" aria-label="5 étoiles sur 5">★★★★★</div>
+      <p class="reviews-card__text">Ils nous font confiance — découvrez ce que nos clients disent du Coffre à Dom.</p>
+      <a href="https://www.google.com/maps/search/Coffre+%C3%A0+Dom+Le+Bouveret" class="btn btn--gold btn--sm" target="_blank" rel="noopener">Voir nos avis Google →</a>
+    </div>
   </div>
-</div>
+</section>
 
-<!-- ===================== BOUTIQUE : CATÉGORIES (prioritaire) ===================== -->
-<section class="section" id="boutique">
+<!-- ===================== LES 4 PORTES ===================== -->
+<section class="section section--alt" id="portes">
   <div class="container">
     <header class="section__head reveal">
-      <p class="kicker">La boutique en ligne</p>
-      <h2>Trouvez vos trésors à collectionner</h2>
-      <p class="section__lead">Cartes à l'unité, coffrets scellés, figurines et protections&nbsp;: parcourez les univers du Coffre et commandez en quelques clics.</p>
+      <h2>Où veux-tu aller&nbsp;?</h2>
+      <p class="section__lead">Choisis ta porte et pars à l'aventure.</p>
     </header>
-    <div class="ccard-grid reveal">{{CATEGORY_GRID}}</div>
-
-    <header class="section__head section__head--sm reveal" style="margin-top:64px">
-      <h2>Coups de cœur du moment</h2>
-    </header>
-    <div class="pgrid reveal">{{FEATURED_PRODUCTS}}</div>
-    <div class="center reveal"><a href="/boutique/" class="btn btn--gold">Voir toute la boutique →</a></div>
-  </div>
-</section>
-
-<!-- ===================== LE LIEU (secondaire) ===================== -->
-<section class="section section--alt" id="univers">
-  <div class="container">
-    <header class="section__head reveal">
-      <p class="kicker">Le lieu</p>
-      <h2>Une boutique, et bien plus encore</h2>
-      <p class="section__lead">
-        Au-delà de la boutique en ligne, Coffre à Dom est un vrai repaire ludique au Bouveret&nbsp;:
-        espace gaming, coffres mystères et rendez-vous entre passionnés.
-      </p>
-    </header>
-    <div class="pillars">
-      <a class="pillar reveal" href="/boutique/"><div class="pillar__icon">🃏</div><h3>La boutique</h3><p>Cartes Pokémon à l'unité, coffrets scellés, trésors geek &amp; vintage à dénicher.</p></a>
-      <a class="pillar reveal" href="/espace-gaming-immersif/"><div class="pillar__icon">🎮</div><h3>L'espace gaming</h3><p>PS5, Nintendo Switch, écrans HD et simulateurs&nbsp;: viens jouer, viens défier.</p></a>
-      <a class="pillar reveal" href="/#coffres"><div class="pillar__icon">🗝️</div><h3>Les coffres mystères</h3><p>Des pièces surprises à dénicher directement à la boutique du Bouveret.</p></a>
-      <a class="pillar reveal" href="/blog-geek/"><div class="pillar__icon">🏆</div><h3>La communauté</h3><p>Tournois, événements et rencontres&nbsp;: ici, jouer veut dire se rassembler.</p></a>
+    <div class="doors">
+      <a class="door reveal" href="/boutique/"><span class="door__icon">🃏</span><h3>La boutique</h3><p>Cartes, coffrets scellés, figurines &amp; trésors geek.</p><span class="door__go">Entrer →</span></a>
+      <a class="door reveal" href="/espace-gaming-immersif/"><span class="door__icon">🎮</span><h3>Espace gaming</h3><p>PS5, Switch, Xbox &amp; simulateur — viens jouer.</p><span class="door__go">Entrer →</span></a>
+      <a class="door reveal" href="/votre-coffre/"><span class="door__icon">🪙</span><h3>Votre Coffre</h3><p>Cumulez des pièces à chaque achat en boutique.</p><span class="door__go">Entrer →</span></a>
+      <a class="door reveal" href="/privatisation-evenement-particulier/"><span class="door__icon">🎉</span><h3>Privatisations</h3><p>Anniversaires, événements &amp; soirées privées.</p><span class="door__go">Entrer →</span></a>
     </div>
   </div>
 </section>
 
-<!-- ===================== GAMING ===================== -->
-<section class="section" id="gaming">
-  <div class="container">
-    <header class="section__head reveal">
-      <p class="kicker">L'espace gaming</p>
-      <h2>Choisis ta formule, relève le défi</h2>
-      <p class="section__lead">PS5, Nintendo Switch et écrans HD t'attendent. En semaine sur réservation, en accès libre le week-end.</p>
-    </header>
-    <div class="game-offer reveal">
-      <div class="game-offer__price"><b>15</b><small>CHF · 60 min</small></div>
-      <div class="game-offer__info"><h3>Session gaming</h3><p>Immersion complète · ta console au choix · snack &amp; boisson inclus 🍿🥤</p></div>
-      <a href="/contact/" class="btn btn--gold">Réserver ma session</a>
-    </div>
-    <p class="plans__note reveal">🎮 <a href="/espace-gaming-immersif/">Découvrir tout l'espace gaming</a> · Sam. 18h–22h · Dim. 14h–18h</p>
-  </div>
-</section>
-
-<!-- ===================== COFFRES MYSTÈRES ===================== -->
-<section class="section section--alt" id="coffres">
-  <div class="container split">
-    <div class="split__text reveal">
-      <p class="kicker">Coffres mystères</p>
-      <h2>Des pièces surprises à dénicher en boutique</h2>
-      <p>Les coffres mystères sont des <strong>pièces surprises</strong> à découvrir directement à notre boutique du Bouveret. Chaque pièce peut cacher une belle trouvaille — tente ta chance sur place !</p>
-      <ul class="ticks">
-        <li>Disponibles uniquement en boutique physique</li>
-        <li>Une sélection qui change régulièrement</li>
-        <li>La surprise fait partie du jeu</li>
-      </ul>
-      <a href="/contact/" class="btn btn--gold">Venir à la boutique 🗝️</a>
-    </div>
-    <div class="split__visual reveal">
-      <div class="illus"><img src="/assets/brand/joueurscarte.png" alt="Deux joueurs de cartes réunis au Coffre à Dom" loading="lazy" /></div>
-    </div>
-  </div>
-</section>
-
-<!-- ===================== VIP + PRIVATISATION ===================== -->
-<section class="section" id="vip">
-  <div class="container">
-    <div class="duo">
-      <article class="feature reveal">
-        <p class="feature__tag" data-arcade>Programme VIP</p>
-        <h3>Aux premières loges des grosses sorties</h3>
-        <p>Lors des grandes sorties (nouveaux sets, éditions limitées, exclusivités), les membres VIP profitent d'un accès prioritaire et d'avantages réservés. Le programme est proposé principalement à l'occasion de ces événements.</p>
-        <a href="/contact/" class="link-arrow">En savoir plus <span>→</span></a>
-      </article>
-      <article class="feature reveal">
-        <p class="feature__tag" data-arcade>Privatisations</p>
-        <h3>Le Coffre rien que pour vous</h3>
-        <p>Anniversaires, teambuildings, soirées entre amis ou événements pro&nbsp;: privatisez le lieu pour une expérience ludique sur-mesure.</p>
-        <a href="/privatisation-evenement-particulier/" class="link-arrow">Demander un devis <span>→</span></a>
-      </article>
-    </div>
-  </div>
-</section>
-
-<!-- ===================== ÉVÉNEMENTS ===================== -->
-<section class="section section--alt" id="evenements">
-  <div class="container">
-    <header class="section__head reveal">
-      <p class="kicker">Agenda</p>
-      <h2>Les prochains rendez-vous</h2>
-    </header>
-    <div class="egrid reveal">{{EVENT_LIST}}</div>
-  </div>
-</section>
-
-<!-- ===================== BLOG ===================== -->
-<section class="section" id="blog">
-  <div class="container">
-    <header class="section__head reveal">
-      <p class="kicker">Blog Geek</p>
-      <h2>À lire au coin du Coffre</h2>
-    </header>
-    <div class="bgrid reveal">{{POST_LIST}}</div>
-    <div class="center reveal"><a href="/blog-geek/" class="btn btn--ghost">Tout le blog →</a></div>
-  </div>
-</section>
-
-<!-- ===================== INFOS / CTA ===================== -->
-<section class="section section--alt" id="infos">
+<!-- ===================== INFOS PRATIQUES ===================== -->
+<section class="section" id="infos">
   <div class="container">
     <header class="section__head reveal">
       <p class="kicker">Nous trouver</p>
@@ -167,8 +53,8 @@
     </header>
     <div class="infos">
       <div class="info-card reveal"><div class="info-card__icon">📍</div><h3>Adresse</h3><p>Route des Îles 84<br />1897 Le Bouveret, Suisse</p><a class="link-arrow" href="https://maps.google.com/?q=Route+des+Îles+84+1897+Bouveret" target="_blank" rel="noopener">Ouvrir dans Maps <span>→</span></a></div>
-      <div class="info-card reveal"><div class="info-card__icon">🕑</div><h3>Horaires</h3><ul class="hours"><li><span>Semaine</span><b>Sur réservation</b></li><li><span>Samedi</span><b>18h – 22h</b></li><li><span>Dimanche</span><b>14h – 18h</b></li></ul></div>
-      <div class="info-card reveal"><div class="info-card__icon">🎟️</div><h3>Envie de venir&nbsp;?</h3><p>Réserve ta session, privatise le lieu ou pose ta question.</p><a class="btn btn--gold btn--sm" href="/contact/">Nous contacter</a></div>
+      <div class="info-card reveal"><div class="info-card__icon">🕑</div><h3>Horaires</h3><ul class="hours"><li><span>Lun &amp; Ven</span><b>Fermé</b></li><li><span>Mar – Jeu</span><b>13h30 – 16h30</b></li><li><span>Samedi</span><b>18h00 – 22h00</b></li><li><span>Dimanche</span><b>14h00 – 18h00</b></li></ul></div>
+      <div class="info-card reveal"><div class="info-card__icon">🎟️</div><h3>Envie de venir&nbsp;?</h3><p>Passe à la boutique, réserve une session gaming ou pose ta question.</p><a class="btn btn--gold btn--sm" href="/contact/">Nous contacter</a></div>
     </div>
     <div class="map reveal">
       <iframe title="Carte — Coffre à Dom, Le Bouveret" src="https://www.openstreetmap.org/export/embed.html?bbox=6.83%2C46.38%2C6.87%2C46.40&layer=mapnik&marker=46.3905%2C6.855" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
