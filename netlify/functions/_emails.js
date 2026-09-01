@@ -29,6 +29,7 @@ const T = {
     cart_body: 'Votre panier vous attend ! Les pièces ludiques partent vite — finalisez votre commande avant qu\'elles ne s\'envolent.',
     cart_cta: 'Finaliser ma commande',
     shop_cta: 'Voir la boutique', help: 'Une question ? Répondez à cet e-mail, nous sommes là pour vous.',
+    track_label: 'N° de suivi', track_cta: 'Suivre mon colis',
     signoff: 'À très vite,\nL\'équipe Coffre à Dom',
     hours_label: 'Horaires', hours: 'Ma–Je 13h30–16h30 · Sa 18h–22h · Di 14h–18h (Lu & Ve fermé)',
   },
@@ -49,6 +50,7 @@ const T = {
     cart_body: 'Your basket is waiting! Collectibles sell fast — complete your order before they\'re gone.',
     cart_cta: 'Complete my order',
     shop_cta: 'Visit the shop', help: 'A question? Reply to this email, we\'re here to help.',
+    track_label: 'Tracking number', track_cta: 'Track my parcel',
     signoff: 'See you soon,\nThe Coffre à Dom team',
     hours_label: 'Opening hours', hours: 'Tue–Thu 13:30–16:30 · Sat 18:00–22:00 · Sun 14:00–18:00 (closed Mon & Fri)',
   },
@@ -69,6 +71,7 @@ const T = {
     cart_body: 'Il tuo carrello ti aspetta! I pezzi da collezione vanno a ruba — completa l\'ordine prima che spariscano.',
     cart_cta: 'Completa l\'ordine',
     shop_cta: 'Vai al negozio', help: 'Una domanda? Rispondi a questa e-mail, siamo qui per te.',
+    track_label: 'N° di tracciamento', track_cta: 'Traccia il pacco',
     signoff: 'A presto,\nIl team Coffre à Dom',
     hours_label: 'Orari', hours: 'Ma–Gio 13:30–16:30 · Sa 18:00–22:00 · Do 14:00–18:00 (Lu e Ve chiuso)',
   },
@@ -89,6 +92,7 @@ const T = {
     cart_body: 'Dein Warenkorb wartet! Sammlerstücke sind schnell weg — schliesse deine Bestellung ab, bevor sie vergriffen sind.',
     cart_cta: 'Bestellung abschliessen',
     shop_cta: 'Zum Shop', help: 'Eine Frage? Antworte auf diese E-Mail, wir helfen gerne.',
+    track_label: 'Sendungsnummer', track_cta: 'Sendung verfolgen',
     signoff: 'Bis bald,\nDein Coffre à Dom Team',
     hours_label: 'Öffnungszeiten', hours: 'Di–Do 13:30–16:30 · Sa 18:00–22:00 · So 14:00–18:00 (Mo & Fr geschlossen)',
   },
@@ -175,11 +179,13 @@ function orderConfirmation(order, items) {
 function orderShipped(order) {
   const t = T[L(order.lang)];
   const poste = order.shipping_mode === 'poste';
+  const trackUrl = order.tracking_number ? `https://www.post.ch/swisspost-tracking?formattedParcelCodes=${encodeURIComponent(order.tracking_number)}` : null;
   const inner = h(poste ? '📦' : '🏪') + greeting(order, t) +
     p(poste ? t.ship_body_poste : t.ship_body_retrait) +
     p(`<b>${t.order} ${esc(order.order_number)}</b>`) +
     (poste ? addrBlock(order, t) : '') +
-    btn(`${SITE}/`, t.shop_cta) + p(t.help) + sign(t);
+    (poste && order.tracking_number ? p(`<b>${t.track_label} :</b> ${esc(order.tracking_number)}`) + btn(trackUrl, t.track_cta) : btn(`${SITE}/`, t.shop_cta)) +
+    p(t.help) + sign(t);
   return { subject: (poste ? t.ship_sub_poste : t.ship_sub_retrait)(order.order_number), html: shell(inner, order.lang) };
 }
 
