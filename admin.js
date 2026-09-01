@@ -201,7 +201,7 @@
     var badge = STATUS[o.payment_status] || o.payment_status;
     if (o.fulfilled_at) badge += ' · ' + (o.shipping_mode === 'poste' ? '📦 Expédiée' : '🏪 Remise');
     return '<article class="ord ord--' + o.payment_status + (o.fulfilled_at ? ' ord--fulfilled' : '') + '">' +
-      '<div class="ord__head"><b>' + esc(o.order_number) + '</b><span class="ord__status">' + badge + '</span></div>' +
+      '<div class="ord__head"><label class="ord__sel" title="Sélectionner"><input type="checkbox" data-osel="' + o.id + '"' + (SELECTED_ORDERS[o.id] ? ' checked' : '') + '></label><b>' + esc(o.order_number) + '</b><span class="ord__status">' + badge + '</span></div>' +
       '<div class="ord__grid">' +
         '<div><span class="ord__k">Client</span>' + (o.email ? '<button class="linkbtn" data-oclient="' + esc(o.email) + '">' + esc(o.full_name) + '</button>' : esc(o.full_name)) + '<br>' + esc(o.email) + (o.phone ? '<br>' + esc(o.phone) : '') + '</div>' +
         '<div><span class="ord__k">Articles</span>' + (items || '—') + '</div>' +
@@ -211,6 +211,15 @@
       '<div class="ord__actions">' + a + '</div></article>';
   }
   var ORDER_Q = '';
+  var ORDER_FILTER = 'all';
+  var SELECTED_ORDERS = {};
+  var ORDER_FILTERS = [
+    { k: 'all', label: 'Toutes' },
+    { k: 'validate', label: '🕒 À valider' },
+    { k: 'ship', label: '📦 À livrer' },
+    { k: 'done', label: '✅ Terminées' },
+    { k: 'archived', label: '🚫 Annulées' },
+  ];
   function orderToolbar() {
     return '<div class="ord-toolbar">' +
       '<input class="ord-search" data-osearch placeholder="🔎 Nom, e-mail ou n° de commande…" value="' + esc(ORDER_Q) + '">' +
@@ -218,9 +227,34 @@
       '<button class="btn btn--ghost btn--sm" data-oclients>👤 Clients</button>' +
       '</div>';
   }
+  function bulkBar() {
+    var n = Object.keys(SELECTED_ORDERS).length;
+    return '<div class="ord-bulk" id="ord-bulk"' + (n ? '' : ' hidden') + '>' +
+      '<b><span data-obulk-count>' + n + '</span> sélectionnée(s)</b>' +
+      '<span class="ord-bulk__sep">Appliquer :</span>' +
+      '<button class="btn btn--gold btn--sm" data-obulk="paid">✓ Payées</button>' +
+      '<button class="btn btn--gold btn--sm" data-obulk="fulfill">📦 Livrées</button>' +
+      '<button class="btn btn--ghost btn--sm" data-obulk="pending">🕒 En attente</button>' +
+      '<button class="btn btn--ghost btn--sm" data-obulk="cancelled">🚫 Annuler</button>' +
+      '<button class="linkbtn" data-obulk-clear>Désélectionner tout</button>' +
+      '</div>';
+  }
+  function refreshBulkBar() {
+    var bar = document.getElementById('ord-bulk'); if (!bar) return;
+    var n = Object.keys(SELECTED_ORDERS).length;
+    bar.hidden = n === 0;
+    var c = bar.querySelector('[data-obulk-count]'); if (c) c.textContent = n;
+  }
   function renderOrderBody() {
     var body = document.getElementById('ord-body'); if (!body) return;
     if (!ORDERS.length) { body.innerHTML = '<p class="empty">Aucune commande pour l\'instant.</p>'; return; }
+    // Compteurs par état (sur tout le jeu de commandes)
+    var cnt = { all: ORDERS.length, validate: 0, ship: 0, done: 0, archived: 0 };
+    ORDERS.forEach(function (o) { cnt[orderStage(o)]++; });
+    var chips = '<div class="ord-filters">' + ORDER_FILTERS.map(function (f) {
+      return '<button class="ord-fbtn' + (ORDER_FILTER === f.k ? ' is-active' : '') + '" data-ofilter="' + f.k + '">' + f.label + ' <span>' + cnt[f.k] + '</span></button>';
+    }).join('') + '</div>';
+
     var q = ORDER_Q.trim().toLowerCase();
     var list = ORDERS.filter(function (o) {
       if (!q) return true;
@@ -229,21 +263,38 @@
         || (o.email || '').toLowerCase().indexOf(q) !== -1
         || (o.phone || '').toLowerCase().indexOf(q) !== -1;
     });
-    if (!list.length) { body.innerHTML = '<p class="empty">Aucune commande ne correspond à « ' + esc(ORDER_Q.trim()) + ' ».</p>'; return; }
     var groups = { validate: [], ship: [], done: [], archived: [] };
     list.forEach(function (o) { groups[orderStage(o)].push(o); });
-    body.innerHTML = STAGES.map(function (s) {
+    var stages = ORDER_FILTER === 'all' ? STAGES : STAGES.filter(function (s) { return s.key === ORDER_FILTER; });
+    var sections = stages.map(function (s) {
       var g = groups[s.key];
-      // Étapes actives toujours affichées (même vides) ; terminées/annulées seulement si non vides
-      if (!g.length && s.collapsed) return '';
+      // En vue "Toutes" : étapes terminées/annulées masquées si vides. En vue filtrée : toujours affichée.
+      if (ORDER_FILTER === 'all' && !g.length && s.collapsed) return '';
       var inner = g.length
         ? '<div class="ord-list">' + g.map(orderCard).join('') + '</div>'
-        : '<p class="empty empty--sm">Aucune commande à cette étape. 👍</p>';
+        : '<p class="empty empty--sm">Aucune commande' + (q ? ' ne correspond à « ' + esc(ORDER_Q.trim()) + ' »' : ' à cette étape. 👍') + '</p>';
       return '<section class="ord-stage ord-stage--' + s.key + '">' +
         '<div class="ord-stage__head"><h3>' + s.label + ' <span class="ord-stage__n">' + g.length + '</span></h3>' +
         (s.hint ? '<p class="ord-stage__hint">' + s.hint + '</p>' : '') + '</div>' +
         inner + '</section>';
     }).join('');
+    body.innerHTML = chips + bulkBar() + (sections || '<p class="empty">Aucune commande ne correspond à « ' + esc(ORDER_Q.trim()) + ' ».</p>');
+  }
+  function bulkApply(kind) {
+    var ids = Object.keys(SELECTED_ORDERS); if (!ids.length) return;
+    var labels = { paid: 'Payées', fulfill: 'Livrées', pending: 'En attente', cancelled: 'Annulées' };
+    if (!confirm('Appliquer « ' + labels[kind] + ' » à ' + ids.length + ' commande(s) ?')) return;
+    var calls = ids.map(function (id) {
+      return kind === 'fulfill'
+        ? api('POST', 'admin-orders', { action: 'set-fulfillment', orderId: id, fulfilled: true })
+        : api('POST', 'admin-orders', { action: 'set-status', orderId: id, status: kind });
+    });
+    Promise.all(calls).then(function (rs) {
+      var ok = rs.filter(function (r) { return r && r.ok; }).length;
+      SELECTED_ORDERS = {};
+      showFlash(ok + ' commande(s) mises à jour.', ok > 0);
+      loadOrders();
+    }).catch(function () { SELECTED_ORDERS = {}; showFlash('Erreur lors de l\'application en lot.', false); loadOrders(); });
   }
   function loadOrders() {
     panels.orders.innerHTML = orderToolbar() + '<div id="ord-body"><p class="empty">Chargement…</p></div>';
@@ -781,6 +832,13 @@
     if (olb) { var oL = ORDERS.filter(function (x) { return x.id === olb.getAttribute('data-olabel'); })[0]; if (oL) labelModal(oL); }
     if (e.target.closest('[data-onew]')) newOrderModal();
     if (e.target.closest('[data-oclients]')) clientsModal();
+    var ofl = e.target.closest('[data-ofilter]');
+    if (ofl) { ORDER_FILTER = ofl.getAttribute('data-ofilter'); renderOrderBody(); }
+    var osel = e.target.closest('[data-osel]');
+    if (osel) { var sid = osel.getAttribute('data-osel'); if (osel.checked) SELECTED_ORDERS[sid] = true; else delete SELECTED_ORDERS[sid]; refreshBulkBar(); }
+    var obk = e.target.closest('[data-obulk]');
+    if (obk) { bulkApply(obk.getAttribute('data-obulk')); }
+    if (e.target.closest('[data-obulk-clear]')) { SELECTED_ORDERS = {}; renderOrderBody(); }
     // Carte statistique cliquable → onglet
     var gt = e.target.closest('[data-goto]');
     if (gt) switchTab(gt.getAttribute('data-goto'));

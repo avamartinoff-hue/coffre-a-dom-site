@@ -1202,3 +1202,18 @@ h1,h2,h3{ letter-spacing:0; }                 /* DM Serif respire mieux sans tra
 .no-total b{ color:var(--gold); font-family:var(--font-display); font-size:1.3rem; }
 .lbl-track{ font-size:.9rem; color:var(--text); margin:2px 0 12px; }
 .lbl-track b{ color:var(--gold); font-family:var(--font-mono,monospace); letter-spacing:.02em; }
+
+/* ===== Commandes : filtres par état + sélection multiple ===== */
+.ord-filters{ display:flex; gap:8px; flex-wrap:wrap; margin-bottom:16px; }
+.ord-fbtn{ display:inline-flex; align-items:center; gap:7px; padding:8px 14px; border-radius:100px; border:1px solid var(--line-strong); background:var(--surface); color:var(--muted); font:inherit; font-size:.88rem; cursor:pointer; transition:.15s var(--ease); }
+.ord-fbtn:hover{ color:var(--text); border-color:var(--gold); }
+.ord-fbtn.is-active{ background:linear-gradient(120deg,var(--gold),var(--gold-2)); color:#0a0e1c; border-color:transparent; font-weight:600; }
+.ord-fbtn span{ min-width:20px; padding:1px 7px; border-radius:100px; background:rgba(0,0,0,.18); font-size:.78rem; font-weight:700; }
+.ord-fbtn.is-active span{ background:rgba(0,0,0,.22); }
+.ord-bulk{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:16px; padding:12px 16px; border-radius:14px; border:1px solid var(--gold); background:rgba(234,147,0,.08); }
+.ord-bulk b{ color:var(--text); }
+.ord-bulk__sep{ color:var(--muted); font-size:.85rem; margin-left:4px; }
+.ord__sel{ display:inline-flex; align-items:center; margin-right:10px; cursor:pointer; }
+.ord__sel input{ width:18px; height:18px; accent-color:var(--gold); cursor:pointer; }
+.ord__head{ display:flex; align-items:center; gap:8px; }
+.ord__head b{ flex:1; }

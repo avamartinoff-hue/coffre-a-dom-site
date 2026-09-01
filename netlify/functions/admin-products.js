@@ -33,6 +33,12 @@ function clean(fields) {
   if ('price' in out) out.price = Math.max(0, Number(out.price) || 0);
   if ('stock_qty' in out) out.stock_qty = out.stock_qty === '' || out.stock_qty == null ? null : parseInt(out.stock_qty, 10);
   ['on_sale', 'in_stock', 'visible'].forEach((b) => { if (b in out) out[b] = !!out[b]; });
+  // « En stock » suit la quantité : dès qu'on fixe une quantité suivie, l'état est déduit
+  // (quantité > 0 → disponible ; 0 → épuisé). Évite qu'un réappro reste invisible à l'achat.
+  // Une quantité vide (null = stock non suivi) laisse l'interrupteur manuel tel quel.
+  if ('stock_qty' in out && out.stock_qty != null && !Number.isNaN(out.stock_qty)) {
+    out.in_stock = out.stock_qty > 0;
+  }
   return out;
 }
 
