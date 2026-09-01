@@ -29,6 +29,11 @@ function sb() {
     async del(path) {
       await fetch(`${url}/rest/v1/${path}`, { method: 'DELETE', headers });
     },
+    async rpc(fn, args) {
+      const r = await fetch(`${url}/rest/v1/rpc/${fn}`, { method: 'POST', headers, body: JSON.stringify(args) });
+      if (!r.ok) throw new Error(`RPC ${fn} → ${r.status} ${await r.text()}`);
+      return r.json();
+    },
   };
 }
 
@@ -107,23 +112,46 @@ exports.handler = async (event) => {
     }
     const total = Math.max(0, Math.round((subtotal + shipping - discount) * 100) / 100);
 
+    // ===== Réservation ATOMIQUE du stock (anti-survente) =====
+    // On réserve AVANT de créer la commande. En cas d'affluence, le verrou
+    // de ligne Postgres garantit qu'on ne descend jamais sous 0.
+    const reserved = [];
+    async function releaseReserved() {
+      for (const rv of reserved) { try { await db.rpc('release_stock', { p_slug: rv.slug, p_qty: rv.qty }); } catch (e) { /* ignore */ } }
+    }
+    for (const l of lines) {
+      let val;
+      try { val = await db.rpc('reserve_stock', { p_slug: l.product_slug, p_qty: l.qty }); }
+      catch (e) { await releaseReserved(); return json(503, { ok: false, error: 'Stock momentanément indisponible, merci de réessayer.' }); }
+      if (Number(val) === -1) { await releaseReserved(); return json(409, { ok: false, error: `Stock insuffisant : ${l.name}` }); }
+      if (Number(val) !== 999999) reserved.push({ slug: l.product_slug, qty: l.qty }); // 999999 = illimité
+    }
+
     const noteBits = [];
     if (c.remarque) noteBits.push(c.remarque);
 
     const num = orderNumber();
-    const [order] = await db.post('orders', {
-      order_number: num, email: c.email.trim().toLowerCase(), phone: c.telephone || null,
-      full_name: c.nom, shipping_mode: mode, payment_method: method, lang,
-      subtotal, shipping_fee: shipping, total, note: noteBits.length ? noteBits.join(' · ') : null,
-      promo_code: promoApplied ? promoApplied.code : null, discount,
-      shipping_address: mode === 'poste' ? { rue: String(c.rue || '').trim(), numero: String(c.numero || '').trim(), npa, localite: String(c.localite || '').trim(), pays: 'CH' } : null,
-    });
+    let order;
+    try {
+      [order] = await db.post('orders', {
+        order_number: num, email: c.email.trim().toLowerCase(), phone: c.telephone || null,
+        full_name: c.nom, shipping_mode: mode, payment_method: method, lang,
+        subtotal, shipping_fee: shipping, total, note: noteBits.length ? noteBits.join(' · ') : null,
+        promo_code: promoApplied ? promoApplied.code : null, discount,
+        stock_reserved: reserved.length > 0,
+        shipping_address: mode === 'poste' ? { rue: String(c.rue || '').trim(), numero: String(c.numero || '').trim(), npa, localite: String(c.localite || '').trim(), pays: 'CH' } : null,
+      });
+    } catch (e) {
+      await releaseReserved(); // la commande n'a pas pu être créée → on rend le stock
+      throw e;
+    }
     if (promoApplied) bumpUsage(promoApplied.id);
 
     try {
       await db.post('order_items', lines.map((l) => ({ ...l, order_id: order.id })), 'return=minimal');
     } catch (e) {
-      await db.del(`orders?id=eq.${order.id}`); // rollback
+      await db.del(`orders?id=eq.${order.id}`); // rollback commande
+      await releaseReserved();                  // + rendre le stock réservé
       throw e;
     }
 

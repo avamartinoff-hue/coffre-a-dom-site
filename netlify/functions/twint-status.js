@@ -37,17 +37,10 @@ exports.handler = async (event) => {
     const st = twint.interpret(r.statusValue);
     if (st !== 'paid') return json(200, { ok: true, status: st, twintStatus: r.statusValue });
 
-    // Payé → commande payée + décrément du stock suivi
+    // Payé → commande payée.
+    // (Le stock a déjà été réservé à la création de la commande — pas de décrément ici.)
     await db.patch(`orders?id=eq.${order.id}`, { payment_status: 'paid', paid_at: new Date().toISOString() });
     const items = await db.get(`order_items?select=product_slug,qty,name,line_total&order_id=eq.${order.id}`);
-    for (const it of items) {
-      if (!it.product_slug) continue;
-      const [p] = await db.get(`products?select=stock_qty&slug=eq.${encodeURIComponent(it.product_slug)}`);
-      if (p && p.stock_qty != null) {
-        const left = Math.max(0, p.stock_qty - it.qty);
-        await db.patch(`products?slug=eq.${encodeURIComponent(it.product_slug)}`, { stock_qty: left, in_stock: left > 0 });
-      }
-    }
     // E-mails + Brevo (une seule fois, jamais bloquant)
     if (!order.confirmation_sent_at) {
       await notify.afterPaid({ ...order, payment_status: 'paid' }, items);

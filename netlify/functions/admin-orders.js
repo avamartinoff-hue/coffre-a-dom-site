@@ -19,7 +19,19 @@ function sb() {
     async get(p) { const r = await fetch(`${url}/rest/v1/${p}`, { headers }); if (!r.ok) throw new Error(`GET ${p} ${r.status}`); return r.json(); },
     async post(p, body, prefer = 'return=representation') { const r = await fetch(`${url}/rest/v1/${p}`, { method: 'POST', headers: { ...headers, Prefer: prefer }, body: JSON.stringify(body) }); if (!r.ok) throw new Error(`POST ${p} ${r.status} ${await r.text()}`); return prefer.includes('representation') ? r.json() : null; },
     async patch(p, body) { const r = await fetch(`${url}/rest/v1/${p}`, { method: 'PATCH', headers: { ...headers, Prefer: 'return=minimal' }, body: JSON.stringify(body) }); if (!r.ok) throw new Error(`PATCH ${p} ${r.status}`); },
+    async rpc(fn, args) { const r = await fetch(`${url}/rest/v1/rpc/${fn}`, { method: 'POST', headers, body: JSON.stringify(args) }); if (!r.ok) throw new Error(`RPC ${fn} ${r.status} ${await r.text()}`); return r.json(); },
   };
+}
+
+// Rend au stock les unités réservées d'une commande (annulation / échec), une seule fois.
+async function releaseStock(db, order) {
+  if (!order.stock_reserved) return;
+  const items = await db.get(`order_items?select=product_slug,qty&order_id=eq.${order.id}`);
+  for (const it of items) {
+    if (!it.product_slug) continue;
+    try { await db.rpc('release_stock', { p_slug: it.product_slug, p_qty: it.qty }); } catch (e) { /* ignore */ }
+  }
+  await db.patch(`orders?id=eq.${order.id}`, { stock_reserved: false }).catch(() => {});
 }
 
 function orderNumber() {
@@ -52,22 +64,16 @@ exports.handler = async (event) => {
         await db.patch(`orders?id=eq.${orderId}`, patch);
 
         if (status === 'paid') {
-          // décrément du stock suivi (stock_qty non null)
+          // Le stock est réservé dès la création de la commande → pas de décrément ici.
           const items = await db.get(`order_items?select=product_slug,qty,name,line_total&order_id=eq.${orderId}`);
-          for (const it of items) {
-            if (!it.product_slug) continue;
-            const [p] = await db.get(`products?select=stock_qty&slug=eq.${encodeURIComponent(it.product_slug)}`);
-            if (p && p.stock_qty != null) {
-              const left = Math.max(0, p.stock_qty - it.qty);
-              await db.patch(`products?slug=eq.${encodeURIComponent(it.product_slug)}`, { stock_qty: left, in_stock: left > 0 });
-            }
-          }
           // confirmation + notif + Brevo (validation manuelle depuis le back office), une seule fois
           if (!order.confirmation_sent_at) {
             await notify.afterPaid({ ...order, payment_status: 'paid' }, items);
             await db.patch(`orders?id=eq.${orderId}`, { confirmation_sent_at: new Date().toISOString() }).catch(() => {});
           }
         } else if (status === 'cancelled' || status === 'failed') {
+          // Annulation → on rend le stock réservé au catalogue.
+          await releaseStock(db, order);
           await notify.afterCancelled(order);
         }
         return json(200, { ok: true });
@@ -133,25 +139,43 @@ exports.handler = async (event) => {
         if (!lines.length) return json(400, { ok: false, error: 'Aucun article valide.' });
         subtotal = Math.round(subtotal * 100) / 100;
 
+        // Réservation atomique du stock (best-effort : une vente au comptoir au-delà
+        // du stock suivi n'est pas bloquée, mais on ne réserve alors rien).
+        const reservedM = [];
+        let allReserved = true;
+        for (const l of lines) {
+          let val;
+          try { val = await db.rpc('reserve_stock', { p_slug: l.product_slug, p_qty: l.qty }); } catch (e) { val = -1; }
+          if (Number(val) === -1) allReserved = false;
+          else if (Number(val) !== 999999) reservedM.push({ slug: l.product_slug, qty: l.qty });
+        }
+        async function releaseM() { for (const rv of reservedM) { try { await db.rpc('release_stock', { p_slug: rv.slug, p_qty: rv.qty }); } catch (e) { /* ignore */ } } reservedM.length = 0; }
+        if (!allReserved) await releaseM();
+        const stockReserved = allReserved && reservedM.length > 0;
+
         const mode = c.mode === 'poste' ? 'poste' : 'retrait';
         const shipping = mode === 'poste' ? Number(process.env.SHIPPING_POSTE_FEE || 8.9) : 0;
         const total = Math.max(0, Math.round((subtotal + shipping) * 100) / 100);
         const status = b.status === 'pending' ? 'pending' : 'paid';
         const num = orderNumber();
 
-        const [order] = await db.post('orders', {
-          order_number: num, email: email || null, phone: c.telephone ? String(c.telephone).trim() : null,
-          full_name: c.nom.trim(), shipping_mode: mode, payment_method: 'manuel', lang: c.lang || 'fr',
-          subtotal, shipping_fee: shipping, total, discount: 0,
-          note: c.remarque ? String(c.remarque).trim() : 'Commande créée au back office',
-          payment_status: status, paid_at: status === 'paid' ? new Date().toISOString() : null,
-          confirmation_sent_at: (status === 'paid' && wantEmail) ? new Date().toISOString() : null,
-          shipping_address: mode === 'poste' ? { rue: String(c.rue || '').trim(), numero: String(c.numero || '').trim(), npa: String(c.npa || '').trim(), localite: String(c.localite || '').trim(), pays: 'CH' } : null,
-        });
+        let order;
+        try {
+          [order] = await db.post('orders', {
+            order_number: num, email: email || null, phone: c.telephone ? String(c.telephone).trim() : null,
+            full_name: c.nom.trim(), shipping_mode: mode, payment_method: 'manuel', lang: c.lang || 'fr',
+            subtotal, shipping_fee: shipping, total, discount: 0, stock_reserved: stockReserved,
+            note: c.remarque ? String(c.remarque).trim() : 'Commande créée au back office',
+            payment_status: status, paid_at: status === 'paid' ? new Date().toISOString() : null,
+            confirmation_sent_at: (status === 'paid' && wantEmail) ? new Date().toISOString() : null,
+            shipping_address: mode === 'poste' ? { rue: String(c.rue || '').trim(), numero: String(c.numero || '').trim(), npa: String(c.npa || '').trim(), localite: String(c.localite || '').trim(), pays: 'CH' } : null,
+          });
+        } catch (e) { await releaseM(); throw e; }
         try {
           await db.post('order_items', lines.map((l) => ({ ...l, order_id: order.id })), 'return=minimal');
         } catch (e) {
           await fetch(`${process.env.SUPABASE_URL}/rest/v1/orders?id=eq.${order.id}`, { method: 'DELETE', headers: { apikey: process.env.SUPABASE_SECRET_KEY, Authorization: `Bearer ${process.env.SUPABASE_SECRET_KEY}` } }).catch(() => {});
+          await releaseM();
           throw e;
         }
         // Confirmation + notif commerçant + Brevo si payé et e-mail fourni

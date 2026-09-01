@@ -15,24 +15,29 @@ function sb() {
   return {
     async get(p) { const r = await fetch(`${url}/rest/v1/${p}`, { headers }); if (!r.ok) throw new Error(`GET ${p} ${r.status}`); return r.json(); },
     async patch(p, body) { const r = await fetch(`${url}/rest/v1/${p}`, { method: 'PATCH', headers: { ...headers, Prefer: 'return=minimal' }, body: JSON.stringify(body) }); if (!r.ok) throw new Error(`PATCH ${p} ${r.status}`); },
+    async rpc(fn, args) { const r = await fetch(`${url}/rest/v1/rpc/${fn}`, { method: 'POST', headers, body: JSON.stringify(args) }); if (!r.ok) throw new Error(`RPC ${fn} ${r.status}`); return r.json(); },
   };
 }
 
 async function finalizePaid(db, order) {
+  // Le stock a déjà été réservé à la création — on ne re-décrémente pas.
   await db.patch(`orders?id=eq.${order.id}`, { payment_status: 'paid', paid_at: new Date().toISOString() });
   const items = await db.get(`order_items?select=product_slug,qty,name,line_total&order_id=eq.${order.id}`);
-  for (const it of items) {
-    if (!it.product_slug) continue;
-    const [p] = await db.get(`products?select=stock_qty&slug=eq.${encodeURIComponent(it.product_slug)}`);
-    if (p && p.stock_qty != null) {
-      const left = Math.max(0, p.stock_qty - it.qty);
-      await db.patch(`products?slug=eq.${encodeURIComponent(it.product_slug)}`, { stock_qty: left, in_stock: left > 0 });
-    }
-  }
   if (!order.confirmation_sent_at) {
     await notify.afterPaid({ ...order, payment_status: 'paid' }, items);
     await db.patch(`orders?id=eq.${order.id}`, { confirmation_sent_at: new Date().toISOString() }).catch(() => {});
   }
+}
+
+// Rend au stock les unités réservées d'une commande non payée (une seule fois).
+async function releaseStock(db, order) {
+  if (!order.stock_reserved) return;
+  const items = await db.get(`order_items?select=product_slug,qty&order_id=eq.${order.id}`);
+  for (const it of items) {
+    if (!it.product_slug) continue;
+    try { await db.rpc('release_stock', { p_slug: it.product_slug, p_qty: it.qty }); } catch (e) { /* ignore */ }
+  }
+  await db.patch(`orders?id=eq.${order.id}`, { stock_reserved: false }).catch(() => {});
 }
 
 async function twintPaid(order) {
@@ -59,7 +64,8 @@ exports.handler = async () => {
   const now = Date.now();
   const olderThan = new Date(now - 2 * 60 * 1000).toISOString();   // laisser 2 min au flux normal
   const newerThan = new Date(now - 3 * 24 * 60 * 60 * 1000).toISOString(); // au-delà, checkouts expirés
-  let checked = 0, recovered = 0;
+  const RELEASE_AFTER = Number(process.env.STOCK_RELEASE_MINUTES || 45) * 60 * 1000; // délai avant de rendre le stock
+  let checked = 0, recovered = 0, released = 0;
   try {
     const orders = await db.get(
       `orders?select=*&payment_status=eq.pending&created_at=lt.${olderThan}&created_at=gt.${newerThan}&order=created_at.desc&limit=40`
@@ -69,10 +75,18 @@ exports.handler = async () => {
       const paid = order.payment_method === 'twint' ? await twintPaid(order)
         : order.payment_method === 'sumup' ? await sumupPaid(order)
           : false;
-      if (paid) { await finalizePaid(db, order); recovered++; }
+      if (paid) { await finalizePaid(db, order); recovered++; continue; }
+      // Non payée et assez ancienne → on considère le paiement abandonné :
+      // on marque la commande "expirée" et on REND le stock réservé.
+      const age = now - new Date(order.created_at).getTime();
+      if (age > RELEASE_AFTER) {
+        await releaseStock(db, order);
+        await db.patch(`orders?id=eq.${order.id}`, { payment_status: 'failed' }).catch(() => {});
+        released++;
+      }
     }
-    return { statusCode: 200, body: JSON.stringify({ ok: true, checked, recovered }) };
+    return { statusCode: 200, body: JSON.stringify({ ok: true, checked, recovered, released }) };
   } catch (e) {
-    return { statusCode: 500, body: JSON.stringify({ ok: false, error: String(e.message || e), checked, recovered }) };
+    return { statusCode: 500, body: JSON.stringify({ ok: false, error: String(e.message || e), checked, recovered, released }) };
   }
 };
