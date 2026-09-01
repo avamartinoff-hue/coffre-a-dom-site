@@ -4,6 +4,7 @@
    La clé reste côté serveur. Voir _brevo.js pour la logique partagée.
    ========================================================= */
 const brevo = require('./_brevo.js');
+const E = require('./_emails.js');
 const headers = {
   'Content-Type': 'application/json',
   'Access-Control-Allow-Origin': '*',
@@ -25,8 +26,15 @@ exports.handler = async function (event) {
 
   const email = (payload.email || '').trim().toLowerCase();
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return json(400, { ok: false, error: 'Adresse e-mail invalide.' });
+  const lang = ['fr', 'en', 'it', 'de'].includes(payload.lang) ? payload.lang : 'fr';
 
-  const r = await brevo.addContact({ email, attributes: { OPT_IN: true, SOURCE: 'newsletter' } });
-  if (r.ok) return json(200, { ok: true, message: r.existed ? 'Vous êtes déjà inscrit·e.' : 'Inscription confirmée.' });
+  const r = await brevo.addContact({ email, attributes: { OPT_IN: true, SOURCE: 'newsletter', LANGUE: lang } });
+  if (r.ok) {
+    // E-mail de bienvenue — uniquement pour un NOUVEAU contact, jamais bloquant.
+    if (!r.existed) {
+      try { const m = E.newsletterWelcome(lang); await brevo.sendEmail({ to: email, subject: m.subject, html: m.html, tag: 'newsletter-welcome' }); } catch (e) { /* ignore */ }
+    }
+    return json(200, { ok: true, message: r.existed ? 'Vous êtes déjà inscrit·e.' : 'Inscription confirmée.' });
+  }
   return json(502, { ok: false, error: 'Inscription impossible pour le moment.', brevoStatus: r.status, brevoCode: r.code });
 };

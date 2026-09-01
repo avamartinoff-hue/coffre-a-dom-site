@@ -30,6 +30,9 @@ const T = {
     cart_cta: 'Finaliser ma commande',
     shop_cta: 'Voir la boutique', help: 'Une question ? Répondez à cet e-mail, nous sommes là pour vous.',
     track_label: 'N° de suivi', track_cta: 'Suivre mon colis',
+    news_sub: 'Bienvenue au Coffre 🗝️', news_h: 'Bienvenue dans le Dernier Refuge 🗝️',
+    news_body: 'Merci pour ton inscription ! Tu recevras en avant-première les sorties de cartes, les tournois et les coffres mystères — un e-mail seulement quand ça compte, jamais de spam.',
+    news_cta: 'Découvrir la boutique',
     signoff: 'À très vite,\nL\'équipe Coffre à Dom',
     hours_label: 'Horaires', hours: 'Ma–Je 13h30–16h30 · Sa 18h–22h · Di 14h–18h (Lu & Ve fermé)',
   },
@@ -51,6 +54,9 @@ const T = {
     cart_cta: 'Complete my order',
     shop_cta: 'Visit the shop', help: 'A question? Reply to this email, we\'re here to help.',
     track_label: 'Tracking number', track_cta: 'Track my parcel',
+    news_sub: 'Welcome to the Coffre 🗝️', news_h: 'Welcome to the Last Refuge 🗝️',
+    news_body: 'Thanks for signing up! You\'ll be first to hear about card releases, tournaments and mystery chests — an email only when it matters, never spam.',
+    news_cta: 'Explore the shop',
     signoff: 'See you soon,\nThe Coffre à Dom team',
     hours_label: 'Opening hours', hours: 'Tue–Thu 13:30–16:30 · Sat 18:00–22:00 · Sun 14:00–18:00 (closed Mon & Fri)',
   },
@@ -72,6 +78,9 @@ const T = {
     cart_cta: 'Completa l\'ordine',
     shop_cta: 'Vai al negozio', help: 'Una domanda? Rispondi a questa e-mail, siamo qui per te.',
     track_label: 'N° di tracciamento', track_cta: 'Traccia il pacco',
+    news_sub: 'Benvenuto al Coffre 🗝️', news_h: 'Benvenuto nell\'Ultimo Rifugio 🗝️',
+    news_body: 'Grazie per l\'iscrizione! Sarai il primo a scoprire uscite di carte, tornei e bauli misteriosi — un\'e-mail solo quando conta, mai spam.',
+    news_cta: 'Esplora il negozio',
     signoff: 'A presto,\nIl team Coffre à Dom',
     hours_label: 'Orari', hours: 'Ma–Gio 13:30–16:30 · Sa 18:00–22:00 · Do 14:00–18:00 (Lu e Ve chiuso)',
   },
@@ -93,6 +102,9 @@ const T = {
     cart_cta: 'Bestellung abschliessen',
     shop_cta: 'Zum Shop', help: 'Eine Frage? Antworte auf diese E-Mail, wir helfen gerne.',
     track_label: 'Sendungsnummer', track_cta: 'Sendung verfolgen',
+    news_sub: 'Willkommen im Coffre 🗝️', news_h: 'Willkommen im Letzten Refugium 🗝️',
+    news_body: 'Danke für deine Anmeldung! Du erfährst als Erste·r von Kartenreleases, Turnieren und Mystery-Truhen — eine E-Mail nur, wenn es zählt, niemals Spam.',
+    news_cta: 'Zum Shop',
     signoff: 'Bis bald,\nDein Coffre à Dom Team',
     hours_label: 'Öffnungszeiten', hours: 'Di–Do 13:30–16:30 · Sa 18:00–22:00 · So 14:00–18:00 (Mo & Fr geschlossen)',
   },
@@ -225,4 +237,10 @@ function merchantNewOrder(order, items) {
   return { subject: `🎉 Nouvelle commande ${order.order_number} — ${chf(order.total)}`, html: shell(inner, 'fr') };
 }
 
-module.exports = { orderConfirmation, orderShipped, orderCancelled, abandonedCart, merchantNewOrder };
+function newsletterWelcome(lang) {
+  const t = T[L(lang)];
+  const inner = h(t.news_h) + p(t.news_body) + btn(`${SITE}/`, t.news_cta) + p(t.help) + sign(t);
+  return { subject: t.news_sub, html: shell(inner, lang) };
+}
+
+module.exports = { orderConfirmation, orderShipped, orderCancelled, abandonedCart, merchantNewOrder, newsletterWelcome };

@@ -138,7 +138,7 @@
         return;
       }
       fetch('/.netlify/functions/brevo-subscribe', {
-        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: email })
+        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: email, lang: (document.documentElement.lang || 'fr') })
       }).then(function (r) { return r.json(); }).then(function (d) {
         if (d && d.ok) { setMsg('✅ ' + (d.message || 'Inscription confirmée !'), true); newsForm.reset(); }
         else { setMsg('⚠️ ' + ((d && d.error) || 'Inscription impossible.'), false); }
