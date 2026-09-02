@@ -217,7 +217,7 @@ const BIZ = {
   name: 'Coffre à Dom', legalName: 'Coffre à Dom Sàrl',
   phone: '+41789418538', email: 'coffreadom@hotmail.com', vat: 'CHE-142.573.696',
   street: 'Route des Îles 84', zip: '1897', city: 'Le Bouveret', region: 'VS', country: 'CH',
-  lat: 46.3861, lng: 6.8583, logo: SITE + '/assets/brand/logo.png',
+  lat: 46.3778, lng: 6.8671, logo: SITE + '/assets/brand/logo.png',
 };
 const POSTAL = { '@type': 'PostalAddress', streetAddress: BIZ.street, postalCode: BIZ.zip, addressLocality: BIZ.city, addressRegion: BIZ.region, addressCountry: BIZ.country };
 const DEFAULT_OG = SITE + '/assets/brand/AA-02.png';
