@@ -492,6 +492,7 @@
     var x = o.shipping_address || {};
     var addr = [[x.rue, x.numero].filter(Boolean).join(' '), [x.npa, x.localite].filter(Boolean).join(' ')].filter(Boolean).join(', ');
     var has = !!o.label_generated_at;
+    var lastPdf = null; // PDF gardé en mémoire → ouverture via clic direct (pas de pop-up bloqué)
     var ov = document.createElement('div'); ov.className = 'modal-ov';
     ov.innerHTML = '<div class="modal"><button class="modal__x" data-mx>✕</button>' +
       '<h3>🏷️ Étiquette La Poste — ' + esc(o.order_number) + '</h3>' +
@@ -499,32 +500,52 @@
       (o.tracking_number ? '<p class="lbl-track">Dernier n° de suivi : <b>' + esc(o.tracking_number) + '</b></p>' : '') +
       '<div class="form__row"><label class="field"><span>Produit</span><select data-lf="product"><option value="PRI">PostPac Priority (rapide)</option><option value="ECO">PostPac Economy (éco)</option></select></label>' +
         '<label class="field"><span>Poids (g)</span><input data-lf="weight" type="number" min="1" step="50" value="1000"></label></div>' +
+      '<div class="lbl-result" data-lresult hidden></div>' +
       '<div class="modal__foot">' +
         (has ? '<button class="btn btn--ghost btn--sm" data-lreprint>↻ Réimprimer la dernière</button>' : '') +
         '<span style="flex:1"></span>' +
         '<button class="btn btn--gold" data-lgen>' + (has ? 'Générer une nouvelle' : 'Générer l\'étiquette') + '</button>' +
       '</div>' +
-      '<p class="seo-hint">Le PDF s\'ouvre dans un nouvel onglet, prêt à imprimer (A6).</p>' +
+      '<p class="seo-hint"><button class="linkbtn" data-ldiag>🔧 Tester la connexion La Poste</button> · le PDF s\'ouvre au format A6, prêt à imprimer.</p>' +
       '</div>';
     document.body.appendChild(ov);
-    function close() { ov.remove(); }
+    var result = ov.querySelector('[data-lresult]');
+    function showResult(html, ok) { result.hidden = false; result.className = 'lbl-result ' + (ok ? 'is-ok' : 'is-err'); result.innerHTML = html; }
+    function onLabel(r) {
+      if (r && r.ok && r.pdf) {
+        lastPdf = r.pdf;
+        showResult('✅ Étiquette prête' + (r.tracking ? ' · suivi <b>' + esc(r.tracking) + '</b>' : '') + '<br><button class="btn btn--gold btn--sm" data-lopen>📄 Ouvrir / imprimer l\'étiquette (PDF)</button>', true);
+      } else {
+        showResult('❌ ' + esc((r && r.error) || 'Erreur inconnue.'), false);
+      }
+    }
     ov.addEventListener('click', function (e) {
-      if (e.target === ov || e.target.closest('[data-mx]')) { close(); return; }
+      if (e.target === ov || e.target.closest('[data-mx]')) { ov.remove(); return; }
+      if (e.target.closest('[data-lopen]')) { if (lastPdf) openPdfBase64(lastPdf, o.order_number); return; }
+      if (e.target.closest('[data-ldiag]')) {
+        var d = e.target.closest('[data-ldiag]'); d.disabled = true; var dt = d.textContent; d.textContent = 'Test en cours…';
+        api('POST', 'admin-label', { action: 'diag' }).then(function (r) {
+          d.disabled = false; d.textContent = dt;
+          if (r && r.ok && r.diag) {
+            var c = r.diag.config || {};
+            showResult('Clés : ID ' + (c.clientId ? '✅' : '❌') + ' · Secret ' + (c.secret ? '✅' : '❌') + ' · Licence ' + (c.licence ? '✅' : '❌') +
+              '<br>Connexion La Poste : ' + (r.diag.auth === 'ok' ? '✅ OK' : '❌ ' + esc(String(r.diag.auth))), r.diag.auth === 'ok');
+          } else showResult('❌ ' + esc((r && r.error) || 'Diagnostic indisponible.'), false);
+        }).catch(function () { d.disabled = false; d.textContent = dt; showResult('❌ Erreur réseau.', false); });
+        return;
+      }
       if (e.target.closest('[data-lreprint]')) {
-        var b = e.target.closest('[data-lreprint]'); b.disabled = true;
-        api('POST', 'admin-label', { action: 'reprint', orderId: o.id }).then(function (r) {
-          b.disabled = false;
-          if (r && r.ok) openPdfBase64(r.pdf, o.order_number); else showFlash((r && r.error) || 'Erreur.', false);
-        }).catch(function () { b.disabled = false; showFlash('Erreur réseau.', false); });
+        var b = e.target.closest('[data-lreprint]'); b.disabled = true; var bt = b.textContent; b.textContent = '…';
+        api('POST', 'admin-label', { action: 'reprint', orderId: o.id }).then(function (r) { b.disabled = false; b.textContent = bt; onLabel(r); })
+          .catch(function () { b.disabled = false; b.textContent = bt; showResult('❌ Erreur réseau.', false); });
         return;
       }
       if (e.target.closest('[data-lgen]')) {
         var g = function (n) { var el = ov.querySelector('[data-lf="' + n + '"]'); return el ? el.value : ''; };
-        var btn = e.target.closest('[data-lgen]'); btn.disabled = true; btn.textContent = 'Génération…';
+        var btn = e.target.closest('[data-lgen]'); btn.disabled = true; var gt = btn.textContent; btn.textContent = 'Génération…';
         api('POST', 'admin-label', { action: 'generate', orderId: o.id, product: g('product'), weight: g('weight'), force: true }).then(function (r) {
-          if (r && r.ok) { openPdfBase64(r.pdf, o.order_number); showFlash('Étiquette générée ✅' + (r.tracking ? ' · suivi ' + r.tracking : ''), true); close(); loadOrders(); }
-          else { btn.disabled = false; btn.textContent = 'Générer l\'étiquette'; showFlash((r && r.error) || 'Erreur.', false); }
-        }).catch(function () { btn.disabled = false; btn.textContent = 'Générer l\'étiquette'; showFlash('Erreur réseau.', false); });
+          btn.disabled = false; btn.textContent = gt; onLabel(r); if (r && r.ok) loadOrders();
+        }).catch(function () { btn.disabled = false; btn.textContent = gt; showResult('❌ Erreur réseau.', false); });
         return;
       }
     });

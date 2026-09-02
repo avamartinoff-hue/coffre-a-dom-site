@@ -113,4 +113,21 @@ async function generateLabel(order, opts) {
   return { tracking: tracking, pdfBase64: label, itemId: id, raw: item };
 }
 
-module.exports = { generateLabel };
+// Diagnostic : vérifie la présence des clés + teste l'authentification OAuth.
+async function checkAuth() {
+  const cfg = {
+    clientId: !!process.env.SWISSPOST_CLIENT_ID,
+    secret: !!process.env.SWISSPOST_CLIENT_SECRET,
+    licence: process.env.SWISSPOST_FRANKING_LICENSE || null,
+  };
+  let auth = 'non testé';
+  if (cfg.clientId && cfg.secret) {
+    try { _token = null; _tokenExp = 0; await getToken(); auth = 'ok'; }
+    catch (e) { auth = String(e.message || e); }
+  } else {
+    auth = 'clés client manquantes';
+  }
+  return { config: { clientId: cfg.clientId, secret: cfg.secret, licence: !!cfg.licence }, auth };
+}
+
+module.exports = { generateLabel, checkAuth };

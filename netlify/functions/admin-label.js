@@ -30,6 +30,10 @@ exports.handler = async (event) => {
   const db = sb();
   try {
     const { action, orderId, product, weight, force } = JSON.parse(event.body || '{}');
+    if (action === 'diag') {
+      const diag = await swiss.checkAuth();
+      return json(200, { ok: true, diag });
+    }
     if (!orderId) return json(400, { ok: false, error: 'orderId requis.' });
     const [order] = await db.get(`orders?select=*&id=eq.${encodeURIComponent(orderId)}`);
     if (!order) return json(404, { ok: false, error: 'Commande introuvable.' });

@@ -1217,3 +1217,7 @@ h1,h2,h3{ letter-spacing:0; }                 /* DM Serif respire mieux sans tra
 .ord__sel input{ width:18px; height:18px; accent-color:var(--gold); cursor:pointer; }
 .ord__head{ display:flex; align-items:center; gap:8px; }
 .ord__head b{ flex:1; }
+.lbl-result{ margin:8px 0 4px; padding:12px 14px; border-radius:12px; font-size:.92rem; line-height:1.5; }
+.lbl-result.is-ok{ background:rgba(46,160,67,.12); border:1px solid rgba(46,160,67,.4); color:var(--text); }
+.lbl-result.is-err{ background:rgba(220,70,70,.12); border:1px solid rgba(220,70,70,.45); color:#ffb9b9; }
+.lbl-result .btn{ margin-top:8px; }
