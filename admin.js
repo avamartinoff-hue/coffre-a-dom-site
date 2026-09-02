@@ -483,11 +483,38 @@
     for (var i = 0; i < len; i++) bytes[i] = bin.charCodeAt(i);
     return URL.createObjectURL(new Blob([bytes], { type: 'application/pdf' }));
   }
+  function u8ToB64(u8) { var s = '', CH = 0x8000; for (var i = 0; i < u8.length; i += CH) s += String.fromCharCode.apply(null, u8.subarray(i, i + CH)); return btoa(s); }
+  function loadPdfLib() {
+    return new Promise(function (res, rej) {
+      if (window.PDFLib) return res(window.PDFLib);
+      var s = document.createElement('script'); s.src = 'https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js';
+      s.onload = function () { res(window.PDFLib); }; s.onerror = function () { rej(new Error('Chargement de l\'outil PDF échoué.')); };
+      document.head.appendChild(s);
+    });
+  }
+  // Compose une page A4 avec l'étiquette A6 (paysage) pivotée dans la case choisie (1-4).
+  async function composeA4(a6b64, quad) {
+    var P = await loadPdfLib();
+    var bin = atob(a6b64), u8 = new Uint8Array(bin.length); for (var i = 0; i < bin.length; i++) u8[i] = bin.charCodeAt(i);
+    var doc = await P.PDFDocument.create();
+    var A4W = 595.28, A4H = 841.89;
+    var page = doc.addPage([A4W, A4H]);
+    var em = (await doc.embedPdf(u8))[0];
+    var w = em.width, h = em.height; // étiquette paysage (~419 x 298)
+    var slotW = A4W / 2, slotH = A4H / 2;
+    var slots = { 1: [0, slotH], 2: [slotW, slotH], 3: [0, 0], 4: [slotW, 0] };
+    var pos = slots[quad] || slots[1], sx = pos[0], sy = pos[1];
+    var scale = Math.min(slotW / h, slotH / w) * 0.97; // pivotée 90° pour tenir dans la case portrait
+    var dw = h * scale, dh = w * scale;             // empreinte après rotation
+    var ox = sx + (slotW - dw) / 2, oy = sy + (slotH - dh) / 2; // centrée dans la case
+    page.drawPage(em, { x: ox + dw, y: oy, xScale: scale, yScale: scale, rotate: P.degrees(90) });
+    return u8ToB64(await doc.save());
+  }
   function labelModal(o) {
     var x = o.shipping_address || {};
     var addr = [[x.rue, x.numero].filter(Boolean).join(' '), [x.npa, x.localite].filter(Boolean).join(' ')].filter(Boolean).join(', ');
     var has = !!o.label_generated_at;
-    var lastUrl = null; // URL blob du dernier PDF (aperçu + ouverture + téléchargement)
+    var lastUrl = null, lastA6 = null, lastTracking = null, sheetMode = false, quad = 1;
     var ov = document.createElement('div'); ov.className = 'modal-ov';
     ov.innerHTML = '<div class="modal"><button class="modal__x" data-mx>✕</button>' +
       '<h3>🏷️ Étiquette La Poste — ' + esc(o.order_number) + '</h3>' +
@@ -496,33 +523,52 @@
       '<div class="form__row"><label class="field"><span>Produit</span><select data-lf="product"><option value="ECO">PostPac Economy (éco)</option><option value="PRI">PostPac Priority (rapide)</option></select></label>' +
         '<label class="field"><span>Poids (g)</span><input data-lf="weight" type="number" min="1" step="50" value="1000"></label></div>' +
       '<label class="field field--check"><input type="checkbox" data-lf="signature"><span>✍️ Remise contre signature</span></label>' +
+      '<label class="field field--check"><input type="checkbox" data-lsheet><span>🖨️ Feuille A4 pré-découpée (4 cases A6) — imprimer dans une case</span></label>' +
+      '<div class="lbl-quad" data-lquadwrap hidden><span class="ord__k">Case à utiliser</span>' +
+        '<div class="lbl-quad-grid">' +
+          '<button type="button" class="lbl-quad-btn is-active" data-lquad="1">1 · haut-gauche</button>' +
+          '<button type="button" class="lbl-quad-btn" data-lquad="2">2 · haut-droite</button>' +
+          '<button type="button" class="lbl-quad-btn" data-lquad="3">3 · bas-gauche</button>' +
+          '<button type="button" class="lbl-quad-btn" data-lquad="4">4 · bas-droite</button>' +
+        '</div></div>' +
       '<div class="lbl-result" data-lresult hidden></div>' +
       '<div class="modal__foot">' +
         (has ? '<button class="btn btn--ghost btn--sm" data-lreprint>↻ Réimprimer la dernière</button>' : '') +
         '<span style="flex:1"></span>' +
         '<button class="btn btn--gold" data-lgen>' + (has ? 'Générer une nouvelle' : 'Générer l\'étiquette') + '</button>' +
       '</div>' +
-      '<p class="seo-hint"><button class="linkbtn" data-ldiag>🔧 Tester la connexion La Poste</button> · l\'étiquette s\'affiche ici, prête à imprimer (A6).</p>' +
+      '<p class="seo-hint"><button class="linkbtn" data-ldiag>🔧 Tester la connexion La Poste</button> · l\'étiquette s\'affiche ici, prête à imprimer.</p>' +
       '</div>';
     document.body.appendChild(ov);
     var result = ov.querySelector('[data-lresult]');
     function showResult(html, ok) { result.hidden = false; result.className = 'lbl-result ' + (ok ? 'is-ok' : 'is-err'); result.innerHTML = html; }
-    function onLabel(r) {
-      if (r && r.ok && r.pdf) {
+    function paint() {
+      showResult('✅ Étiquette prête' + (lastTracking ? ' · suivi <b>' + esc(lastTracking) + '</b>' : '') + (sheetMode ? ' · <b>Feuille A4 — case ' + quad + '</b>' : '') +
+        '<iframe class="lbl-pdf" src="' + lastUrl + '" title="Étiquette La Poste"></iframe>' +
+        '<div class="lbl-actions"><button class="btn btn--gold btn--sm" data-lopen>📄 Ouvrir / imprimer</button> ' +
+        '<button class="btn btn--ghost btn--sm" data-ldl>⬇️ Télécharger le PDF</button></div>', true);
+    }
+    function render() {
+      if (!lastA6) return;
+      var chain = sheetMode ? composeA4(lastA6, quad) : Promise.resolve(lastA6);
+      showResult('⏳ Préparation…', true);
+      chain.then(function (b64) {
         if (lastUrl) { try { URL.revokeObjectURL(lastUrl); } catch (e) { /* ignore */ } }
-        lastUrl = pdfBlobUrl(r.pdf);
-        showResult('✅ Étiquette prête' + (r.tracking ? ' · suivi <b>' + esc(r.tracking) + '</b>' : '') +
-          '<iframe class="lbl-pdf" src="' + lastUrl + '" title="Étiquette La Poste"></iframe>' +
-          '<div class="lbl-actions"><button class="btn btn--gold btn--sm" data-lopen>📄 Ouvrir en plein écran</button> ' +
-          '<button class="btn btn--ghost btn--sm" data-ldl>⬇️ Télécharger le PDF</button></div>', true);
-      } else {
-        showResult('❌ ' + esc((r && r.error) || 'Erreur inconnue.'), false);
-      }
+        lastUrl = pdfBlobUrl(b64); paint();
+      }).catch(function (e) { showResult('❌ ' + esc(e.message || 'Composition A4 impossible.'), false); });
+    }
+    function onLabel(r) {
+      if (r && r.ok && r.pdf) { lastA6 = r.pdf; lastTracking = r.tracking || null; render(); }
+      else showResult('❌ ' + esc((r && r.error) || 'Erreur inconnue.'), false);
     }
     ov.addEventListener('click', function (e) {
       if (e.target === ov || e.target.closest('[data-mx]')) { if (lastUrl) { try { URL.revokeObjectURL(lastUrl); } catch (er) { /* ignore */ } } ov.remove(); return; }
+      var sw = e.target.closest('[data-lsheet]');
+      if (sw) { sheetMode = sw.checked; ov.querySelector('[data-lquadwrap]').hidden = !sheetMode; if (lastA6) render(); return; }
+      var qb = e.target.closest('[data-lquad]');
+      if (qb) { quad = parseInt(qb.getAttribute('data-lquad'), 10) || 1; ov.querySelectorAll('[data-lquad]').forEach(function (b) { b.classList.toggle('is-active', b === qb); }); if (lastA6 && sheetMode) render(); return; }
       if (e.target.closest('[data-lopen]')) { if (lastUrl) window.open(lastUrl, '_blank'); return; }
-      if (e.target.closest('[data-ldl]')) { if (lastUrl) { var a = document.createElement('a'); a.href = lastUrl; a.download = o.order_number + '.pdf'; document.body.appendChild(a); a.click(); a.remove(); } return; }
+      if (e.target.closest('[data-ldl]')) { if (lastUrl) { var a = document.createElement('a'); a.href = lastUrl; a.download = o.order_number + (sheetMode ? '-A4-case' + quad : '') + '.pdf'; document.body.appendChild(a); a.click(); a.remove(); } return; }
       if (e.target.closest('[data-ldiag]')) {
         var d = e.target.closest('[data-ldiag]'); d.disabled = true; var dt = d.textContent; d.textContent = 'Test en cours…';
         api('POST', 'admin-label', { action: 'diag' }).then(function (r) {

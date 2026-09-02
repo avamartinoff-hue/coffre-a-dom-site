@@ -1249,3 +1249,9 @@ h1,h2,h3{ letter-spacing:0; }                 /* DM Serif respire mieux sans tra
 .info-card__icon .ic{ width:3.2rem; height:3.2rem; }
 .product__emoji .ic{ width:2.8rem; height:2.8rem; }
 .info-card{ display:flex; flex-direction:column; justify-content:center; }
+.lbl-quad{ margin:4px 0 10px; }
+.lbl-quad > .ord__k{ display:block; margin-bottom:6px; }
+.lbl-quad-grid{ display:grid; grid-template-columns:1fr 1fr; gap:8px; max-width:340px; }
+.lbl-quad-btn{ padding:12px 10px; border-radius:10px; border:1px solid var(--line-strong); background:var(--surface); color:var(--muted); font:inherit; font-size:.85rem; cursor:pointer; transition:.15s var(--ease); }
+.lbl-quad-btn:hover{ color:var(--text); border-color:var(--gold); }
+.lbl-quad-btn.is-active{ background:linear-gradient(120deg,var(--gold),var(--gold-2)); color:#0a0e1c; border-color:transparent; font-weight:600; }
