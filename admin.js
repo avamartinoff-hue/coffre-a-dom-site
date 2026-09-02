@@ -705,7 +705,7 @@
         var req = isNew
           ? api('POST', 'admin-products', { action: 'create-category', name: f.name.trim(), parent: f.parent || null })
           : api('POST', 'admin-products', { action: 'update-category', slug: c.slug, fields: f });
-        req.then(function (r) { if (r && r.ok) { ov.remove(); showFlash(isNew ? 'Catégorie créée.' : 'Catégorie enregistrée.', true); loadCategoriesTab(); } else showFlash((r && r.error) || 'Erreur.', false); });
+        req.then(function (r) { if (r && r.ok) { ov.remove(); showFlash(isNew ? 'Catégorie créée.' : 'Catégorie enregistrée.', true); loadCategoriesTab(); } else showFlash((r && (r.detail || r.error)) || 'Erreur.', false); });
       }
       if (e.target.closest('[data-cdel]')) {
         if (!confirm('Supprimer cette catégorie ? Ses produits seront réaffectés à la catégorie parente.')) return;

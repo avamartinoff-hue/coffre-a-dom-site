@@ -101,8 +101,20 @@ exports.handler = async (event) => {
         ['name', 'parent', 'icon', 'description'].forEach((k) => { if (k in fields) patch[k] = fields[k] === '' && k === 'parent' ? null : fields[k]; });
         if ('visible' in fields) patch.visible = !!fields.visible;
         if (!Object.keys(patch).length) return json(400, { ok: false, error: 'Rien à modifier' });
-        await db.patch(`categories?slug=eq.${encodeURIComponent(body.slug)}`, patch);
-        return json(200, { ok: true });
+        const target = `categories?slug=eq.${encodeURIComponent(body.slug)}`;
+        // Réessais dégressifs : selon les migrations jouées, certaines colonnes
+        // (visible / icon / description) peuvent manquer. On garantit au moins name + parent.
+        const variants = [patch];
+        if ('visible' in patch) { const v = { ...patch }; delete v.visible; variants.push(v); }
+        const core = {}; ['name', 'parent'].forEach((k) => { if (k in patch) core[k] = patch[k]; });
+        variants.push(core);
+        let lastErr;
+        for (const v of variants) {
+          if (!Object.keys(v).length) continue;
+          try { await db.patch(target, v); return json(200, { ok: true }); }
+          catch (e) { lastErr = e; }
+        }
+        return json(502, { ok: false, error: 'Erreur mise à jour catégorie', detail: String((lastErr && lastErr.message) || lastErr) });
       }
       if (action === 'delete-category') {
         if (!body.slug) return json(400, { ok: false, error: 'slug requis' });
