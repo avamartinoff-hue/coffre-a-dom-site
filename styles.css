@@ -894,6 +894,9 @@ h1,h2,h3{ letter-spacing:0; }                 /* DM Serif respire mieux sans tra
 .door{ display:flex; flex-direction:column; align-items:flex-start; gap:8px; padding:26px 22px; background:var(--surface); border:1px solid var(--line); border-radius:var(--radius-lg); box-shadow:0 2px 12px rgba(0,0,0,.35); transition:transform .2s var(--ease), box-shadow .25s, border-color .2s; }
 .door:hover{ transform:translateY(-4px); border-color:var(--gold); box-shadow:0 16px 40px rgba(0,0,0,.5); }
 .door__icon{ font-size:2.4rem; line-height:1; }
+/* Écusson illustré médiéval (image entière, format carré uniforme) */
+.door__crest{ width:100%; aspect-ratio:1 / 1; object-fit:contain; border-radius:14px; display:block; margin-bottom:10px; box-shadow:0 6px 20px rgba(0,0,0,.45); background:#0b0b0d; transition:transform .25s var(--ease), box-shadow .25s; }
+.door:hover .door__crest{ transform:scale(1.03); box-shadow:0 12px 30px rgba(234,147,0,.28); }
 .door h3{ margin:0; }
 .door p{ color:var(--muted); font-size:.9rem; margin:0; flex:1; }
 .door__go{ color:var(--gold); font-weight:600; font-size:.9rem; margin-top:4px; }
