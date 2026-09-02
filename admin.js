@@ -478,27 +478,22 @@
   }
 
   /* ===== Étiquettes La Poste ===== */
-  function openPdfBase64(b64, name) {
-    try {
-      var bin = atob(b64), len = bin.length, bytes = new Uint8Array(len);
-      for (var i = 0; i < len; i++) bytes[i] = bin.charCodeAt(i);
-      var url = URL.createObjectURL(new Blob([bytes], { type: 'application/pdf' }));
-      var w = window.open(url, '_blank');
-      if (!w) { var aEl = document.createElement('a'); aEl.href = url; aEl.download = (name || 'etiquette') + '.pdf'; document.body.appendChild(aEl); aEl.click(); aEl.remove(); }
-      setTimeout(function () { URL.revokeObjectURL(url); }, 60000);
-    } catch (e) { showFlash('Impossible d\'ouvrir le PDF.', false); }
+  function pdfBlobUrl(b64) {
+    var bin = atob(b64), len = bin.length, bytes = new Uint8Array(len);
+    for (var i = 0; i < len; i++) bytes[i] = bin.charCodeAt(i);
+    return URL.createObjectURL(new Blob([bytes], { type: 'application/pdf' }));
   }
   function labelModal(o) {
     var x = o.shipping_address || {};
     var addr = [[x.rue, x.numero].filter(Boolean).join(' '), [x.npa, x.localite].filter(Boolean).join(' ')].filter(Boolean).join(', ');
     var has = !!o.label_generated_at;
-    var lastPdf = null; // PDF gardé en mémoire → ouverture via clic direct (pas de pop-up bloqué)
+    var lastUrl = null; // URL blob du dernier PDF (aperçu + ouverture + téléchargement)
     var ov = document.createElement('div'); ov.className = 'modal-ov';
     ov.innerHTML = '<div class="modal"><button class="modal__x" data-mx>✕</button>' +
       '<h3>🏷️ Étiquette La Poste — ' + esc(o.order_number) + '</h3>' +
       '<p class="seo-hint">' + esc(o.full_name || '') + (addr ? ' · ' + esc(addr) : '') + '</p>' +
       (o.tracking_number ? '<p class="lbl-track">Dernier n° de suivi : <b>' + esc(o.tracking_number) + '</b></p>' : '') +
-      '<div class="form__row"><label class="field"><span>Produit</span><select data-lf="product"><option value="PRI">PostPac Priority (rapide)</option><option value="ECO">PostPac Economy (éco)</option></select></label>' +
+      '<div class="form__row"><label class="field"><span>Produit</span><select data-lf="product"><option value="ECO">PostPac Economy (éco)</option><option value="PRI">PostPac Priority (rapide)</option></select></label>' +
         '<label class="field"><span>Poids (g)</span><input data-lf="weight" type="number" min="1" step="50" value="1000"></label></div>' +
       '<div class="lbl-result" data-lresult hidden></div>' +
       '<div class="modal__foot">' +
@@ -506,22 +501,27 @@
         '<span style="flex:1"></span>' +
         '<button class="btn btn--gold" data-lgen>' + (has ? 'Générer une nouvelle' : 'Générer l\'étiquette') + '</button>' +
       '</div>' +
-      '<p class="seo-hint"><button class="linkbtn" data-ldiag>🔧 Tester la connexion La Poste</button> · le PDF s\'ouvre au format A6, prêt à imprimer.</p>' +
+      '<p class="seo-hint"><button class="linkbtn" data-ldiag>🔧 Tester la connexion La Poste</button> · l\'étiquette s\'affiche ici, prête à imprimer (A6).</p>' +
       '</div>';
     document.body.appendChild(ov);
     var result = ov.querySelector('[data-lresult]');
     function showResult(html, ok) { result.hidden = false; result.className = 'lbl-result ' + (ok ? 'is-ok' : 'is-err'); result.innerHTML = html; }
     function onLabel(r) {
       if (r && r.ok && r.pdf) {
-        lastPdf = r.pdf;
-        showResult('✅ Étiquette prête' + (r.tracking ? ' · suivi <b>' + esc(r.tracking) + '</b>' : '') + '<br><button class="btn btn--gold btn--sm" data-lopen>📄 Ouvrir / imprimer l\'étiquette (PDF)</button>', true);
+        if (lastUrl) { try { URL.revokeObjectURL(lastUrl); } catch (e) { /* ignore */ } }
+        lastUrl = pdfBlobUrl(r.pdf);
+        showResult('✅ Étiquette prête' + (r.tracking ? ' · suivi <b>' + esc(r.tracking) + '</b>' : '') +
+          '<iframe class="lbl-pdf" src="' + lastUrl + '" title="Étiquette La Poste"></iframe>' +
+          '<div class="lbl-actions"><button class="btn btn--gold btn--sm" data-lopen>📄 Ouvrir en plein écran</button> ' +
+          '<button class="btn btn--ghost btn--sm" data-ldl>⬇️ Télécharger le PDF</button></div>', true);
       } else {
         showResult('❌ ' + esc((r && r.error) || 'Erreur inconnue.'), false);
       }
     }
     ov.addEventListener('click', function (e) {
-      if (e.target === ov || e.target.closest('[data-mx]')) { ov.remove(); return; }
-      if (e.target.closest('[data-lopen]')) { if (lastPdf) openPdfBase64(lastPdf, o.order_number); return; }
+      if (e.target === ov || e.target.closest('[data-mx]')) { if (lastUrl) { try { URL.revokeObjectURL(lastUrl); } catch (er) { /* ignore */ } } ov.remove(); return; }
+      if (e.target.closest('[data-lopen]')) { if (lastUrl) window.open(lastUrl, '_blank'); return; }
+      if (e.target.closest('[data-ldl]')) { if (lastUrl) { var a = document.createElement('a'); a.href = lastUrl; a.download = o.order_number + '.pdf'; document.body.appendChild(a); a.click(); a.remove(); } return; }
       if (e.target.closest('[data-ldiag]')) {
         var d = e.target.closest('[data-ldiag]'); d.disabled = true; var dt = d.textContent; d.textContent = 'Test en cours…';
         api('POST', 'admin-label', { action: 'diag' }).then(function (r) {

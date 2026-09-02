@@ -56,7 +56,7 @@ async function generateLabel(order, opts) {
   if (!licence) throw new Error('Numéro de licence d’affranchissement manquant (SWISSPOST_FRANKING_LICENSE).');
 
   const lang = (order.lang || 'fr').toUpperCase(); // DE/FR/IT/EN acceptés
-  const przl = [String(opts.product || process.env.SWISSPOST_PRODUCT || 'PRI').toUpperCase()];
+  const przl = [String(opts.product || process.env.SWISSPOST_PRODUCT || 'ECO').toUpperCase()];
   const weight = Number(opts.weight || process.env.SWISSPOST_DEFAULT_WEIGHT || 1000);
   const id = itemID();
 
