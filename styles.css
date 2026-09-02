@@ -1232,3 +1232,9 @@ h1,h2,h3{ letter-spacing:0; }                 /* DM Serif respire mieux sans tra
 .info-card__icon{ color:var(--gold); line-height:0; }
 .info-card__icon .ic{ width:2.5rem; height:2.5rem; }
 .btn .ic{ width:1.15em; height:1.15em; vertical-align:-0.2em; margin-left:.15em; color:inherit; }
+
+/* Taille des icônes SVG dans les conteneurs "grand picto" (remplacent les gros emojis) */
+.page-hero__icon .ic, .ccard__icon .ic, .pillar__icon .ic, .account-soon__icon .ic{ width:2.6rem; height:2.6rem; }
+.product__emoji .ic{ width:2.2rem; height:2.2rem; }
+.ecard__emoji .ic, .bcard__media .ic, .author-hero__avatar .ic{ width:2.4rem; height:2.4rem; }
+.mega .ic, .nav__links .ic, a .ic{ width:1.05em; height:1.05em; }
