@@ -2,7 +2,7 @@
   <div class="container container--narrow">
     <nav class="crumb" aria-label="Percorso di navigazione"><a href="/">Home</a><span class="crumb__sep">/</span><a href="/panier/">Carrello</a><span class="crumb__sep">/</span><span>Ordina</span></nav>
     <header class="page-hero page-hero--left">
-      <span class="page-hero__icon">📦</span>
+      <span class="page-hero__icon"><svg class="ic" aria-hidden="true"><use href="#ic-parcel"/></svg></span>
       <h1>Concludere il mio ordine</h1>
       <p>Controlla il tuo carrello, scegli il pagamento e conferma. Ritiro a Le Bouveret o spedizione postale.</p>
     </header>
@@ -51,16 +51,16 @@
         <legend>Metodo di pagamento</legend>
         <label class="pay-opt">
           <input type="radio" name="method" value="twint" checked />
-          <span class="pay-opt__body"><b>📱 TWINT</b><small>Pagamento mobile — istruzioni dopo la conferma</small></span>
+          <span class="pay-opt__body"><b><svg class="ic" aria-hidden="true"><use href="#ic-mobile"/></svg> TWINT</b><small>Pagamento mobile — istruzioni dopo la conferma</small></span>
         </label>
         <label class="pay-opt">
           <input type="radio" name="method" value="sumup" />
-          <span class="pay-opt__body"><b>💳 Carta di credito (SumUp)</b><small>Visa, Mastercard, Maestro — pagamento sicuro</small></span>
+          <span class="pay-opt__body"><b><svg class="ic" aria-hidden="true"><use href="#ic-cardpay"/></svg> Carta di credito (SumUp)</b><small>Visa, Mastercard, Maestro — pagamento sicuro</small></span>
         </label>
       </fieldset>
 
       <p class="form__msg" data-checkout-msg role="status" aria-live="polite"></p>
-      <button type="submit" class="btn btn--gold btn--full" data-checkout-submit>Conferma il mio ordine 🗝️</button>
+      <button type="submit" class="btn btn--gold btn--full" data-checkout-submit>Conferma il mio ordine <svg class="ic" aria-hidden="true"><use href="#ic-key"/></svg></button>
       <p class="form__legal">Confermando, accetti le nostre <a href="/conditions-generales-de-vente/">condizioni generali di vendita</a>. Il pagamento TWINT avviene al ricevimento delle istruzioni; confermiamo il tuo ordine non appena lo riceviamo. Ordinando, acconsenti a ricevere le nostre e-mail di tracciamento e le nostre novità (disiscrizione in un clic in ogni e-mail).</p>
     </form>
   </div>

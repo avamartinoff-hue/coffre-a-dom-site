@@ -20,6 +20,9 @@ const V = { css: ver('styles.css'), site: ver('site.js'), cart: ver('cart.js'), 
 const read = (p) => readFileSync(join(__dirname, p), 'utf8');
 const readJSON = (p) => JSON.parse(read(p));
 const esc = (s = '') => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+// Convertit un emoji connu en icône SVG médiévale (sinon garde l'emoji échappé).
+const EMOJI_IC = { '🎴': 'cards', '🃏': 'cards', '🎮': 'controller', '🎯': 'target', '🍄': 'mushroom', '🕹️': 'joystick', '🕹': 'joystick', '🏎️': 'car', '🏎': 'car', '🏢': 'building', '🎉': 'party', '⚔️': 'swords', '⚔': 'swords', '🪙': 'coin', '🗝️': 'key', '🗝': 'key', '🏰': 'castle', '💛': 'heart', '📦': 'parcel', '🎟️': 'ticket', '🎟': 'ticket', '🏷️': 'tag', '🏷': 'tag', '📰': 'news', '📱': 'mobile', '💳': 'cardpay', '📞': 'phone', '📍': 'pin', '🕑': 'clock', '✉️': 'mail', '✉': 'mail', '👤': 'user', '👑': 'crown', '🔒': 'lock', '🛒': 'cart', '📅': 'calendar', '🗓️': 'calendar', '🗓': 'calendar', '📝': 'scroll', '🛡️': 'shield', '🛡': 'shield' };
+const ico = (s) => { const k = String(s == null ? '' : s).trim(); const id = EMOJI_IC[k]; return id ? `<svg class="ic" aria-hidden="true"><use href="#ic-${id}"/></svg>` : esc(s); };
 const chf = (n) => 'CHF ' + Number(n).toFixed(2);
 const imgUrl = (img) => (img && /^https?:\/\//.test(img) ? img : '/' + img); // URL absolue (upload) ou chemin local
 // Affichage optimisé via Netlify Image CDN (redimensionne + WebP/AVIF auto + cache). Uploads distants laissés tels quels.
@@ -321,7 +324,7 @@ function productBadges(p) {
 }
 function productCard(p) {
   const cat = catBySlug[p.category];
-  const icon = (cat && cat.icon) || '🎴';
+  const icon = ico((cat && cat.icon) || '🎴');
   const nm = pName(p);
   const media = p.image
     ? `<img class="pcard__img" src="${esc(imgDisplay(p.image, 440))}" alt="${esc(nm)}" loading="lazy" decoding="async" />`
@@ -353,7 +356,7 @@ function categoryCard(c, large) {
   const img = catThumb(c.slug);
   const visual = img
     ? `<div class="ccard__thumb"><img src="${esc(imgDisplay(img, 440))}" alt="${esc(cName(c))}" loading="lazy" decoding="async" /></div>`
-    : `<div class="ccard__thumb ccard__thumb--empty"><span>${c.icon || '🎴'}</span></div>`;
+    : `<div class="ccard__thumb ccard__thumb--empty"><span>${ico(c.icon || '🎴')}</span></div>`;
   const nSub = kids.filter(catVisible).length;
   const sub = large && nSub ? `${nSub} ${nSub > 1 ? t('cat.subcat_many') : t('cat.subcat_one')} · ` : '';
   return `<a class="ccard${large ? ' ccard--lg' : ''}" href="${catUrl(c.slug)}">
@@ -407,7 +410,7 @@ function postCard(post) {
   const cat = blog.categories.find((c) => c.slug === post.category);
   const media = post.cover_img
     ? `<a class="bcard__media bcard__media--img" href="${postUrl(post.slug)}"><img src="${esc(imgDisplay(post.cover_img, 700))}" alt="${esc(pTitle(post))}" loading="lazy" decoding="async" /></a>`
-    : `<a class="bcard__media" href="${postUrl(post.slug)}"><span>${post.cover || '📝'}</span></a>`;
+    : `<a class="bcard__media" href="${postUrl(post.slug)}"><span>${ico(post.cover || '📝')}</span></a>`;
   return `<article class="bcard">
     ${media}
     <div class="bcard__body">
@@ -421,10 +424,10 @@ function postCard(post) {
 
 function eventCard(ev) {
   return `<article class="ecard">
-    <div class="ecard__date"><span class="ecard__emoji">${ev.cover || '📅'}</span></div>
+    <div class="ecard__date"><span class="ecard__emoji">${ico(ev.cover || '📅')}</span></div>
     <div class="ecard__body">
       <h3><a href="${eventUrl(ev.slug)}">${esc(evL(ev, 'title'))}</a></h3>
-      <p class="ecard__meta">🗓️ ${frDate(ev.date)} · ${esc(evL(ev, 'time'))} · 📍 ${esc(evL(ev, 'place'))}</p>
+      <p class="ecard__meta">${ico('🗓️')} ${frDate(ev.date)} · ${esc(evL(ev, 'time'))} · ${ico('📍')} ${esc(evL(ev, 'place'))}</p>
       <p>${esc(evL(ev, 'excerpt'))}</p>
       <p class="ecard__price">${esc(evL(ev, 'price'))}</p>
       <a class="link-arrow" href="${eventUrl(ev.slug)}">${t('event.details')} <span>→</span></a>
@@ -502,7 +505,7 @@ for (const c of cats) {
     <div class="container">
       ${breadcrumb(crumbItems)}
       <header class="page-hero">
-        <span class="page-hero__icon">${c.icon || '🎴'}</span>
+        <span class="page-hero__icon">${ico(c.icon || '🎴')}</span>
         <h1>${esc(cName(c))}</h1>
         <p>${esc(cDesc(c))}</p>
       </header>
@@ -545,7 +548,7 @@ for (const p of products) {
   });
   const media = p.image
     ? `<img src="${esc(imgDisplay(p.image, 900))}" alt="${esc(nm)}" decoding="async" />`
-    : `<span class="product__emoji">${(cat && cat.icon) || '🎴'}</span>`;
+    : `<span class="product__emoji">${ico((cat && cat.icon) || '🎴')}</span>`;
   const pre = isPreorder(p);
   const release = releaseDate(p);
   const qtyBlock = `<div class="qty" data-qty>
@@ -608,7 +611,7 @@ for (const post of blog.posts) {
         <a class="chip chip--sm" href="${blogCatUrl(post.category)}">${esc(cat ? bcatName(cat) : '')}</a>
         <h1>${esc(pTitle(post))}</h1>
         <p class="article-hero__meta">${t('blog.by')} <a href="${authorUrl(post.author)}">${esc(author ? author.name : '')}</a> · ${frDate(post.date)}</p>
-        <div class="article-hero__cover${post.cover_img ? ' article-hero__cover--img' : ''}">${post.cover_img ? `<img src="${esc(imgDisplay(post.cover_img, 1000))}" alt="${esc(pTitle(post))}" decoding="async" />` : `<span>${post.cover || '📝'}</span>`}</div>
+        <div class="article-hero__cover${post.cover_img ? ' article-hero__cover--img' : ''}">${post.cover_img ? `<img src="${esc(imgDisplay(post.cover_img, 1000))}" alt="${esc(pTitle(post))}" decoding="async" />` : `<span>${ico(post.cover || '📝')}</span>`}</div>
       </header>
       <div class="prose">
         <p class="prose__lead">${esc(pExcerpt(post))}</p>
@@ -634,7 +637,7 @@ for (const c of blog.categories) {
   <section class="section section--page">
     <div class="container">
       ${breadcrumb([{ name: t('crumb.home'), url: '/' }, { name: t('crumb.blog'), url: '/blog-geek/' }, { name: bcatName(c) }])}
-      <header class="page-hero"><span class="page-hero__icon">🏷️</span><h1>${esc(bcatName(c))}</h1><p>${esc(t('blog.cat_all', { name: bcatName(c) }))}</p></header>
+      <header class="page-hero"><span class="page-hero__icon">${ico('🏷️')}</span><h1>${esc(bcatName(c))}</h1><p>${esc(t('blog.cat_all', { name: bcatName(c) }))}</p></header>
       <div class="bgrid">${list.map(postCard).join('')}</div>
     </div>
   </section>`;
@@ -649,7 +652,7 @@ for (const a of blog.authors) {
     <div class="container container--narrow">
       ${breadcrumb([{ name: t('crumb.home'), url: '/' }, { name: t('crumb.blog'), url: '/blog-geek/' }, { name: a.name }])}
       <header class="author-hero">
-        <span class="author-hero__avatar">${a.slug === 'dom' ? '🛡️' : '🎮'}</span>
+        <span class="author-hero__avatar">${ico(a.slug === 'dom' ? '🛡️' : '🎮')}</span>
         <div><h1>${esc(a.name)}</h1><p class="author-hero__role">${esc(aRole(a))}</p></div>
       </header>
       <p class="prose__lead">${esc(aBio(a))}</p>
@@ -677,8 +680,8 @@ for (const ev of events) {
       <header class="article-hero">
         <span class="chip chip--sm">${t('event.badge')}</span>
         <h1>${esc(evL(ev, 'title'))}</h1>
-        <p class="article-hero__meta">🗓️ ${frDate(ev.date)} · ${esc(evL(ev, 'time'))} · 📍 ${esc(evL(ev, 'place'))}</p>
-        <div class="article-hero__cover"><span>${ev.cover || '📅'}</span></div>
+        <p class="article-hero__meta">${ico('🗓️')} ${frDate(ev.date)} · ${esc(evL(ev, 'time'))} · ${ico('📍')} ${esc(evL(ev, 'place'))}</p>
+        <div class="article-hero__cover"><span>${ico(ev.cover || '📅')}</span></div>
       </header>
       <div class="prose">
         <p class="prose__lead">${esc(evL(ev, 'excerpt'))}</p>

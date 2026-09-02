@@ -2,7 +2,7 @@
   <div class="container container--narrow">
     <nav class="crumb" aria-label="Brotkrümelnavigation"><a href="/">Startseite</a><span class="crumb__sep">/</span><a href="/panier/">Warenkorb</a><span class="crumb__sep">/</span><span>Bestellen</span></nav>
     <header class="page-hero page-hero--left">
-      <span class="page-hero__icon">📦</span>
+      <span class="page-hero__icon"><svg class="ic" aria-hidden="true"><use href="#ic-parcel"/></svg></span>
       <h1>Meine Bestellung abschliessen</h1>
       <p>Prüfen Sie Ihren Warenkorb, wählen Sie die Zahlung und bestätigen Sie. Abholung in Le Bouveret oder Postversand.</p>
     </header>
@@ -51,16 +51,16 @@
         <legend>Zahlungsart</legend>
         <label class="pay-opt">
           <input type="radio" name="method" value="twint" checked />
-          <span class="pay-opt__body"><b>📱 TWINT</b><small>Mobile Zahlung — Anweisungen nach der Bestätigung</small></span>
+          <span class="pay-opt__body"><b><svg class="ic" aria-hidden="true"><use href="#ic-mobile"/></svg> TWINT</b><small>Mobile Zahlung — Anweisungen nach der Bestätigung</small></span>
         </label>
         <label class="pay-opt">
           <input type="radio" name="method" value="sumup" />
-          <span class="pay-opt__body"><b>💳 Kreditkarte (SumUp)</b><small>Visa, Mastercard, Maestro — sichere Zahlung</small></span>
+          <span class="pay-opt__body"><b><svg class="ic" aria-hidden="true"><use href="#ic-cardpay"/></svg> Kreditkarte (SumUp)</b><small>Visa, Mastercard, Maestro — sichere Zahlung</small></span>
         </label>
       </fieldset>
 
       <p class="form__msg" data-checkout-msg role="status" aria-live="polite"></p>
-      <button type="submit" class="btn btn--gold btn--full" data-checkout-submit>Meine Bestellung bestätigen 🗝️</button>
+      <button type="submit" class="btn btn--gold btn--full" data-checkout-submit>Meine Bestellung bestätigen <svg class="ic" aria-hidden="true"><use href="#ic-key"/></svg></button>
       <p class="form__legal">Mit der Bestätigung akzeptieren Sie unsere <a href="/conditions-generales-de-vente/">allgemeinen Geschäftsbedingungen</a>. Die TWINT-Zahlung erfolgt nach Erhalt der Anweisungen; wir bestätigen Ihre Bestellung, sobald wir sie erhalten haben. Mit Ihrer Bestellung erklären Sie sich einverstanden, unsere Bestell-E-Mails und Neuigkeiten zu erhalten (Abmeldung mit einem Klick in jeder E-Mail).</p>
     </form>
   </div>

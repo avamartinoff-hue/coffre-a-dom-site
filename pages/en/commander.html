@@ -2,7 +2,7 @@
   <div class="container container--narrow">
     <nav class="crumb" aria-label="Breadcrumb"><a href="/">Home</a><span class="crumb__sep">/</span><a href="/panier/">Cart</a><span class="crumb__sep">/</span><span>Checkout</span></nav>
     <header class="page-hero page-hero--left">
-      <span class="page-hero__icon">📦</span>
+      <span class="page-hero__icon"><svg class="ic" aria-hidden="true"><use href="#ic-parcel"/></svg></span>
       <h1>Complete my order</h1>
       <p>Check your cart, choose a payment method, and confirm. Pickup in Le Bouveret or postal delivery.</p>
     </header>
@@ -51,16 +51,16 @@
         <legend>Payment method</legend>
         <label class="pay-opt">
           <input type="radio" name="method" value="twint" checked />
-          <span class="pay-opt__body"><b>📱 TWINT</b><small>Mobile payment — instructions after confirmation</small></span>
+          <span class="pay-opt__body"><b><svg class="ic" aria-hidden="true"><use href="#ic-mobile"/></svg> TWINT</b><small>Mobile payment — instructions after confirmation</small></span>
         </label>
         <label class="pay-opt">
           <input type="radio" name="method" value="sumup" />
-          <span class="pay-opt__body"><b>💳 Bank card (SumUp)</b><small>Visa, Mastercard, Maestro — secure payment</small></span>
+          <span class="pay-opt__body"><b><svg class="ic" aria-hidden="true"><use href="#ic-cardpay"/></svg> Bank card (SumUp)</b><small>Visa, Mastercard, Maestro — secure payment</small></span>
         </label>
       </fieldset>
 
       <p class="form__msg" data-checkout-msg role="status" aria-live="polite"></p>
-      <button type="submit" class="btn btn--gold btn--full" data-checkout-submit>Confirm my order 🗝️</button>
+      <button type="submit" class="btn btn--gold btn--full" data-checkout-submit>Confirm my order <svg class="ic" aria-hidden="true"><use href="#ic-key"/></svg></button>
       <p class="form__legal">By confirming, you accept our <a href="/conditions-generales-de-vente/">terms and conditions of sale</a>. TWINT payment is made once you receive the instructions; we confirm your order upon receipt. By ordering, you agree to receive our order-tracking emails and news (unsubscribe in one click in every email).</p>
     </form>
   </div>
