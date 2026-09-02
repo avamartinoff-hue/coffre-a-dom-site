@@ -1238,3 +1238,14 @@ h1,h2,h3{ letter-spacing:0; }                 /* DM Serif respire mieux sans tra
 .product__emoji .ic{ width:2.2rem; height:2.2rem; }
 .ecard__emoji .ic, .bcard__media .ic, .author-hero__avatar .ic{ width:2.4rem; height:2.4rem; }
 .mega .ic, .nav__links .ic, a .ic{ width:1.05em; height:1.05em; }
+
+/* --- Retours client : icônes plus grandes + centrées, cartes infos homogènes --- */
+.ccard:not(:has(.ccard__thumb)) .ccard__icon{ width:70px; height:70px; }
+.page-hero__icon, .account-soon__icon, .pillar__icon, .info-card__icon{ display:inline-grid; place-items:center; }
+.page-hero__icon .ic, .ccard__icon .ic, .pillar__icon .ic, .account-soon__icon .ic, .info-card__icon .ic{ display:block; vertical-align:middle; }
+.page-hero__icon .ic{ width:3.6rem; height:3.6rem; }
+.ccard__icon .ic{ width:3.4rem; height:3.4rem; }
+.pillar__icon .ic, .account-soon__icon .ic{ width:3.4rem; height:3.4rem; }
+.info-card__icon .ic{ width:3.2rem; height:3.2rem; }
+.product__emoji .ic{ width:2.8rem; height:2.8rem; }
+.info-card{ display:flex; flex-direction:column; justify-content:center; }
