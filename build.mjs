@@ -187,6 +187,7 @@ const blogCatUrl = (slug) => `/blog-geek/categorie/${slug}/`;
 /* ---------- partials ---------- */
 const headerTpl = read('partials/header.html');
 const footerTpl = read('partials/footer.html');
+const iconSprite = read('partials/icons.html'); // sprite SVG d'icônes médiévales
 
 /* mega-menu built from the category tree */
 function buildMegaMenu() {
@@ -286,6 +287,7 @@ ${(Array.isArray(jsonld) ? jsonld : (jsonld ? [jsonld] : [])).map((j) => `<scrip
 </head>
 <body data-nav="${nav}">
 <script>window.__LANG__=${JSON.stringify(LANG)};window.__BASE__=${JSON.stringify(BASE())};window.__I18N__=${JSON.stringify(UI[LANG]._client || {})};</script>
+${iconSprite}
 ${header}
 <main id="contenu">
 ${body}
