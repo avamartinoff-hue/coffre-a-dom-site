@@ -29,7 +29,7 @@ exports.handler = async (event) => {
 
   const db = sb();
   try {
-    const { action, orderId, product, weight, force } = JSON.parse(event.body || '{}');
+    const { action, orderId, product, weight, signature, force } = JSON.parse(event.body || '{}');
     if (action === 'diag') {
       const diag = await swiss.checkAuth();
       return json(200, { ok: true, diag });
@@ -47,7 +47,7 @@ exports.handler = async (event) => {
 
     // Génération d'une nouvelle étiquette
     if (action !== 'generate') return json(400, { ok: false, error: 'Action inconnue.' });
-    const res = await swiss.generateLabel(order, { product, weight });
+    const res = await swiss.generateLabel(order, { product, weight, signature });
     await db.patch(`orders?id=eq.${encodeURIComponent(orderId)}`, {
       tracking_number: res.tracking, label_data: res.pdfBase64, label_generated_at: new Date().toISOString(),
     }).catch(() => {}); // le stockage ne doit pas faire échouer la génération

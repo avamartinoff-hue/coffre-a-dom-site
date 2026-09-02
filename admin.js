@@ -495,6 +495,7 @@
       (o.tracking_number ? '<p class="lbl-track">Dernier n° de suivi : <b>' + esc(o.tracking_number) + '</b></p>' : '') +
       '<div class="form__row"><label class="field"><span>Produit</span><select data-lf="product"><option value="ECO">PostPac Economy (éco)</option><option value="PRI">PostPac Priority (rapide)</option></select></label>' +
         '<label class="field"><span>Poids (g)</span><input data-lf="weight" type="number" min="1" step="50" value="1000"></label></div>' +
+      '<label class="field field--check"><input type="checkbox" data-lf="signature"><span>✍️ Remise contre signature</span></label>' +
       '<div class="lbl-result" data-lresult hidden></div>' +
       '<div class="modal__foot">' +
         (has ? '<button class="btn btn--ghost btn--sm" data-lreprint>↻ Réimprimer la dernière</button>' : '') +
@@ -543,7 +544,8 @@
       if (e.target.closest('[data-lgen]')) {
         var g = function (n) { var el = ov.querySelector('[data-lf="' + n + '"]'); return el ? el.value : ''; };
         var btn = e.target.closest('[data-lgen]'); btn.disabled = true; var gt = btn.textContent; btn.textContent = 'Génération…';
-        api('POST', 'admin-label', { action: 'generate', orderId: o.id, product: g('product'), weight: g('weight'), force: true }).then(function (r) {
+        var sigEl = ov.querySelector('[data-lf="signature"]');
+        api('POST', 'admin-label', { action: 'generate', orderId: o.id, product: g('product'), weight: g('weight'), signature: sigEl ? sigEl.checked : false, force: true }).then(function (r) {
           btn.disabled = false; btn.textContent = gt; onLabel(r); if (r && r.ok) loadOrders();
         }).catch(function () { btn.disabled = false; btn.textContent = gt; showResult('❌ Erreur réseau.', false); });
         return;

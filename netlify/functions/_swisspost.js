@@ -57,6 +57,7 @@ async function generateLabel(order, opts) {
 
   const lang = (order.lang || 'fr').toUpperCase(); // DE/FR/IT/EN acceptés
   const przl = [String(opts.product || process.env.SWISSPOST_PRODUCT || 'ECO').toUpperCase()];
+  if (opts.signature) przl.push('SI'); // remise contre signature (doit être incluse au contrat)
   const weight = Number(opts.weight || process.env.SWISSPOST_DEFAULT_WEIGHT || 1000);
   const id = itemID();
 
