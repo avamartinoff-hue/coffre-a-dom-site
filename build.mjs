@@ -744,7 +744,7 @@ ${topShop.map((c) => `- [${c.name}](${SITE}${catUrl(c.slug)}) : ${productsDeep(c
 - Deutsch : ${SITE}/de/
 
 ## Contact
-${BIZ.legalName} — ${BIZ.street}, ${BIZ.zip} ${BIZ.city}, Suisse. Tél : +41 78 941 85 38 — E-mail : ${BIZ.email} — IDE : ${BIZ.vat}. Ouvert samedi 18h–22h et dimanche 14h–18h, en semaine sur réservation.
+${BIZ.legalName} — ${BIZ.street}, ${BIZ.zip} ${BIZ.city}, Suisse. Tél : +41 78 941 85 38 — E-mail : ${BIZ.email} — IDE : ${BIZ.vat}. Ouvert mardi à jeudi 13h30–16h30, samedi 18h–22h et dimanche 14h–18h (lundi et vendredi fermé).
 `;
 writeFileSync(join(OUT, 'llms.txt'), llms, 'utf8');
 
