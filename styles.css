@@ -379,6 +379,14 @@ blockquote{
 .footer__col p{ color:var(--muted); font-size:.9rem; line-height:1.5; margin:0; }
 .footer__brand .brand__text{ font-family:var(--font-display); font-weight:700; font-size:1.3rem; }
 .footer__tag{ color:var(--muted); font-size:.9rem; margin-top:12px; }
+/* Réseaux sociaux (footer + carte contact) */
+.social{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+.footer__brand .social{ margin-top:18px; }
+.social--card{ margin-top:16px; }
+.social__label{ color:var(--muted); font-size:.9rem; margin-right:2px; }
+.social__link{ display:inline-grid; place-items:center; width:40px; height:40px; border-radius:50%; border:1px solid var(--line-strong); color:var(--muted); transition:color .25s, border-color .25s, transform .25s, background .25s; }
+.social__link .ic{ width:1.25rem; height:1.25rem; display:block; }
+.social__link:hover{ color:var(--gold); border-color:var(--gold); background:rgba(234,147,0,.08); transform:translateY(-2px); }
 .footer__nav{ display:flex; flex-direction:column; gap:10px; }
 .footer__nav a{ color:var(--muted); font-size:.94rem; transition:color .2s; width:fit-content; }
 .footer__nav a:hover{ color:var(--gold); }
