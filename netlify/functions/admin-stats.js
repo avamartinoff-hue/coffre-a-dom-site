@@ -33,7 +33,7 @@ exports.handler = async (event) => {
     const N = [1, 7, 30, 90].includes(qsDays) ? qsDays : 30;
 
     const byStatus = { pending: 0, paid: 0, failed: 0, cancelled: 0 };
-    let revenue = 0, revenuePeriod = 0, ordersPeriod = 0;
+    let revenue = 0, revenuePeriod = 0, ordersPeriod = 0, paidOrdersPeriod = 0;
     let toValidate = 0, toShip = 0; // à valider (paiement en attente) · à livrer (payée, non expédiée)
     const today = dayStr(new Date());
     let revenueToday = 0, ordersToday = 0;
@@ -49,7 +49,7 @@ exports.handler = async (event) => {
       if (o.payment_status === 'paid') {
         const t = Number(o.total) || 0;
         revenue += t;
-        if (d in days) { days[d] += t; revenuePeriod += t; }
+        if (d in days) { days[d] += t; revenuePeriod += t; paidOrdersPeriod++; }
         if (d === today) revenueToday += t;
       }
     });
@@ -93,6 +93,7 @@ exports.handler = async (event) => {
       revenueToday: Math.round(revenueToday * 100) / 100,
       ordersTotal: orders.length,
       ordersPeriod,
+      paidOrdersPeriod,
       ordersToday,
       byStatus,
       toValidate,

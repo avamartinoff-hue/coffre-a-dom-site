@@ -103,6 +103,10 @@
       var toValidate = d.toValidate || 0, toShip = d.toShip || 0;
       var lbl = PERIOD_LABELS[d.periodDays] || (d.periodDays + ' j');
       var lblLow = d.periodDays === 1 ? 'aujourd\'hui' : ('sur ' + lbl.toLowerCase());
+      // Panier moyen = CA payé ÷ nb commandes payées ; Taux de conversion = ventes ÷ visites
+      var paidP = d.paidOrdersPeriod || 0;
+      var basket = paidP > 0 ? (d.revenuePeriod / paidP) : 0;
+      var conv = (v && v.period > 0) ? (paidP / v.period * 100) : null;
       panels.stats.innerHTML =
         '<p class="dash-section-label">À traiter</p>' +
         '<div class="stat-cards stat-cards--actions">' +
@@ -115,6 +119,8 @@
           statCard('Visites ' + lbl, v ? v.period : '–', v ? (v.today + ' aujourd\'hui') : 'compteur à activer') +
           statCard('CA aujourd\'hui', chf(d.revenueToday), d.ordersToday + ' commande' + (d.ordersToday > 1 ? 's' : '') + ' ce jour') +
           statCard('Chiffre d\'affaires', chf(d.revenue), 'total encaissé') +
+          statCard('Panier moyen', paidP > 0 ? chf(basket) : '–', paidP > 0 ? (paidP + ' vente' + (paidP > 1 ? 's' : '') + ' payée' + (paidP > 1 ? 's' : '') + ' ' + lblLow) : 'aucune vente ' + lblLow) +
+          statCard('Taux de conversion', conv != null ? conv.toFixed(1).replace('.', ',') + ' %' : '–', conv != null ? (paidP + ' vente' + (paidP > 1 ? 's' : '') + ' / ' + v.period + ' visite' + (v.period > 1 ? 's' : '')) : 'visites requises') +
           statCard('Commandes', d.ordersTotal, d.byStatus.paid + ' payées · ' + d.byStatus.pending + ' en attente') +
           statCard('Produits en ligne', d.products.visible + '/' + d.products.total, d.products.inStock + ' en stock') +
         '</div>' +
