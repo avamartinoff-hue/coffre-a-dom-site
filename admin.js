@@ -621,7 +621,7 @@
       '<td class="pt-name">' + esc(p.name) + '<small>' + esc(catName(p.category)) + '</small></td>' +
       '<td class="pt-price">' + chf(p.price) + '</td>' +
       '<td>' + (p.stock_qty == null ? '—' : p.stock_qty) + '</td>' +
-      '<td><label class="tgl tgl--on"><input type="checkbox" data-ptoggle="visible" data-slug="' + esc(p.slug) + '"' + (p.visible ? ' checked' : '') + '><span></span></label></td>' +
+      '<td><label class="tgl tgl--on"' + (p.in_stock ? '' : ' title="Sans stock — ajoutez une quantité pour le mettre en ligne"') + '><input type="checkbox" data-ptoggle="visible" data-slug="' + esc(p.slug) + '"' + ((p.visible !== false && p.in_stock) ? ' checked' : '') + (p.in_stock ? '' : ' disabled') + '><span></span></label></td>' +
       '<td class="pt-act"><button class="linkbtn" data-pedit="' + esc(p.slug) + '">Éditer</button></td>' +
     '</tr>';
   }
