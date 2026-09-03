@@ -213,7 +213,7 @@ function buildMegaMenu() {
       <div class="mega__promo">
         <p class="mega__promo-k">${t('mega.mystery_k')}</p>
         <p>${t('mega.mystery_txt')}</p>
-        <a href="/#coffres" class="mega__promo-cta">${t('mega.learn_more')}</a>
+        <a href="/votre-coffre/" class="mega__promo-cta">${t('mega.learn_more')}</a>
       </div>
     </div>`;
 }
