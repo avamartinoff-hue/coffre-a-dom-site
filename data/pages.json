@@ -3,14 +3,14 @@
     {
       "file": "home.html",
       "url": "/",
-      "title": "Coffre à Dom — Boutique & Lieu Vivant · Univers Ludique & Vintage · Le Bouveret",
+      "title": "Coffre à Dom, Boutique & Lieu Vivant · Univers Ludique & Vintage · Le Bouveret",
       "desc": "Boutique de cartes Pokémon & produits geek, espace gaming, coffres mystères et événements au Bouveret. Le Coffre est ouvert, l'aventure vous appelle !",
       "nav": "accueil"
     },
     {
       "file": "boutique.html",
       "url": "/boutique/",
-      "title": "Boutique — Cartes à collectionner & produits geek | Coffre à Dom",
+      "title": "Boutique, Cartes à collectionner & produits geek | Coffre à Dom",
       "desc": "Cartes Pokémon, Magic, One Piece, coffrets scellés, figurines et protections. Toute la boutique du Coffre à Dom.",
       "nav": "boutique"
     },
@@ -41,7 +41,7 @@
     {
       "file": "a-propos.html",
       "url": "/a-propos-coffre-a-dom/",
-      "title": "À propos — Dom, le Dernier Gardien | Coffre à Dom",
+      "title": "À propos, Dom, le Dernier Gardien | Coffre à Dom",
       "desc": "L'histoire de Coffre à Dom : d'une passion des années 90 à une citadelle du jeu et du partage au Bouveret.",
       "nav": "univers"
     },

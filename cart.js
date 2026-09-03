@@ -1,5 +1,5 @@
 /* =========================================================
-   COFFRE À DOM — Panier localStorage
+   COFFRE À DOM, Panier localStorage
    Panier local ; la commande est créée côté serveur (Supabase) puis payée par TWINT/SumUp.
    ========================================================= */
 (function () {

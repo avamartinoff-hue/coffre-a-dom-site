@@ -26,6 +26,6 @@ createServer(async (req, res) => {
     res.end(data);
   } catch {
     res.statusCode = 404; res.setHeader('Content-Type', 'text/html; charset=utf-8');
-    res.end('<h1>404 — page introuvable</h1><p><a href="/">Retour à l\'accueil</a></p>');
+    res.end('<h1>404, page introuvable</h1><p><a href="/">Retour à l\'accueil</a></p>');
   }
 }).listen(PORT, () => console.log(`▶ Aperçu Coffre à Dom : http://localhost:${PORT}`));

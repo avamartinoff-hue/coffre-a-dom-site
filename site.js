@@ -1,5 +1,5 @@
 /* =========================================================
-   COFFRE À DOM — interactions globales
+   COFFRE À DOM, interactions globales
    ========================================================= */
 (function () {
   'use strict';
@@ -134,7 +134,7 @@
       // Aperçu local : la fonction Netlify n'existe pas → on simule.
       var isLocal = /^(localhost|127\.0\.0\.1)$/.test(location.hostname);
       if (isLocal) {
-        setTimeout(function () { setMsg('✅ Merci ! (démo locale — actif une fois déployé sur Netlify)', true); newsForm.reset(); btn.disabled = false; }, 500);
+        setTimeout(function () { setMsg('✅ Merci ! (démo locale, actif une fois déployé sur Netlify)', true); newsForm.reset(); btn.disabled = false; }, 500);
         return;
       }
       fetch('/.netlify/functions/brevo-subscribe', {

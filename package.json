@@ -2,7 +2,7 @@
   "name": "coffre-a-dom",
   "version": "1.0.0",
   "private": true,
-  "description": "Site statique Coffre à Dom — généré par un mini-SSG maison (build.mjs).",
+  "description": "Site statique Coffre à Dom, généré par un mini-SSG maison (build.mjs).",
   "type": "module",
   "scripts": {
     "build": "node build.mjs",

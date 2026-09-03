@@ -1,6 +1,6 @@
 {
   "events": [
-    { "slug": "tournoi-pokemon-rentree", "title": "Tournoi Pokémon de la rentrée", "date": "2026-09-13", "time": "14h00", "place": "Coffre à Dom — Le Bouveret", "cover": "🏆", "excerpt": "Affrontez les meilleurs dresseurs de la région pour remporter des lots exclusifs et des coffres mystères.", "price": "10 CHF / joueur" },
-    { "slug": "soiree-retro-gaming", "title": "Soirée rétro-gaming", "date": "2026-09-27", "time": "18h00", "place": "Coffre à Dom — Le Bouveret", "cover": "🕹️", "excerpt": "Une soirée dédiée aux classiques : consoles rétro, snacks, ambiance arcade et bonne humeur garantie.", "price": "Entrée libre" }
+    { "slug": "tournoi-pokemon-rentree", "title": "Tournoi Pokémon de la rentrée", "date": "2026-09-13", "time": "14h00", "place": "Coffre à Dom, Le Bouveret", "cover": "🏆", "excerpt": "Affrontez les meilleurs dresseurs de la région pour remporter des lots exclusifs et des coffres mystères.", "price": "10 CHF / joueur" },
+    { "slug": "soiree-retro-gaming", "title": "Soirée rétro-gaming", "date": "2026-09-27", "time": "18h00", "place": "Coffre à Dom, Le Bouveret", "cover": "🕹️", "excerpt": "Une soirée dédiée aux classiques : consoles rétro, snacks, ambiance arcade et bonne humeur garantie.", "price": "Entrée libre" }
   ]
 }

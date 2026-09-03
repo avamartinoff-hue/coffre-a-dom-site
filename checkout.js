@@ -1,5 +1,5 @@
 /* =========================================================
-   COFFRE À DOM — Tunnel de commande (front)
+   COFFRE À DOM, Tunnel de commande (front)
    Envoie le panier à la fonction create-order, affiche la confirmation.
    ========================================================= */
 (function () {
@@ -173,7 +173,7 @@
           '<p class="confirm__twint-note">' + T('twint_note', 'Votre commande est réservée et sera confirmée dès réception du paiement.') + '</p>' +
         '</div>';
     } else if (data.method === 'sumup') {
-      twintHtml = '<p class="confirm__twint-note">' + T('sumup_note', '💳 Le paiement par carte sera bientôt disponible — nous vous contactons pour finaliser le règlement.') + '</p>';
+      twintHtml = '<p class="confirm__twint-note">' + T('sumup_note', '💳 Le paiement par carte sera bientôt disponible, nous vous contactons pour finaliser le règlement.') + '</p>';
     }
     confirmBox.hidden = false;
     confirmBox.innerHTML =
@@ -207,7 +207,7 @@
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(customer.email)) { setMsg(T('email_invalid', 'E-mail invalide.'), false); return; }
     if (customer.mode === 'poste') {
       if (!customer.rue || !customer.localite) { setMsg(T('addr_required', 'Indiquez votre rue et votre localité.'), false); return; }
-      if (!/^\d{4}$/.test(customer.npa)) { setMsg(T('npa_invalid', 'NPA invalide — 4 chiffres (livraison en Suisse uniquement).'), false); return; }
+      if (!/^\d{4}$/.test(customer.npa)) { setMsg(T('npa_invalid', 'NPA invalide, 4 chiffres (livraison en Suisse uniquement).'), false); return; }
     }
 
     submit.disabled = true; setMsg(T('saving', 'Enregistrement de la commande…'), true);

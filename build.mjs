@@ -1,5 +1,5 @@
 /* =========================================================
-   COFFRE À DOM — Générateur de site statique (mini-SSG)
+   COFFRE À DOM, Générateur de site statique (mini-SSG)
    Node >= 18. Aucune dépendance externe.
    Usage : node build.mjs   → génère le dossier /dist
    ========================================================= */
@@ -134,12 +134,12 @@ async function loadCatalog() {
       try { cats = await get('categories?select=slug,name,parent,icon,description,visible&order=position'); }
       catch (e) { cats = await get('categories?select=slug,name,parent,icon,description&order=position'); }
       // Colonnes SEO optionnelles : on tente avec, et si elles n'existent pas encore
-      // (migration seo.sql pas jouée), on relit SANS — sans jamais retomber sur le catalogue local.
+      // (migration seo.sql pas jouée), on relit SANS, sans jamais retomber sur le catalogue local.
       let prods;
       try {
         prods = await get('products?select=slug,name,description,price,sale_price,category,image,on_sale,in_stock,seo_title,seo_description,brand,translations,created_at,max_per_order,stock_qty&visible=eq.true&in_stock=eq.true&order=position&limit=2000');
       } catch (seoErr) {
-        console.warn('⚠️  Colonnes SEO/marque/traductions absentes (jouez supabase/seo.sql) — lecture sans elles.');
+        console.warn('⚠️  Colonnes SEO/marque/traductions absentes (jouez supabase/seo.sql), lecture sans elles.');
         prods = await get('products?select=slug,name,description,price,sale_price,category,image,on_sale,in_stock,created_at,max_per_order,stock_qty&visible=eq.true&in_stock=eq.true&order=position&limit=2000');
       }
       if (Array.isArray(cats) && Array.isArray(prods) && prods.length) {
@@ -149,12 +149,12 @@ async function loadCatalog() {
           products: prods.map((p) => ({ slug: p.slug, name: p.name, desc: p.description || '', price: Number(p.price), salePrice: (p.sale_price == null ? null : Number(p.sale_price)), category: p.category, image: p.image, onSale: !!p.on_sale, inStock: !!p.in_stock, seoTitle: p.seo_title || '', seoDesc: p.seo_description || '', brand: p.brand || '', translations: p.translations || null, createdAt: p.created_at || '', maxPerOrder: p.max_per_order || null, stockQty: (p.stock_qty == null ? null : Number(p.stock_qty)) })),
         };
       }
-      console.warn('⚠️  Supabase configuré mais réponse inattendue — repli sur data/catalog.json');
+      console.warn('⚠️  Supabase configuré mais réponse inattendue, repli sur data/catalog.json');
     } catch (e) {
-      console.warn(`⚠️  Supabase indisponible (${e.message}) — repli sur data/catalog.json`);
+      console.warn(`⚠️  Supabase indisponible (${e.message}), repli sur data/catalog.json`);
     }
   } else {
-    console.log('↪ Catalogue local (data/catalog.json) — Supabase non configuré');
+    console.log('↪ Catalogue local (data/catalog.json), Supabase non configuré');
   }
   return readJSON('data/catalog.json');
 }
@@ -303,7 +303,7 @@ ${footer}
 <script src="/site.js?v=${V.site}" defer></script>
 </body>
 </html>`;
-  // Optimisation des images de contenu (pages éditoriales) via Netlify Image CDN — hors logo.
+  // Optimisation des images de contenu (pages éditoriales) via Netlify Image CDN, hors logo.
   html = html.replace(/(<img\b[^>]*\bsrc=")(\/assets\/[^"]+\.(?:jpe?g|png|webp))("[^>]*>)/gi, (m, a, path, b) => {
     if (/logo\.png$/i.test(path)) return m;
     return a + '/.netlify/images?url=' + encodeURIComponent(path) + '&w=1200&q=75' + b;
@@ -474,7 +474,7 @@ function pageMeta(pg, field, lang) {
    ========================================================= */
 if (existsSync(OUT)) {
   try { rmSync(OUT, { recursive: true, force: true, maxRetries: 8, retryDelay: 200 }); }
-  catch (e) { console.warn('⚠️  Impossible de vider /dist (verrou fichier) — on écrase par-dessus.', e.code); }
+  catch (e) { console.warn('⚠️  Impossible de vider /dist (verrou fichier), on écrase par-dessus.', e.code); }
 }
 mkdirSync(OUT, { recursive: true });
 
@@ -528,8 +528,8 @@ for (const c of cats) {
     </div>
   </section>`;
   writePage(catUrl(c.slug), shell({
-    title: `${cName(c)} — Boutique | Coffre à Dom`,
-    desc: cDesc(c) || `${cName(c)} — Coffre à Dom.`,
+    title: `${cName(c)}, Boutique | Coffre à Dom`,
+    desc: cDesc(c) || `${cName(c)}, Coffre à Dom.`,
     url: catUrl(c.slug), body, nav: 'boutique', noindex: !catVisible(c), jsonld: breadcrumbLD(crumbItems),
   }));
 }
@@ -643,7 +643,7 @@ for (const post of blog.posts) {
     publisher: { '@id': SITE + '/#org' }, mainEntityOfPage: SITE + BASE() + postUrl(post.slug),
     ...(post.cover_img ? { image: SITE + '/' + post.cover_img } : { image: DEFAULT_OG }),
   });
-  writePage(postUrl(post.slug), shell({ title: `${pTitle(post)} | Blog Geek — Coffre à Dom`, desc: pExcerpt(post), url: postUrl(post.slug), body, nav: 'univers', ogType: 'article', jsonld: [articleLD, breadcrumbLD(crumbItems)], ogImage: post.cover_img ? SITE + '/' + post.cover_img : '' }));
+  writePage(postUrl(post.slug), shell({ title: `${pTitle(post)} | Blog Geek, Coffre à Dom`, desc: pExcerpt(post), url: postUrl(post.slug), body, nav: 'univers', ogType: 'article', jsonld: [articleLD, breadcrumbLD(crumbItems)], ogImage: post.cover_img ? SITE + '/' + post.cover_img : '' }));
 }
 
 /* blog categories */
@@ -657,7 +657,7 @@ for (const c of blog.categories) {
       <div class="bgrid">${list.map(postCard).join('')}</div>
     </div>
   </section>`;
-  writePage(blogCatUrl(c.slug), shell({ title: `${bcatName(c)} — Blog Geek | Coffre à Dom`, desc: t('blog.cat_all', { name: bcatName(c) }), url: blogCatUrl(c.slug), body, nav: 'univers' }));
+  writePage(blogCatUrl(c.slug), shell({ title: `${bcatName(c)}, Blog Geek | Coffre à Dom`, desc: t('blog.cat_all', { name: bcatName(c) }), url: blogCatUrl(c.slug), body, nav: 'univers' }));
 }
 
 /* authors */
@@ -738,7 +738,7 @@ ${indexable.sort().map((u) => {
 </urlset>`;
 writeFileSync(join(OUT, 'sitemap.xml'), sitemap, 'utf8');
 
-/* 7b) llms.txt — fichier pour les IA / moteurs conversationnels */
+/* 7b) llms.txt, fichier pour les IA / moteurs conversationnels */
 const topShop = topCats.filter((c) => c.visible !== false && productsDeep(c.slug).length > 0).slice(0, 10);
 LANG = DEFAULT_LANG;
 const llms = `# Coffre à Dom
@@ -765,11 +765,11 @@ ${topShop.map((c) => `- [${c.name}](${SITE}${catUrl(c.slug)}) : ${productsDeep(c
 - Deutsch : ${SITE}/de/
 
 ## Contact
-${BIZ.legalName} — ${BIZ.street}, ${BIZ.zip} ${BIZ.city}, Suisse. Tél : +41 78 941 85 38 — E-mail : ${BIZ.email} — IDE : ${BIZ.vat}. Ouvert mardi à jeudi 13h30–16h30, samedi 18h–22h et dimanche 14h–18h (lundi et vendredi fermé).
+${BIZ.legalName}, ${BIZ.street}, ${BIZ.zip} ${BIZ.city}, Suisse. Tél : +41 78 941 85 38, E-mail : ${BIZ.email}, IDE : ${BIZ.vat}. Ouvert mardi à jeudi 13h30–16h30, samedi 18h–22h et dimanche 14h–18h (lundi et vendredi fermé).
 `;
 writeFileSync(join(OUT, 'llms.txt'), llms, 'utf8');
 
-/* 8) Flux Google Merchant (Google Shopping) — récupération planifiée par Merchant Center */
+/* 8) Flux Google Merchant (Google Shopping), récupération planifiée par Merchant Center */
 const catPath = (slug) => {
   const chain = [];
   let cur = catBySlug[slug];
@@ -815,7 +815,7 @@ const feedItems = products
 const feed = `<?xml version="1.0" encoding="UTF-8"?>
 <rss xmlns:g="http://base.google.com/ns/1.0" version="2.0">
   <channel>
-    <title>Coffre à Dom — Boutique ludique &amp; vintage</title>
+    <title>Coffre à Dom, Boutique ludique &amp; vintage</title>
     <link>${SITE}</link>
     <description>Catalogue produits Coffre à Dom pour Google Shopping.</description>
 ${feedItems.join('\n')}
@@ -823,7 +823,7 @@ ${feedItems.join('\n')}
 </rss>`;
 writeFileSync(join(OUT, 'google-merchant.xml'), feed, 'utf8');
 
-console.log(`✅ Build terminé — ${urls.size} pages générées dans /dist`);
+console.log(`✅ Build terminé, ${urls.size} pages générées dans /dist`);
 console.log(`   • Flux Google Merchant : ${feedItems.length} produits éligibles → /google-merchant.xml`);
 console.log(`   • ${pagesManifest.length} pages éditoriales`);
 console.log(`   • ${cats.length} catégories · ${products.length} produits`);

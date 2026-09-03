@@ -1,12 +1,12 @@
 /* =========================================================
-   COFFRE À DOM — Back office (tableau de bord, commandes, produits)
+   COFFRE À DOM, Back office (tableau de bord, commandes, produits)
    ========================================================= */
 (function () {
   'use strict';
   var login = document.querySelector('[data-admin-login]');
   if (!login) return;
   var KEY = 'cad_admin_pwd';
-  var SHIP_POSTE = 8.9; // affichage indicatif — le serveur recalcule le total réel
+  var SHIP_POSTE = 8.9; // affichage indicatif, le serveur recalcule le total réel
   var dash = document.querySelector('[data-admin-dash]');
   var hero = document.querySelector('[data-admin-hero]');
   var msg = document.querySelector('[data-admin-msg]');
@@ -89,7 +89,7 @@
         '<div class="dash-period"><p class="dash-section-label">Période</p>' + periodSelector() + '</div>' +
         '<div class="stat-cards">' +
           statCard('CA ' + lbl, chf(d.revenuePeriod), d.ordersPeriod + ' commande' + (d.ordersPeriod > 1 ? 's' : '') + ' ' + lblLow) +
-          statCard('Visites ' + lbl, v ? v.period : '—', v ? (v.today + ' aujourd\'hui') : 'compteur à activer') +
+          statCard('Visites ' + lbl, v ? v.period : '–', v ? (v.today + ' aujourd\'hui') : 'compteur à activer') +
           statCard('CA aujourd\'hui', chf(d.revenueToday), d.ordersToday + ' commande' + (d.ordersToday > 1 ? 's' : '') + ' ce jour') +
           statCard('Chiffre d\'affaires', chf(d.revenue), 'total encaissé') +
           statCard('Commandes', d.ordersTotal, d.byStatus.paid + ' payées · ' + d.byStatus.pending + ' en attente') +
@@ -127,7 +127,7 @@
         if (p.expires_at) conds.push('exp. ' + p.expires_at);
         var uses = p.used_count + (p.max_uses != null ? ' / ' + p.max_uses : '');
         return '<tr' + (p.active ? '' : ' class="promo-off"') + '>' +
-          '<td><b>' + esc(p.code) + '</b></td><td>' + val + '</td><td>' + (conds.join(' · ') || '—') + '</td><td>' + uses + '</td>' +
+          '<td><b>' + esc(p.code) + '</b></td><td>' + val + '</td><td>' + (conds.join(' · ') || '–') + '</td><td>' + uses + '</td>' +
           '<td><label class="tgl"><input type="checkbox" data-promotoggle="' + p.id + '"' + (p.active ? ' checked' : '') + '><span></span></label></td>' +
           '<td class="promo-actions"><button class="linkbtn" data-promoedit="' + p.id + '">Modifier</button> · <button class="linkbtn" data-promodel="' + p.id + '">Suppr.</button></td></tr>';
       }).join('');
@@ -173,7 +173,7 @@
   }
   var STAGES = [
     { key: 'validate', label: '🕒 À valider', hint: 'Paiement à confirmer (TWINT, virement…)' },
-    { key: 'ship', label: '📦 À livrer / remettre', hint: 'Payées — à expédier ou remettre en main propre' },
+    { key: 'ship', label: '📦 À livrer / remettre', hint: 'Payées, à expédier ou remettre en main propre' },
     { key: 'done', label: '✅ Terminées', hint: 'Payées et livrées', collapsed: true },
     { key: 'archived', label: '🚫 Annulées / échec', hint: '', collapsed: true },
   ];
@@ -204,7 +204,7 @@
       '<div class="ord__head"><label class="ord__sel" title="Sélectionner"><input type="checkbox" data-osel="' + o.id + '"' + (SELECTED_ORDERS[o.id] ? ' checked' : '') + '></label><b>' + esc(o.order_number) + '</b><span class="ord__status">' + badge + '</span></div>' +
       '<div class="ord__grid">' +
         '<div><span class="ord__k">Client</span>' + (o.email ? '<button class="linkbtn" data-oclient="' + esc(o.email) + '">' + esc(o.full_name) + '</button>' : esc(o.full_name)) + '<br>' + esc(o.email) + (o.phone ? '<br>' + esc(o.phone) : '') + '</div>' +
-        '<div><span class="ord__k">Articles</span>' + (items || '—') + '</div>' +
+        '<div><span class="ord__k">Articles</span>' + (items || '–') + '</div>' +
         '<div><span class="ord__k">Livraison</span>' + (o.shipping_mode === 'poste' ? '📦 Poste' : '🏪 Retrait') + fmtAddr(o.shipping_address) + (o.tracking_number ? '<br><span class="ord__k">Suivi</span>' + esc(o.tracking_number) : '') + '<br><span class="ord__k">Paiement</span>' + (o.payment_method === 'twint' ? '📱 TWINT' : '💳 SumUp') + '</div>' +
         '<div><span class="ord__k">Total</span><b>' + chf(o.total) + '</b><br><span class="ord__date">' + frDate(o.created_at) + '</span></div>' +
       '</div>' + (o.note ? '<p class="ord__note">📝 ' + esc(o.note) + '</p>' : '') +
@@ -517,13 +517,13 @@
     var lastUrl = null, lastA6 = null, lastTracking = null, sheetMode = false, quad = 1;
     var ov = document.createElement('div'); ov.className = 'modal-ov';
     ov.innerHTML = '<div class="modal"><button class="modal__x" data-mx>✕</button>' +
-      '<h3>🏷️ Étiquette La Poste — ' + esc(o.order_number) + '</h3>' +
+      '<h3>🏷️ Étiquette La Poste, ' + esc(o.order_number) + '</h3>' +
       '<p class="seo-hint">' + esc(o.full_name || '') + (addr ? ' · ' + esc(addr) : '') + '</p>' +
       (o.tracking_number ? '<p class="lbl-track">Dernier n° de suivi : <b>' + esc(o.tracking_number) + '</b></p>' : '') +
       '<div class="form__row"><label class="field"><span>Produit</span><select data-lf="product"><option value="ECO">PostPac Economy (éco)</option><option value="PRI">PostPac Priority (rapide)</option></select></label>' +
         '<label class="field"><span>Poids (g)</span><input data-lf="weight" type="number" min="1" step="50" value="1000"></label></div>' +
       '<label class="field field--check"><input type="checkbox" data-lf="signature"><span>✍️ Remise contre signature</span></label>' +
-      '<label class="field field--check"><input type="checkbox" data-lsheet><span>🖨️ Feuille A4 pré-découpée (4 cases A6) — imprimer dans une case</span></label>' +
+      '<label class="field field--check"><input type="checkbox" data-lsheet><span>🖨️ Feuille A4 pré-découpée (4 cases A6), imprimer dans une case</span></label>' +
       '<div class="lbl-quad" data-lquadwrap hidden><span class="ord__k">Case à utiliser</span>' +
         '<div class="lbl-quad-grid">' +
           '<button type="button" class="lbl-quad-btn is-active" data-lquad="1">1 · haut-gauche</button>' +
@@ -543,7 +543,7 @@
     var result = ov.querySelector('[data-lresult]');
     function showResult(html, ok) { result.hidden = false; result.className = 'lbl-result ' + (ok ? 'is-ok' : 'is-err'); result.innerHTML = html; }
     function paint() {
-      showResult('✅ Étiquette prête' + (lastTracking ? ' · suivi <b>' + esc(lastTracking) + '</b>' : '') + (sheetMode ? ' · <b>Feuille A4 — case ' + quad + '</b>' : '') +
+      showResult('✅ Étiquette prête' + (lastTracking ? ' · suivi <b>' + esc(lastTracking) + '</b>' : '') + (sheetMode ? ' · <b>Feuille A4, case ' + quad + '</b>' : '') +
         '<iframe class="lbl-pdf" src="' + lastUrl + '" title="Étiquette La Poste"></iframe>' +
         '<div class="lbl-actions"><button class="btn btn--gold btn--sm" data-lopen>📄 Ouvrir / imprimer</button> ' +
         '<button class="btn btn--ghost btn--sm" data-ldl>⬇️ Télécharger le PDF</button></div>', true);
@@ -617,11 +617,11 @@
     var img = p.image ? (/^https?:/.test(p.image) ? p.image : '/' + p.image) : '';
     return '<tr data-slug="' + esc(p.slug) + '">' +
       '<td><input type="checkbox" data-psel="' + esc(p.slug) + '"' + (SELECTED[p.slug] ? ' checked' : '') + '></td>' +
-      '<td class="pt-thumb">' + (img ? '<img src="' + esc(img) + '" alt="">' : '<span class="pt-noimg">—</span>') + '</td>' +
+      '<td class="pt-thumb">' + (img ? '<img src="' + esc(img) + '" alt="">' : '<span class="pt-noimg">–</span>') + '</td>' +
       '<td class="pt-name">' + esc(p.name) + '<small>' + esc(catName(p.category)) + '</small></td>' +
       '<td class="pt-price">' + chf(p.price) + '</td>' +
-      '<td>' + (p.stock_qty == null ? '—' : p.stock_qty) + '</td>' +
-      '<td><label class="tgl tgl--on"' + (p.in_stock ? '' : ' title="Sans stock — ajoutez une quantité pour le mettre en ligne"') + '><input type="checkbox" data-ptoggle="visible" data-slug="' + esc(p.slug) + '"' + ((p.visible !== false && p.in_stock) ? ' checked' : '') + (p.in_stock ? '' : ' disabled') + '><span></span></label></td>' +
+      '<td>' + (p.stock_qty == null ? '–' : p.stock_qty) + '</td>' +
+      '<td><label class="tgl tgl--on"' + (p.in_stock ? '' : ' title="Sans stock, ajoutez une quantité pour le mettre en ligne"') + '><input type="checkbox" data-ptoggle="visible" data-slug="' + esc(p.slug) + '"' + ((p.visible !== false && p.in_stock) ? ' checked' : '') + (p.in_stock ? '' : ' disabled') + '><span></span></label></td>' +
       '<td class="pt-act"><button class="linkbtn" data-pedit="' + esc(p.slug) + '">Éditer</button></td>' +
     '</tr>';
   }
@@ -722,7 +722,7 @@
   function categoryModal(c) {
     var isNew = !c;
     c = c || { slug: '', name: '', parent: '', icon: '', description: '', visible: true };
-    var opts = '<option value="">— Aucune (catégorie principale) —</option>' +
+    var opts = '<option value="">Aucune (catégorie principale)</option>' +
       CATEGORIES.filter(function (x) { return x.slug !== c.slug; })
         .map(function (x) { return '<option value="' + esc(x.slug) + '"' + (x.slug === c.parent ? ' selected' : '') + '>' + esc(x.name) + '</option>'; }).join('');
     var ov = document.createElement('div');
@@ -798,18 +798,18 @@
         '<label class="field"><span>Limite par commande <em class="seo-hint">vide = illimité</em></span><input data-mf="max_per_order" type="number" min="1" placeholder="ex. 2 (max par client)" value="' + (p.max_per_order == null ? '' : esc(p.max_per_order)) + '"></label>' +
         '<label class="field"><span>Catégorie</span><select data-mf="category">' + opts + '</select></label>' +
         '<button type="button" class="linkbtn" data-mnewcat style="margin:-8px 0 14px;align-self:flex-start">+ Nouvelle catégorie</button>' +
-        '<label class="field"><span>Marque <em class="seo-hint">Google Shopping — auto-détectée si vide</em></span><input data-mf="brand" value="' + esc(p.brand || '') + '" placeholder="Ex. Pokémon, Bandai, Funko, Hasbro…"></label>' +
+        '<label class="field"><span>Marque <em class="seo-hint">Google Shopping, auto-détectée si vide</em></span><input data-mf="brand" value="' + esc(p.brand || '') + '" placeholder="Ex. Pokémon, Bandai, Funko, Hasbro…"></label>' +
         '<label class="field"><span>Description</span><textarea data-mf="description" rows="3">' + esc(p.description || '') + '</textarea></label>' +
         '<div class="modal__checks"><label><input type="checkbox" data-mf="visible"' + (p.visible ? ' checked' : '') + '> En ligne</label></div>' +
         '<p class="seo-hint">💡 « En stock » est automatique : laisse la quantité vide/0 → produit retiré du site ; mets une quantité &gt; 0 → produit en ligne et vendable.</p>' +
-        '<details class="seo-box"' + ((p.seo_title || p.seo_description) ? ' open' : '') + '><summary>🔍 Référencement Google (SEO) — optionnel</summary>' +
+        '<details class="seo-box"' + ((p.seo_title || p.seo_description) ? ' open' : '') + '><summary>🔍 Référencement Google (SEO), optionnel</summary>' +
           '<label class="field"><span>Titre SEO <em class="seo-hint" data-seocount="seo_title">0/60</em></span>' +
             '<input data-mf="seo_title" maxlength="70" value="' + esc(p.seo_title || '') + '" placeholder="Ex. Pokémon 151 – Coffret Dracaufeu ex – FR"></label>' +
           '<label class="field"><span>Meta description <em class="seo-hint" data-seocount="seo_description">0/155</em></span>' +
             '<textarea data-mf="seo_description" rows="2" maxlength="165" placeholder="1–2 phrases avec les mots-clés (set, langue, type). Idéal ≤ 155 caractères.">' + esc(p.seo_description || '') + '</textarea></label>' +
           '<p class="seo-note">Laisse vide pour utiliser automatiquement le nom et la description du produit.</p>' +
         '</details>' +
-        '<details class="seo-box"' + (p.translations ? ' open' : '') + '><summary>🌍 Traductions (EN / IT / DE) — optionnel</summary>' +
+        '<details class="seo-box"' + (p.translations ? ' open' : '') + '><summary>🌍 Traductions (EN / IT / DE), optionnel</summary>' +
           trHtml +
           '<p class="seo-note">Laisse un champ vide pour afficher le français dans cette langue.</p>' +
         '</details>' +

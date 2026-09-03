@@ -1,5 +1,5 @@
 /* =========================================================
-   COFFRE À DOM — Boutique : recherche + filtres + tri (client-side)
+   COFFRE À DOM, Boutique : recherche + filtres + tri (client-side)
    Filtre et trie les fiches déjà rendues, sans rechargement.
    ========================================================= */
 (function () {
