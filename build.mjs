@@ -401,7 +401,7 @@ function fillTokens(body) {
     .replaceAll('{{SHOP_CATEGORIES}}', (() => {
       const filters = childrenOf('jeu-de-cartes-a-collectionner')
         .concat(topCats.filter((c) => c.slug !== 'jeu-de-cartes-a-collectionner'))
-        .filter(catVisible);
+        .filter((c) => catVisible(c) && productsDeep(c.slug).length > 0); // catégorie à 0 article = masquée du filtre
       const opt = (val, label, n) =>
         `<label class="filter-opt"><input type="radio" name="shopcat" value="${val}"${val === '' ? ' checked' : ''} /><span>${esc(label)}</span><b>${n}</b></label>`;
       return opt('', t('shop.all_pieces'), products.length) +
