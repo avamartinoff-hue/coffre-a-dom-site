@@ -100,6 +100,11 @@ function langSwitch(url) {
 const cName = (c) => { const x = CAT_I18N[c.slug] && CAT_I18N[c.slug][LANG]; return (LANG !== DEFAULT_LANG && x && x.name) ? x.name : c.name; };
 const cDesc = (c) => { const x = CAT_I18N[c.slug] && CAT_I18N[c.slug][LANG]; return (LANG !== DEFAULT_LANG && x && x.desc) ? x.desc : (c.desc || ''); };
 const catVisible = (c) => !!c && c.visible !== false;
+// Catégories exclues de la NAVIGATION (filtre, méga-menu, Explorer, grille accueil) :
+// les promos ne se gèrent plus par une catégorie mais par la case « En promo » (sale_price).
+// Les pages restent générées (fils d'Ariane des produits intacts), juste non listées.
+const HIDDEN_CAT_SLUGS = new Set(['promo', 'promo-pokemon']);
+const catBrowsable = (c) => catVisible(c) && !HIDDEN_CAT_SLUGS.has(c.slug);
 // Blog / auteurs / événements localisés
 const pTitle = (p) => { const x = CONTENT_I18N.posts && CONTENT_I18N.posts[p.slug] && CONTENT_I18N.posts[p.slug][LANG]; return (LANG !== DEFAULT_LANG && x && x.title) ? x.title : p.title; };
 const pExcerpt = (p) => { const x = CONTENT_I18N.posts && CONTENT_I18N.posts[p.slug] && CONTENT_I18N.posts[p.slug][LANG]; return (LANG !== DEFAULT_LANG && x && x.excerpt) ? x.excerpt : p.excerpt; };
@@ -204,10 +209,10 @@ function buildMegaMenu() {
     return `<div class="mega__col"><a class="mega__title" href="${titleUrl}">${titleHtml}</a><ul>${shown}${more}</ul></div>`;
   };
   const cardsUmbrella = 'jeu-de-cartes-a-collectionner';
-  const pokemon = listCol(esc(cName(catBySlug['pokemon-cartes'])), catUrl('pokemon-cartes'), childrenOf('pokemon-cartes').filter(catVisible), catUrl('pokemon-cartes'), false);
-  const autres = childrenOf(cardsUmbrella).filter((c) => c.slug !== 'pokemon-cartes' && catVisible(c));
+  const pokemon = listCol(esc(cName(catBySlug['pokemon-cartes'])), catUrl('pokemon-cartes'), childrenOf('pokemon-cartes').filter(catBrowsable), catUrl('pokemon-cartes'), false);
+  const autres = childrenOf(cardsUmbrella).filter((c) => c.slug !== 'pokemon-cartes' && catBrowsable(c));
   const autresCol = listCol(t('mega.others'), catUrl(cardsUmbrella), autres, catUrl(cardsUmbrella), false);
-  const horsCartes = topCats.filter((c) => c.slug !== cardsUmbrella && catVisible(c));
+  const horsCartes = topCats.filter((c) => c.slug !== cardsUmbrella && catBrowsable(c));
   const horsCol = listCol(t('mega.non_cards'), '/boutique/', horsCartes, '/boutique/', true);
   return `<div class="mega">${pokemon}${autresCol}${horsCol}
       <div class="mega__promo">
@@ -395,13 +400,13 @@ function fillTokens(body) {
   return body
     .replaceAll('src="/admin.js"', `src="/admin.js?v=${V.admin}"`)
     .replaceAll('src="/shop.js"', `src="/shop.js?v=${V.shop}"`)
-    .replaceAll('{{CATEGORY_GRID}}', topCats.filter((c) => catVisible(c) && productsDeep(c.slug).length > 0).slice(0, 5).map((c) => categoryCard(c, true)).join(''))
+    .replaceAll('{{CATEGORY_GRID}}', topCats.filter((c) => catBrowsable(c) && productsDeep(c.slug).length > 0).slice(0, 5).map((c) => categoryCard(c, true)).join(''))
     .replaceAll('{{PRODUCT_COUNT}}', String(products.length))
     .replaceAll('{{ALL_PRODUCTS}}', products.map(productCard).join(''))
     .replaceAll('{{SHOP_CATEGORIES}}', (() => {
       const filters = childrenOf('jeu-de-cartes-a-collectionner')
         .concat(topCats.filter((c) => c.slug !== 'jeu-de-cartes-a-collectionner'))
-        .filter((c) => catVisible(c) && productsDeep(c.slug).length > 0); // catégorie à 0 article = masquée du filtre
+        .filter((c) => catBrowsable(c) && productsDeep(c.slug).length > 0); // catégorie à 0 article ou promo = masquée du filtre
       const opt = (val, label, n) =>
         `<label class="filter-opt"><input type="radio" name="shopcat" value="${val}"${val === '' ? ' checked' : ''} /><span>${esc(label)}</span><b>${n}</b></label>`;
       return opt('', t('shop.all_pieces'), products.length) +
@@ -506,7 +511,7 @@ for (const c of cats) {
 
   // On n'affiche dans « Explorer » que les sous-catégories qui ont au moins 1 article
   // (productsDeep compte aussi les sous-sous-catégories) → « rubrique à 0 = pas affichée ».
-  const visKids = kids.filter((k) => catVisible(k) && productsDeep(k.slug).length > 0);
+  const visKids = kids.filter((k) => catBrowsable(k) && productsDeep(k.slug).length > 0);
   const subGrid = visKids.length
     ? `<h2 class="cat__subtitle">${t('cat.explore')}</h2><div class="ccard-grid">${visKids.map(subcatCard).join('')}</div>`
     : '';
