@@ -433,7 +433,7 @@ blockquote{
 .skip-link:focus{ left:0; }
 
 /* layout helpers */
-.container--narrow{ max-width:820px; }
+.container--narrow{ max-width:820px; margin-inline:auto; }
 .center{ text-align:center; }
 .section--page{ padding-top:130px; }
 .section__head--sm{ margin-bottom:32px; }
