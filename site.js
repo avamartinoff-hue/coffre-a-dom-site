@@ -202,6 +202,28 @@
     });
   })();
 
+  /* ---- Google Analytics 4 — chargé UNIQUEMENT avec le consentement « Tout accepter » ---- */
+  (function ga4() {
+    var GA_ID = 'G-CC3T7R2V18';
+    if (/^(localhost|127\.0\.0\.1)$/.test(location.hostname)) return; // pas de mesure en local
+    var loaded = false;
+    function loadGA() {
+      if (loaded) return; loaded = true;
+      var s = document.createElement('script');
+      s.async = true; s.src = 'https://www.googletagmanager.com/gtag/js?id=' + GA_ID;
+      document.head.appendChild(s);
+      window.dataLayer = window.dataLayer || [];
+      window.gtag = function () { window.dataLayer.push(arguments); };
+      window.gtag('js', new Date());
+      window.gtag('config', GA_ID, { anonymize_ip: true });
+    }
+    function consent() { try { return localStorage.getItem('cad_cookie_consent'); } catch (e) { return null; } }
+    if (consent() === 'all') loadGA();                       // consentement déjà donné → on charge
+    document.addEventListener('click', function (e) {         // clic « Tout accepter » → on charge aussitôt
+      if (e.target.closest('[data-cc="all"]')) loadGA();
+    });
+  })();
+
   /* ---- Compteur de visites (léger, hors admin/local) ---- */
   (function () {
     if (/^(localhost|127\.0\.0\.1)$/.test(location.hostname)) return;
