@@ -762,7 +762,7 @@
 
   function productModal(p) {
     var isNew = !p;
-    p = p || { name: '', price: 0, category: '', stock_qty: '', description: '', image: '', in_stock: true, visible: true, seo_title: '', seo_description: '', brand: '' };
+    p = p || { name: '', price: 0, category: '', stock_qty: '', description: '', image: '', in_stock: true, visible: true, on_sale: false, sale_price: null, seo_title: '', seo_description: '', brand: '' };
     var opts = CATEGORIES.map(function (c) { return '<option value="' + esc(c.slug) + '"' + (c.slug === p.category ? ' selected' : '') + '>' + esc(c.name) + '</option>'; }).join('');
     var img = p.image ? (/^https?:/.test(p.image) ? p.image : '/' + p.image) : '';
     var TR = p.translations || {};
@@ -782,6 +782,19 @@
         '<label class="field"><span>Nom</span><input data-mf="name" value="' + esc(p.name) + '"></label>' +
         '<div class="form__row"><label class="field"><span>Prix (CHF)</span><input data-mf="price" type="number" step="0.05" value="' + esc(p.price) + '"></label>' +
         '<label class="field"><span>Stock (vide = non suivi)</span><input data-mf="stock_qty" type="number" value="' + (p.stock_qty == null ? '' : esc(p.stock_qty)) + '"></label></div>' +
+        '<div class="promo-edit">' +
+          '<label class="promo-edit__toggle"><input type="checkbox" data-mf="on_sale"' + (p.on_sale ? ' checked' : '') + '> <svg class="ic" aria-hidden="true"><use href="#ic-tag"/></svg> Mettre en promotion <em class="seo-hint">(prix barré + nouveau prix)</em></label>' +
+          '<div class="promo-edit__body"' + (p.on_sale ? '' : ' hidden') + '>' +
+            '<div class="form__row">' +
+              '<label class="field"><span>Type de remise</span><select data-promo-type>' +
+                '<option value="pct"' + (p.sale_price == null ? ' selected' : '') + '>Pourcentage (%)</option>' +
+                '<option value="fixed"' + (p.sale_price != null ? ' selected' : '') + '>Prix fixe (CHF)</option>' +
+              '</select></label>' +
+              '<label class="field"><span>Valeur</span><input type="number" step="0.05" min="0" data-promo-val value="' + (p.sale_price != null ? esc(p.sale_price) : '') + '" placeholder="ex. 20 (%) ou 99.90 (CHF)"></label>' +
+            '</div>' +
+            '<p class="promo-edit__preview" data-promo-preview></p>' +
+          '</div>' +
+        '</div>' +
         '<label class="field"><span>Limite par commande <em class="seo-hint">vide = illimité</em></span><input data-mf="max_per_order" type="number" min="1" placeholder="ex. 2 (max par client)" value="' + (p.max_per_order == null ? '' : esc(p.max_per_order)) + '"></label>' +
         '<label class="field"><span>Catégorie</span><select data-mf="category">' + opts + '</select></label>' +
         '<button type="button" class="linkbtn" data-mnewcat style="margin:-8px 0 14px;align-self:flex-start">+ Nouvelle catégorie</button>' +
@@ -811,6 +824,37 @@
       var upd = function () { badge.textContent = (target.value || '').length + '/' + max; badge.classList.toggle('over', (target.value || '').length > parseInt(max, 10)); };
       target.addEventListener('input', upd); upd();
     });
+    // ---- Promo (prix barré) : aperçu en direct + calcul % / prix fixe ----
+    var promoOn = ov.querySelector('[data-mf="on_sale"]');
+    var promoType = ov.querySelector('[data-promo-type]');
+    var promoVal = ov.querySelector('[data-promo-val]');
+    var promoPrev = ov.querySelector('[data-promo-preview]');
+    var promoBody = ov.querySelector('.promo-edit__body');
+    function computeSale() {
+      var base = parseFloat(ov.querySelector('[data-mf="price"]').value) || 0;
+      var v = parseFloat(promoVal.value);
+      if (!promoOn.checked || !(v > 0) || !(base > 0)) return null;
+      var sp = promoType.value === 'pct' ? base * (1 - v / 100) : v;
+      sp = Math.round(sp * 100) / 100;
+      return (sp > 0 && sp < base) ? sp : null;
+    }
+    function updatePromo() {
+      promoBody.hidden = !promoOn.checked;
+      if (!promoOn.checked) { promoPrev.innerHTML = ''; return; }
+      var base = parseFloat(ov.querySelector('[data-mf="price"]').value) || 0;
+      var sp = computeSale();
+      if (sp == null) {
+        promoPrev.innerHTML = '<span class="promo-warn">Remise invalide : le prix promo doit être &gt; 0 et &lt; ' + chf(base) + '.</span>';
+      } else {
+        var pct = Math.round((base - sp) / base * 100);
+        promoPrev.innerHTML = 'Aperçu : <s class="promo-old">' + chf(base) + '</s> <b class="promo-new">' + chf(sp) + '</b> <span class="promo-pct">-' + pct + '%</span>';
+      }
+    }
+    promoOn.addEventListener('change', updatePromo);
+    promoType.addEventListener('change', updatePromo);
+    promoVal.addEventListener('input', updatePromo);
+    ov.querySelector('[data-mf="price"]').addEventListener('input', updatePromo);
+    updatePromo();
     ov.querySelector('[data-mphoto]').addEventListener('change', function (e) {
       var f = e.target.files[0]; if (!f) return;
       var um = ov.querySelector('.modal__upmsg'); um.textContent = 'Envoi…';
@@ -836,6 +880,17 @@
         if (v) { tr[lg] = tr[lg] || {}; tr[lg][fld] = v; }
       });
       f.translations = Object.keys(tr).length ? tr : null;
+      // Promo : convertit % / prix fixe → prix promo effectif (null si pas de promo valide)
+      var base = parseFloat(f.price) || 0;
+      var v = parseFloat(promoVal.value);
+      var sp = null;
+      if (f.on_sale && v > 0 && base > 0) {
+        sp = promoType.value === 'pct' ? base * (1 - v / 100) : v;
+        sp = Math.round(sp * 100) / 100;
+        if (!(sp > 0 && sp < base)) sp = null;
+      }
+      f.sale_price = sp;
+      f.on_sale = !!sp; // en promo seulement si un prix promo valide a été calculé
       if (uploadedImage) f.image = uploadedImage;
       return f;
     }

@@ -137,16 +137,16 @@ async function loadCatalog() {
       // (migration seo.sql pas jouée), on relit SANS — sans jamais retomber sur le catalogue local.
       let prods;
       try {
-        prods = await get('products?select=slug,name,description,price,category,image,on_sale,in_stock,seo_title,seo_description,brand,translations,created_at,max_per_order,stock_qty&visible=eq.true&in_stock=eq.true&order=position&limit=2000');
+        prods = await get('products?select=slug,name,description,price,sale_price,category,image,on_sale,in_stock,seo_title,seo_description,brand,translations,created_at,max_per_order,stock_qty&visible=eq.true&in_stock=eq.true&order=position&limit=2000');
       } catch (seoErr) {
         console.warn('⚠️  Colonnes SEO/marque/traductions absentes (jouez supabase/seo.sql) — lecture sans elles.');
-        prods = await get('products?select=slug,name,description,price,category,image,on_sale,in_stock,created_at,max_per_order,stock_qty&visible=eq.true&in_stock=eq.true&order=position&limit=2000');
+        prods = await get('products?select=slug,name,description,price,sale_price,category,image,on_sale,in_stock,created_at,max_per_order,stock_qty&visible=eq.true&in_stock=eq.true&order=position&limit=2000');
       }
       if (Array.isArray(cats) && Array.isArray(prods) && prods.length) {
         console.log(`↪ Catalogue chargé depuis Supabase : ${cats.length} catégories, ${prods.length} produits`);
         return {
           categories: cats.map((c) => ({ slug: c.slug, name: c.name, parent: c.parent, icon: c.icon || undefined, desc: c.description || '', visible: c.visible !== false })),
-          products: prods.map((p) => ({ slug: p.slug, name: p.name, desc: p.description || '', price: Number(p.price), category: p.category, image: p.image, onSale: !!p.on_sale, inStock: !!p.in_stock, seoTitle: p.seo_title || '', seoDesc: p.seo_description || '', brand: p.brand || '', translations: p.translations || null, createdAt: p.created_at || '', maxPerOrder: p.max_per_order || null, stockQty: (p.stock_qty == null ? null : Number(p.stock_qty)) })),
+          products: prods.map((p) => ({ slug: p.slug, name: p.name, desc: p.description || '', price: Number(p.price), salePrice: (p.sale_price == null ? null : Number(p.sale_price)), category: p.category, image: p.image, onSale: !!p.on_sale, inStock: !!p.in_stock, seoTitle: p.seo_title || '', seoDesc: p.seo_description || '', brand: p.brand || '', translations: p.translations || null, createdAt: p.created_at || '', maxPerOrder: p.max_per_order || null, stockQty: (p.stock_qty == null ? null : Number(p.stock_qty)) })),
         };
       }
       console.warn('⚠️  Supabase configuré mais réponse inattendue — repli sur data/catalog.json');
@@ -314,14 +314,24 @@ ${footer}
 }
 
 /* ---------- components ---------- */
-const priceLabel = (p) => (p.price > 0 ? chf(p.price) : t('price.on_request'));
+// Promo : le produit est en promo si on_sale ET un prix promo valide (0 < salePrice < price)
+const onPromo = (p) => !!p.onSale && p.salePrice != null && p.salePrice > 0 && p.salePrice < p.price;
+const effPrice = (p) => (onPromo(p) ? p.salePrice : p.price); // prix réellement facturé/affiché
+const promoPct = (p) => (onPromo(p) ? Math.round(((p.price - p.salePrice) / p.price) * 100) : 0);
+const priceLabel = (p) => (p.price > 0 ? chf(effPrice(p)) : t('price.on_request'));
+// Prix affiché en HTML : si promo → ancien prix barré + nouveau prix ; sinon prix simple / « sur demande »
+function priceHtml(p) {
+  if (!(p.price > 0)) return t('price.on_request');
+  if (onPromo(p)) return `<span class="price-old">${chf(p.price)}</span> <span class="price-new">${chf(p.salePrice)}</span>`;
+  return chf(p.price);
+}
 // Nom / description localisés (repli FR). translations = { en:{name,desc}, it:{…}, de:{…} }
 const pName = (p) => { const tr = p.translations && p.translations[LANG]; return (LANG !== DEFAULT_LANG && tr && tr.name) ? tr.name : p.name; };
 const pDesc = (p) => { const tr = p.translations && p.translations[LANG]; return (LANG !== DEFAULT_LANG && tr && tr.desc) ? tr.desc : (p.desc || ''); };
 const isPreorder = (p) => /pr[ée]command|disponibilit[ée] pr[ée]vu/i.test(p.desc || '');
 const releaseDate = (p) => ((p.desc || '').match(/(\d{1,2}[.\/]\d{1,2}[.\/]\d{2,4})/) || [])[1] || null;
 function productBadges(p) {
-  return (p.onSale ? `<span class="pcard__badge pcard__badge--sale">${t('badge.sale')}</span>` : '') +
+  return (onPromo(p) ? `<span class="pcard__badge pcard__badge--sale">-${promoPct(p)}%</span>` : '') +
     (!p.inStock ? `<span class="pcard__badge pcard__badge--out">${t('badge.out')}</span>` : '');
 }
 function productCard(p) {
@@ -333,17 +343,17 @@ function productCard(p) {
     : `<span class="pcard__emoji">${icon}</span>`;
   const canBuy = p.inStock && p.price > 0;
   const action = canBuy
-    ? `<button class="pcard__add" type="button" data-add data-slug="${esc(p.slug)}" data-name="${esc(nm)}" data-price="${p.price}" data-max="${buyLimit(p)}" aria-label="${esc(t('card.add_aria', { name: nm }))}">${t('card.add')}</button>`
+    ? `<button class="pcard__add" type="button" data-add data-slug="${esc(p.slug)}" data-name="${esc(nm)}" data-price="${effPrice(p)}" data-max="${buyLimit(p)}" aria-label="${esc(t('card.add_aria', { name: nm }))}">${t('card.add')}</button>`
     : (p.price > 0
       ? `<span class="pcard__soldout">${t('badge.out')}</span>`
       : `<span class="pcard__soldout">${t('card.on_request')}</span>`);
   const chain = catChain(p.category);
-  return `<a class="pcard" href="${prodUrl(p.slug)}" data-name="${esc(nm)}" data-cats="${chain.join(' ')}" data-stock="${p.inStock ? 1 : 0}" data-sale="${p.onSale ? 1 : 0}" data-price="${Number(p.price) || 0}" data-created="${p.createdAt ? (Date.parse(p.createdAt) || 0) : 0}">
+  return `<a class="pcard" href="${prodUrl(p.slug)}" data-name="${esc(nm)}" data-cats="${chain.join(' ')}" data-stock="${p.inStock ? 1 : 0}" data-sale="${onPromo(p) ? 1 : 0}" data-price="${Number(effPrice(p)) || 0}" data-created="${p.createdAt ? (Date.parse(p.createdAt) || 0) : 0}">
     <div class="pcard__media${p.image ? ' has-img' : ''}">${productBadges(p)}${media}</div>
     <div class="pcard__body">
       <h3 class="pcard__name">${esc(nm)}</h3>
       <div class="pcard__row">
-        <span class="pcard__price">${priceLabel(p)}</span>
+        <span class="pcard__price">${priceHtml(p)}</span>
         ${action}
       </div>
     </div>
@@ -546,7 +556,7 @@ for (const p of products) {
     ...(p.image ? { image: /^https?:/.test(p.image) ? p.image : SITE + '/' + p.image } : {}),
     offers: {
       '@type': 'Offer', priceCurrency: 'CHF',
-      ...(p.price > 0 ? { price: Number(p.price).toFixed(2) } : {}),
+      ...(p.price > 0 ? { price: Number(effPrice(p)).toFixed(2) } : {}),
       availability: p.inStock ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
     },
   });
@@ -564,7 +574,7 @@ for (const p of products) {
   const limitNote = p.maxPerOrder ? `<p class="product__limit">${t('prod.limit', { n: p.maxPerOrder })}</p>` : '';
   const actions = canBuy
     ? `<div class="product__actions">${qtyBlock}
-            <button class="btn btn--gold" type="button" data-add data-slug="${esc(p.slug)}" data-name="${esc(nm)}" data-price="${p.price}" data-max="${bmax}" data-qty-source>${t('prod.add_cart')}</button>
+            <button class="btn btn--gold" type="button" data-add data-slug="${esc(p.slug)}" data-name="${esc(nm)}" data-price="${effPrice(p)}" data-max="${bmax}" data-qty-source>${t('prod.add_cart')}</button>
           </div>${limitNote}`
     : `<p class="product__unavailable">${p.price > 0 ? t('badge.out') : t('prod.unavail')}</p>`;
   const body = `
@@ -576,7 +586,7 @@ for (const p of products) {
         <div class="product__info">
           <a class="chip chip--sm" href="${catUrl(p.category)}">${esc(cat ? cName(cat) : '')}</a>
           <h1>${esc(nm)}</h1>
-          <p class="product__price">${priceLabel(p)}</p>
+          <p class="product__price">${priceHtml(p)}</p>
           ${dsc ? `<p class="product__desc">${esc(dsc)}</p>` : ''}
           ${actions}
           <ul class="product__meta">
@@ -796,7 +806,7 @@ const feedItems = products
       <g:link>${esc(link)}</g:link>
       <g:image_link>${esc(image)}</g:image_link>
       <g:availability>${availability}</g:availability>${availDate}
-      <g:price>${Number(p.price).toFixed(2)} CHF</g:price>
+      <g:price>${Number(p.price).toFixed(2)} CHF</g:price>${onPromo(p) ? `\n      <g:sale_price>${Number(p.salePrice).toFixed(2)} CHF</g:sale_price>` : ''}
       <g:condition>new</g:condition>
       <g:brand>${esc(brandOf(p))}</g:brand>
       <g:identifier_exists>no</g:identifier_exists>${type ? `\n      <g:product_type>${esc(type)}</g:product_type>` : ''}
