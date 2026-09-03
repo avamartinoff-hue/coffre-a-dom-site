@@ -48,6 +48,8 @@ const BRAND_RULES = [
 ];
 const detectBrand = (name) => { for (const [re, b] of BRAND_RULES) if (re.test(name || '')) return b; return ''; };
 const brandOf = (p) => ((p.brand && p.brand.trim()) ? p.brand.trim() : (detectBrand(p.name) || 'Coffre à Dom'));
+// Quantité max qu'un client peut mettre au panier = le plus petit entre le stock dispo et la limite par commande.
+const buyLimit = (p) => { const a = []; if (p.stockQty != null && p.stockQty > 0) a.push(p.stockQty); if (p.maxPerOrder) a.push(p.maxPerOrder); return a.length ? Math.min(...a) : ''; };
 
 /* ---------- i18n (FR défaut, EN, IT, DE) ---------- */
 const UI = readJSON('i18n/ui.json');
@@ -135,16 +137,16 @@ async function loadCatalog() {
       // (migration seo.sql pas jouée), on relit SANS — sans jamais retomber sur le catalogue local.
       let prods;
       try {
-        prods = await get('products?select=slug,name,description,price,category,image,on_sale,in_stock,seo_title,seo_description,brand,translations,created_at,max_per_order&visible=eq.true&in_stock=eq.true&order=position&limit=2000');
+        prods = await get('products?select=slug,name,description,price,category,image,on_sale,in_stock,seo_title,seo_description,brand,translations,created_at,max_per_order,stock_qty&visible=eq.true&in_stock=eq.true&order=position&limit=2000');
       } catch (seoErr) {
         console.warn('⚠️  Colonnes SEO/marque/traductions absentes (jouez supabase/seo.sql) — lecture sans elles.');
-        prods = await get('products?select=slug,name,description,price,category,image,on_sale,in_stock,created_at,max_per_order&visible=eq.true&in_stock=eq.true&order=position&limit=2000');
+        prods = await get('products?select=slug,name,description,price,category,image,on_sale,in_stock,created_at,max_per_order,stock_qty&visible=eq.true&in_stock=eq.true&order=position&limit=2000');
       }
       if (Array.isArray(cats) && Array.isArray(prods) && prods.length) {
         console.log(`↪ Catalogue chargé depuis Supabase : ${cats.length} catégories, ${prods.length} produits`);
         return {
           categories: cats.map((c) => ({ slug: c.slug, name: c.name, parent: c.parent, icon: c.icon || undefined, desc: c.description || '', visible: c.visible !== false })),
-          products: prods.map((p) => ({ slug: p.slug, name: p.name, desc: p.description || '', price: Number(p.price), category: p.category, image: p.image, onSale: !!p.on_sale, inStock: !!p.in_stock, seoTitle: p.seo_title || '', seoDesc: p.seo_description || '', brand: p.brand || '', translations: p.translations || null, createdAt: p.created_at || '', maxPerOrder: p.max_per_order || null })),
+          products: prods.map((p) => ({ slug: p.slug, name: p.name, desc: p.description || '', price: Number(p.price), category: p.category, image: p.image, onSale: !!p.on_sale, inStock: !!p.in_stock, seoTitle: p.seo_title || '', seoDesc: p.seo_description || '', brand: p.brand || '', translations: p.translations || null, createdAt: p.created_at || '', maxPerOrder: p.max_per_order || null, stockQty: (p.stock_qty == null ? null : Number(p.stock_qty)) })),
         };
       }
       console.warn('⚠️  Supabase configuré mais réponse inattendue — repli sur data/catalog.json');
@@ -331,7 +333,7 @@ function productCard(p) {
     : `<span class="pcard__emoji">${icon}</span>`;
   const canBuy = p.inStock && p.price > 0;
   const action = canBuy
-    ? `<button class="pcard__add" type="button" data-add data-slug="${esc(p.slug)}" data-name="${esc(nm)}" data-price="${p.price}" aria-label="${esc(t('card.add_aria', { name: nm }))}">${t('card.add')}</button>`
+    ? `<button class="pcard__add" type="button" data-add data-slug="${esc(p.slug)}" data-name="${esc(nm)}" data-price="${p.price}" data-max="${buyLimit(p)}" aria-label="${esc(t('card.add_aria', { name: nm }))}">${t('card.add')}</button>`
     : (p.price > 0
       ? `<span class="pcard__soldout">${t('badge.out')}</span>`
       : `<span class="pcard__soldout">${t('card.on_request')}</span>`);
@@ -551,7 +553,8 @@ for (const p of products) {
     : `<span class="product__emoji">${ico((cat && cat.icon) || '🎴')}</span>`;
   const pre = isPreorder(p);
   const release = releaseDate(p);
-  const qtyBlock = `<div class="qty" data-qty data-max="${p.maxPerOrder || ''}">
+  const bmax = buyLimit(p); // min(stock, limite par commande)
+  const qtyBlock = `<div class="qty" data-qty data-max="${bmax}">
               <button type="button" data-qty-minus aria-label="Moins">−</button>
               <input type="text" value="1" data-qty-input aria-label="Quantité" inputmode="numeric" />
               <button type="button" data-qty-plus aria-label="Plus">+</button>
@@ -559,7 +562,7 @@ for (const p of products) {
   const limitNote = p.maxPerOrder ? `<p class="product__limit">${t('prod.limit', { n: p.maxPerOrder })}</p>` : '';
   const actions = canBuy
     ? `<div class="product__actions">${qtyBlock}
-            <button class="btn btn--gold" type="button" data-add data-slug="${esc(p.slug)}" data-name="${esc(nm)}" data-price="${p.price}" data-max="${p.maxPerOrder || ''}" data-qty-source>${t('prod.add_cart')}</button>
+            <button class="btn btn--gold" type="button" data-add data-slug="${esc(p.slug)}" data-name="${esc(nm)}" data-price="${p.price}" data-max="${bmax}" data-qty-source>${t('prod.add_cart')}</button>
           </div>${limitNote}`
     : `<p class="product__unavailable">${p.price > 0 ? t('badge.out') : t('prod.unavail')}</p>`;
   const body = `
