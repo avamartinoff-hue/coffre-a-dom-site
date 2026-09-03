@@ -138,15 +138,23 @@ async function loadCatalog() {
       let cats;
       try { cats = await get('categories?select=slug,name,parent,icon,description,visible&order=position'); }
       catch (e) { cats = await get('categories?select=slug,name,parent,icon,description&order=position'); }
-      // Colonnes SEO optionnelles : on tente avec, et si elles n'existent pas encore
-      // (migration seo.sql pas jouée), on relit SANS, sans jamais retomber sur le catalogue local.
-      let prods;
-      try {
-        prods = await get('products?select=slug,name,description,price,sale_price,category,image,on_sale,in_stock,seo_title,seo_description,brand,translations,created_at,max_per_order,stock_qty&visible=eq.true&in_stock=eq.true&order=position&limit=2000');
-      } catch (seoErr) {
-        console.warn('⚠️  Colonnes SEO/marque/traductions absentes (jouez supabase/seo.sql), lecture sans elles.');
-        prods = await get('products?select=slug,name,description,price,sale_price,category,image,on_sale,in_stock,created_at,max_per_order,stock_qty&visible=eq.true&in_stock=eq.true&order=position&limit=2000');
+      // Colonnes optionnelles (issues de migrations : seo.sql, sale-price.sql, stock…).
+      // On tente la sélection la plus riche, puis on RETIRE progressivement les colonnes
+      // manquantes — sans JAMAIS retomber sur le catalogue local tant que Supabase répond.
+      // Le mapping plus bas gère l'absence d'une colonne (undefined → null).
+      const PROD_SELECTS = [
+        'slug,name,description,price,sale_price,category,image,on_sale,in_stock,seo_title,seo_description,brand,translations,created_at,max_per_order,stock_qty',
+        'slug,name,description,price,sale_price,category,image,on_sale,in_stock,created_at,max_per_order,stock_qty', // sans SEO/marque/traductions
+        'slug,name,description,price,category,image,on_sale,in_stock,created_at,max_per_order,stock_qty',            // sans sale_price (promo)
+        'slug,name,description,price,category,image,on_sale,in_stock,created_at',                                    // sans stock_qty/max_per_order
+        'slug,name,description,price,category,image,on_sale,in_stock',                                               // minimal garanti
+      ];
+      let prods = null, lastErr = null;
+      for (const sel of PROD_SELECTS) {
+        try { prods = await get(`products?select=${sel}&visible=eq.true&in_stock=eq.true&order=position&limit=2000`); lastErr = null; break; }
+        catch (e) { lastErr = e; prods = null; }
       }
+      if (!prods) throw (lastErr || new Error('products: aucune sélection valide'));
       if (Array.isArray(cats) && Array.isArray(prods) && prods.length) {
         console.log(`↪ Catalogue chargé depuis Supabase : ${cats.length} catégories, ${prods.length} produits`);
         return {
