@@ -11,7 +11,6 @@
 
   var cards = [].slice.call(grid.querySelectorAll('.pcard'));
   var search = document.getElementById('shopSearch');
-  var inStock = document.getElementById('inStockOnly');
   var onSale = document.getElementById('onSaleOnly');
   var priceMin = document.getElementById('priceMin');
   var priceMax = document.getElementById('priceMax');
@@ -59,7 +58,6 @@
   function apply() {
     var q = norm(search && search.value);
     var cat = selectedCat();
-    var wantStock = inStock && inStock.checked;
     var wantSale = onSale && onSale.checked;
     var min = priceMin && priceMin.value !== '' ? parseFloat(priceMin.value) : null;
     var max = priceMax && priceMax.value !== '' ? parseFloat(priceMax.value) : null;
@@ -68,7 +66,6 @@
     cards.forEach(function (c) {
       var ok = (!q || c._name.indexOf(q) !== -1) &&
         (!cat || c._cats.indexOf(cat) !== -1) &&
-        (!wantStock || c._stock) &&
         (!wantSale || c._sale) &&
         (min == null || c._price >= min) &&
         (max == null || c._price <= max);
@@ -82,7 +79,6 @@
 
   function reset() {
     if (search) search.value = '';
-    if (inStock) inStock.checked = false;
     if (onSale) onSale.checked = false;
     if (priceMin) priceMin.value = '';
     if (priceMax) priceMax.value = '';
@@ -94,7 +90,6 @@
   if (search) search.addEventListener('input', function () { clearTimeout(t); t = setTimeout(apply, 120); });
   catRadios.forEach ? catRadios.forEach(bind) : [].forEach.call(catRadios, bind);
   function bind(r) { r.addEventListener('change', apply); }
-  if (inStock) inStock.addEventListener('change', apply);
   if (onSale) onSale.addEventListener('change', apply);
   if (priceMin) priceMin.addEventListener('input', function () { clearTimeout(t); t = setTimeout(apply, 200); });
   if (priceMax) priceMax.addEventListener('input', function () { clearTimeout(t); t = setTimeout(apply, 200); });
