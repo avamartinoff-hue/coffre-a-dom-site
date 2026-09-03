@@ -51,7 +51,7 @@ exports.handler = async (event) => {
   const db = sb();
   try {
     if (event.httpMethod === 'GET') {
-      const products = await db.get('products?select=slug,name,price,category,image,on_sale,in_stock,stock_qty,visible,position,seo_title,seo_description,brand,translations&order=position');
+      const products = await db.get('products?select=slug,name,description,price,category,image,on_sale,in_stock,stock_qty,visible,position,seo_title,seo_description,brand,translations&order=position');
       let categories;
       try { categories = await db.get('categories?select=slug,name,parent,icon,description,visible&order=name'); }
       catch (e) { categories = await db.get('categories?select=slug,name,parent&order=name'); }
