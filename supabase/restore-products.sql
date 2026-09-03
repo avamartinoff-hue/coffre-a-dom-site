@@ -5,7 +5,7 @@
 -- ne touche PAS aux produits encore présents (stock, prix récents conservés).
 -- À jouer une fois dans Supabase -> SQL Editor.
 -- =========================================================
-insert into public.products (slug, name, price, category, on_sale, in_stock, description, image, translations, visible)
+insert into public.products (slug, name, price, category, on_sale, in_stock, description, image, translations)
 values
 ('pokemon-pokemon-day-2026-collection','Pokémon – Pokémon Day 2026 Collection',24.9,'collection-coffrets',false,true,'🚨 Les précommandes 🚨 Date de disponibilité prévu: 28.08.2026','assets/products/pokemon-pokemon-day-2026-collection.webp','{"en":{"name":"Pokémon – Pokémon Day 2026 Collection","desc":"🚨 Pre-orders 🚨 Expected availability date: 28.08.2026"},"it":{"name":"Pokémon – Pokémon Day 2026 Collection","desc":"🚨 Preordini 🚨 Data di disponibilità prevista: 28.08.2026"},"de":{"name":"Pokémon – Pokémon Day 2026 Collection","desc":"🚨 Vorbestellungen 🚨 Voraussichtliches Verfügbarkeitsdatum: 28.08.2026"}}'::jsonb),
 ('pokemon-first-partner-illustration-collection-3','Pokémon – First Partner Illustration Collection #3',34.9,'collection-coffrets',false,true,'','assets/products/pokemon-first-partner-illustration-collection-3.png','{"en":{"name":"Pokémon – First Partner Illustration Collection #3","desc":""},"it":{"name":"Pokémon – First Partner Illustration Collection #3","desc":""},"de":{"name":"Pokémon – First Partner Illustration Collection #3","desc":""}}'::jsonb),
