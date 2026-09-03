@@ -648,7 +648,7 @@ for (const post of blog.posts) {
     publisher: { '@id': SITE + '/#org' }, mainEntityOfPage: SITE + BASE() + postUrl(post.slug),
     ...(post.cover_img ? { image: SITE + '/' + post.cover_img } : { image: DEFAULT_OG }),
   });
-  writePage(postUrl(post.slug), shell({ title: `${pTitle(post)} | Blog Geek, Coffre à Dom`, desc: pExcerpt(post), url: postUrl(post.slug), body, nav: 'univers', ogType: 'article', jsonld: [articleLD, breadcrumbLD(crumbItems)], ogImage: post.cover_img ? SITE + '/' + post.cover_img : '' }));
+  writePage(postUrl(post.slug), shell({ title: `${pTitle(post)} | Blog Geek, Coffre à Dom`, desc: pExcerpt(post), url: postUrl(post.slug), body, nav: 'blog', ogType: 'article', jsonld: [articleLD, breadcrumbLD(crumbItems)], ogImage: post.cover_img ? SITE + '/' + post.cover_img : '' }));
 }
 
 /* blog categories */
@@ -662,7 +662,7 @@ for (const c of blog.categories) {
       <div class="bgrid">${list.map(postCard).join('')}</div>
     </div>
   </section>`;
-  writePage(blogCatUrl(c.slug), shell({ title: `${bcatName(c)}, Blog Geek | Coffre à Dom`, desc: t('blog.cat_all', { name: bcatName(c) }), url: blogCatUrl(c.slug), body, nav: 'univers' }));
+  writePage(blogCatUrl(c.slug), shell({ title: `${bcatName(c)}, Blog Geek | Coffre à Dom`, desc: t('blog.cat_all', { name: bcatName(c) }), url: blogCatUrl(c.slug), body, nav: 'blog' }));
 }
 
 /* authors */
@@ -681,7 +681,7 @@ for (const a of blog.authors) {
       <div class="bgrid">${list.map(postCard).join('')}</div>
     </div>
   </section>`;
-  writePage(authorUrl(a.slug), shell({ title: `${a.name} | Coffre à Dom`, desc: aBio(a), url: authorUrl(a.slug), body, nav: 'univers', noindex: false }));
+  writePage(authorUrl(a.slug), shell({ title: `${a.name} | Coffre à Dom`, desc: aBio(a), url: authorUrl(a.slug), body, nav: 'blog', noindex: false }));
 }
 
 /* 5) events */

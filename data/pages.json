@@ -43,7 +43,7 @@
       "url": "/a-propos-coffre-a-dom/",
       "title": "À propos, Dom, le Dernier Gardien | Coffre à Dom",
       "desc": "L'histoire de Coffre à Dom : d'une passion des années 90 à une citadelle du jeu et du partage au Bouveret.",
-      "nav": "univers"
+      "nav": "apropos"
     },
     {
       "file": "contact.html",
@@ -113,7 +113,7 @@
       "url": "/blog-geek/",
       "title": "Blog Geek | Coffre à Dom",
       "desc": "Actus cartes, gaming et culture geek par l'équipe du Coffre à Dom.",
-      "nav": "univers"
+      "nav": "blog"
     },
     {
       "file": "merci.html",
