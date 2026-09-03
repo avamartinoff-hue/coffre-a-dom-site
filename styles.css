@@ -1258,3 +1258,4 @@ h1,h2,h3{ letter-spacing:0; }                 /* DM Serif respire mieux sans tra
 .pt-price{ white-space:nowrap; }
 .tgl input:disabled + span{ opacity:.4; cursor:not-allowed; }
 .tgl:has(input:disabled){ cursor:not-allowed; }
+.product__limit{ color:var(--gold-2); font-size:.85rem; margin:8px 0 0; font-weight:600; }

@@ -135,16 +135,16 @@ async function loadCatalog() {
       // (migration seo.sql pas jouée), on relit SANS — sans jamais retomber sur le catalogue local.
       let prods;
       try {
-        prods = await get('products?select=slug,name,description,price,category,image,on_sale,in_stock,seo_title,seo_description,brand,translations,created_at&visible=eq.true&in_stock=eq.true&order=position&limit=2000');
+        prods = await get('products?select=slug,name,description,price,category,image,on_sale,in_stock,seo_title,seo_description,brand,translations,created_at,max_per_order&visible=eq.true&in_stock=eq.true&order=position&limit=2000');
       } catch (seoErr) {
         console.warn('⚠️  Colonnes SEO/marque/traductions absentes (jouez supabase/seo.sql) — lecture sans elles.');
-        prods = await get('products?select=slug,name,description,price,category,image,on_sale,in_stock,created_at&visible=eq.true&in_stock=eq.true&order=position&limit=2000');
+        prods = await get('products?select=slug,name,description,price,category,image,on_sale,in_stock,created_at,max_per_order&visible=eq.true&in_stock=eq.true&order=position&limit=2000');
       }
       if (Array.isArray(cats) && Array.isArray(prods) && prods.length) {
         console.log(`↪ Catalogue chargé depuis Supabase : ${cats.length} catégories, ${prods.length} produits`);
         return {
           categories: cats.map((c) => ({ slug: c.slug, name: c.name, parent: c.parent, icon: c.icon || undefined, desc: c.description || '', visible: c.visible !== false })),
-          products: prods.map((p) => ({ slug: p.slug, name: p.name, desc: p.description || '', price: Number(p.price), category: p.category, image: p.image, onSale: !!p.on_sale, inStock: !!p.in_stock, seoTitle: p.seo_title || '', seoDesc: p.seo_description || '', brand: p.brand || '', translations: p.translations || null, createdAt: p.created_at || '' })),
+          products: prods.map((p) => ({ slug: p.slug, name: p.name, desc: p.description || '', price: Number(p.price), category: p.category, image: p.image, onSale: !!p.on_sale, inStock: !!p.in_stock, seoTitle: p.seo_title || '', seoDesc: p.seo_description || '', brand: p.brand || '', translations: p.translations || null, createdAt: p.created_at || '', maxPerOrder: p.max_per_order || null })),
         };
       }
       console.warn('⚠️  Supabase configuré mais réponse inattendue — repli sur data/catalog.json');
@@ -551,15 +551,16 @@ for (const p of products) {
     : `<span class="product__emoji">${ico((cat && cat.icon) || '🎴')}</span>`;
   const pre = isPreorder(p);
   const release = releaseDate(p);
-  const qtyBlock = `<div class="qty" data-qty>
+  const qtyBlock = `<div class="qty" data-qty data-max="${p.maxPerOrder || ''}">
               <button type="button" data-qty-minus aria-label="Moins">−</button>
               <input type="text" value="1" data-qty-input aria-label="Quantité" inputmode="numeric" />
               <button type="button" data-qty-plus aria-label="Plus">+</button>
             </div>`;
+  const limitNote = p.maxPerOrder ? `<p class="product__limit">${t('prod.limit', { n: p.maxPerOrder })}</p>` : '';
   const actions = canBuy
     ? `<div class="product__actions">${qtyBlock}
-            <button class="btn btn--gold" type="button" data-add data-slug="${esc(p.slug)}" data-name="${esc(nm)}" data-price="${p.price}" data-qty-source>${t('prod.add_cart')}</button>
-          </div>`
+            <button class="btn btn--gold" type="button" data-add data-slug="${esc(p.slug)}" data-name="${esc(nm)}" data-price="${p.price}" data-max="${p.maxPerOrder || ''}" data-qty-source>${t('prod.add_cart')}</button>
+          </div>${limitNote}`
     : `<p class="product__unavailable">${p.price > 0 ? t('badge.out') : t('prod.unavail')}</p>`;
   const body = `
   <section class="section section--page">

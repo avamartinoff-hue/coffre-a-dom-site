@@ -86,7 +86,7 @@ exports.handler = async (event) => {
     // Prix réels depuis la base (on ne fait pas confiance au client)
     const slugs = [...new Set(items.map((i) => String(i.slug)))];
     const inList = slugs.map((s) => `"${s.replace(/"/g, '')}"`).join(',');
-    const prods = await db.get(`products?select=slug,name,price,in_stock,visible&slug=in.(${encodeURIComponent(inList)})`);
+    const prods = await db.get(`products?select=slug,name,price,in_stock,visible,max_per_order&slug=in.(${encodeURIComponent(inList)})`);
     const bySlug = Object.fromEntries(prods.map((p) => [p.slug, p]));
 
     const lines = [];
@@ -97,6 +97,7 @@ exports.handler = async (event) => {
       if (!p || !p.visible) return json(400, { ok: false, error: `Produit indisponible : ${it.slug}` });
       if (p.price <= 0) return json(400, { ok: false, error: `Produit sur demande : ${p.name}` });
       if (!p.in_stock) return json(400, { ok: false, error: `Produit en rupture de stock : ${p.name}` });
+      if (p.max_per_order != null && qty > p.max_per_order) return json(409, { ok: false, error: `Maximum ${p.max_per_order} par commande pour : ${p.name}` });
       const line = Math.round(Number(p.price) * qty * 100) / 100;
       subtotal += line;
       lines.push({ product_slug: p.slug, name: p.name, unit_price: Number(p.price), qty, line_total: line });

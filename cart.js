@@ -25,12 +25,13 @@
   function add(item) {
     var items = load();
     var found = items.find(function (i) { return i.slug === item.slug; });
-    if (found) { found.qty += item.qty; if (item.preorder) found.preorder = true; }
-    else items.push(item);
+    var max = item.max || (found && found.max) || 0; // 0 = illimité
+    if (found) { found.qty += item.qty; if (max) found.qty = Math.min(found.qty, max); if (item.max) found.max = item.max; if (item.preorder) found.preorder = true; }
+    else { if (max) item.qty = Math.min(item.qty, max); items.push(item); }
     save(items);
   }
   function setQty(slug, qty) {
-    var items = load().map(function (i) { return i.slug === slug ? Object.assign({}, i, { qty: qty }) : i; })
+    var items = load().map(function (i) { return i.slug === slug ? Object.assign({}, i, { qty: (i.max ? Math.min(qty, i.max) : qty) }) : i; })
       .filter(function (i) { return i.qty > 0; });
     save(items);
   }
@@ -63,13 +64,16 @@
       var input = document.querySelector('[data-qty-input]');
       qty = Math.max(1, parseInt(input && input.value, 10) || 1);
     }
+    var max = parseInt(btn.getAttribute('data-max'), 10) || 0; // 0 = illimité
+    if (max) qty = Math.min(qty, max);
     var preorder = btn.hasAttribute('data-preorder');
     add({
       slug: btn.dataset.slug,
       name: btn.dataset.name,
       price: parseFloat(btn.dataset.price),
       qty: qty,
-      preorder: preorder
+      preorder: preorder,
+      max: max || null
     });
     toast((preorder ? T('preordered', '🔒 Précommandé : ') : T('added', 'Ajouté au panier : ')) + btn.dataset.name);
   });
@@ -80,7 +84,8 @@
     if (!wrap) return;
     var input = wrap.querySelector('[data-qty-input]');
     var v = parseInt(input.value, 10) || 1;
-    if (e.target.closest('[data-qty-plus]')) input.value = v + 1;
+    var max = parseInt(wrap.getAttribute('data-max'), 10) || 0; // 0 = illimité
+    if (e.target.closest('[data-qty-plus]')) input.value = max ? Math.min(max, v + 1) : v + 1;
     if (e.target.closest('[data-qty-minus]')) input.value = Math.max(1, v - 1);
   });
 

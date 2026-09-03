@@ -782,6 +782,7 @@
         '<label class="field"><span>Nom</span><input data-mf="name" value="' + esc(p.name) + '"></label>' +
         '<div class="form__row"><label class="field"><span>Prix (CHF)</span><input data-mf="price" type="number" step="0.05" value="' + esc(p.price) + '"></label>' +
         '<label class="field"><span>Stock (vide = non suivi)</span><input data-mf="stock_qty" type="number" value="' + (p.stock_qty == null ? '' : esc(p.stock_qty)) + '"></label></div>' +
+        '<label class="field"><span>Limite par commande <em class="seo-hint">vide = illimité</em></span><input data-mf="max_per_order" type="number" min="1" placeholder="ex. 2 (max par client)" value="' + (p.max_per_order == null ? '' : esc(p.max_per_order)) + '"></label>' +
         '<label class="field"><span>Catégorie</span><select data-mf="category">' + opts + '</select></label>' +
         '<button type="button" class="linkbtn" data-mnewcat style="margin:-8px 0 14px;align-self:flex-start">+ Nouvelle catégorie</button>' +
         '<label class="field"><span>Marque <em class="seo-hint">Google Shopping — auto-détectée si vide</em></span><input data-mf="brand" value="' + esc(p.brand || '') + '" placeholder="Ex. Pokémon, Bandai, Funko, Hasbro…"></label>' +

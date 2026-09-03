@@ -26,12 +26,13 @@ function sb() {
 }
 
 const slugify = (s) => String(s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 80);
-const ALLOWED = ['name', 'description', 'price', 'category', 'image', 'on_sale', 'in_stock', 'stock_qty', 'visible', 'sku', 'position', 'seo_title', 'seo_description', 'brand', 'translations'];
+const ALLOWED = ['name', 'description', 'price', 'category', 'image', 'on_sale', 'in_stock', 'stock_qty', 'max_per_order', 'visible', 'sku', 'position', 'seo_title', 'seo_description', 'brand', 'translations'];
 function clean(fields) {
   const out = {};
   for (const k of ALLOWED) if (k in fields) out[k] = fields[k];
   if ('price' in out) out.price = Math.max(0, Number(out.price) || 0);
   if ('stock_qty' in out) out.stock_qty = out.stock_qty === '' || out.stock_qty == null ? null : parseInt(out.stock_qty, 10);
+  if ('max_per_order' in out) { const m = parseInt(out.max_per_order, 10); out.max_per_order = (out.max_per_order === '' || out.max_per_order == null || isNaN(m) || m <= 0) ? null : m; }
   ['on_sale', 'in_stock', 'visible'].forEach((b) => { if (b in out) out[b] = !!out[b]; });
   // Règle : « pas de stock → pas en stock ». Dès qu'on enregistre le champ quantité,
   // l'état « En stock » est déduit : quantité > 0 → disponible ; vide/0 → épuisé (non vendable).
@@ -50,7 +51,7 @@ exports.handler = async (event) => {
   const db = sb();
   try {
     if (event.httpMethod === 'GET') {
-      const products = await db.get('products?select=slug,name,description,price,category,image,on_sale,in_stock,stock_qty,visible,position,seo_title,seo_description,brand,translations&order=position');
+      const products = await db.get('products?select=slug,name,description,price,category,image,on_sale,in_stock,stock_qty,max_per_order,visible,position,seo_title,seo_description,brand,translations&order=position');
       let categories;
       try { categories = await db.get('categories?select=slug,name,parent,icon,description,visible&order=name'); }
       catch (e) { categories = await db.get('categories?select=slug,name,parent&order=name'); }
