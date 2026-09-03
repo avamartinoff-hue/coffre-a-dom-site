@@ -931,7 +931,11 @@
       var slugs = Object.keys(SELECTED).filter(function (k) { return SELECTED[k]; });
       if (!slugs.length) return;
       var act = pb.getAttribute('data-pbulk');
-      if (act === 'del') { if (!confirm('Supprimer ' + slugs.length + ' produit(s) ?')) return; api('POST', 'admin-products', { action: 'delete', slugs: slugs }).then(function (r) { if (r && r.ok) { showFlash(slugs.length + ' supprimé(s).', true); loadProducts(); } }); }
+      if (act === 'del') {
+        var ans = prompt('⚠️ SUPPRESSION DÉFINITIVE de ' + slugs.length + ' produit(s).\n\nCette action est IRRÉVERSIBLE (les produits sont retirés de la base).\n\nPour confirmer, tapez exactement :  SUPPRIMER');
+        if (!ans || ans.trim().toUpperCase() !== 'SUPPRIMER') { showFlash('Suppression annulée.', false); return; }
+        api('POST', 'admin-products', { action: 'delete', slugs: slugs }).then(function (r) { if (r && r.ok) { showFlash(slugs.length + ' supprimé(s).', true); loadProducts(); } });
+      }
       else { api('POST', 'admin-products', { action: 'bulk-set', slugs: slugs, fields: { visible: act === 'on' } }).then(function (r) { if (r && r.ok) { showFlash('Mis à jour.', true); loadProducts(); } }); }
     }
     // Publier (déclenche un nouveau build → met en ligne les changements du back office)
