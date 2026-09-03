@@ -148,6 +148,27 @@
     });
   }
 
+  /* ---- Contact : au moins un moyen de contact (e-mail OU téléphone) ---- */
+  (function contactOneOf() {
+    var form = document.querySelector('form[name="contact"]');
+    if (!form) return;
+    var email = form.querySelector('[name="email"]');
+    var tel = form.querySelector('[name="telephone"]');
+    if (!email || !tel) return;
+    var msg = form.getAttribute('data-oneof-msg') || 'Indique au moins un e-mail ou un téléphone.';
+    function clear() { email.setCustomValidity(''); tel.setCustomValidity(''); }
+    email.addEventListener('input', clear);
+    tel.addEventListener('input', clear);
+    form.addEventListener('submit', function (e) {
+      clear();
+      if (!email.value.trim() && !tel.value.trim()) {
+        email.setCustomValidity(msg);
+        email.reportValidity();
+        e.preventDefault();
+      }
+    });
+  })();
+
   /* ---- Bannière cookies ---- */
   (function cookieBanner() {
     var KEY = 'cad_cookie_consent';

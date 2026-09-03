@@ -8,13 +8,15 @@
     </header>
 
     <div class="contact-grid">
-      <form class="form" name="contact" method="POST" data-netlify="true" netlify-honeypot="bot-field" action="/merci/">
+      <form class="form" name="contact" method="POST" data-netlify="true" netlify-honeypot="bot-field" action="/merci/" data-oneof-msg="Gib mindestens eine Kontaktmöglichkeit an: E-Mail oder Telefon.">
         <input type="hidden" name="form-name" value="contact" />
         <p class="hidden"><label>Nicht ausfüllen : <input name="bot-field" /></label></p>
+        <label class="field"><span>Name</span><input type="text" name="nom" placeholder="Dein Name" required /></label>
         <div class="form__row">
-          <label class="field"><span>Name</span><input type="text" name="nom" placeholder="Dein Name" required /></label>
-          <label class="field"><span>E-Mail</span><input type="email" name="email" placeholder="du@email.ch" required /></label>
+          <label class="field"><span>E-Mail</span><input type="email" name="email" placeholder="du@email.ch" /></label>
+          <label class="field"><span>Telefon</span><input type="tel" name="telephone" placeholder="+41 78 000 00 00" /></label>
         </div>
+        <p class="form__hint">Gib mindestens eine Kontaktmöglichkeit an: E-Mail oder Telefon.</p>
         <label class="field"><span>Betreff</span>
           <select name="sujet">
             <option>Gaming-Session reservieren</option>
