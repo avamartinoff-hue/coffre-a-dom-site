@@ -1268,6 +1268,8 @@ h1,h2,h3{ letter-spacing:0; }                 /* DM Serif respire mieux sans tra
 /* Contenu aligné en haut → icônes alignées entre cartes ; action (bouton) poussée en bas */
 .info-card{ display:flex; flex-direction:column; }
 .info-card .btn{ margin-top:auto; align-self:flex-start; }
+/* Icône alignée à GAUCHE comme le titre et le texte (cohérence : plus d'icône centrée sur du texte à gauche) */
+.info-card__icon{ justify-items:start; }
 .lbl-quad{ margin:4px 0 10px; }
 .lbl-quad > .ord__k{ display:block; margin-bottom:6px; }
 .lbl-quad-grid{ display:grid; grid-template-columns:1fr 1fr; gap:8px; max-width:340px; }
