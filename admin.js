@@ -57,12 +57,35 @@
   tabs.forEach(function (t) { t.addEventListener('click', function () { switchTab(t.getAttribute('data-tab')); }); });
 
   /* ========== TABLEAU DE BORD ========== */
-  function bars(map, fmt) {
-    var vals = Object.values(map); var max = Math.max.apply(null, vals.concat([1]));
-    return '<div class="chart">' + Object.keys(map).map(function (d) {
-      var v = map[d]; var h = Math.round((v / max) * 100);
-      return '<div class="chart__col" title="' + d + ' : ' + (fmt ? fmt(v) : v) + '"><span class="chart__bar" style="height:' + Math.max(2, h) + '%"></span></div>';
-    }).join('') + '</div>';
+  // Arrondit le haut de l'échelle à une valeur "propre" (1/2/5 × 10^n) pour une graduation lisible.
+  function niceMax(v) {
+    if (v <= 0) return 1;
+    var p = Math.pow(10, Math.floor(Math.log(v) / Math.LN10));
+    var n = v / p;
+    return (n <= 1 ? 1 : n <= 2 ? 2 : n <= 5 ? 5 : 10) * p;
+  }
+  function fmtDay(k) { var m = /(\d{4})-(\d{2})-(\d{2})/.exec(k); return m ? m[3] + '/' + m[2] : k; }
+  // Graphique à barres avec échelle Y (grille + valeurs), dates en X et détail au survol.
+  function chart(map, money) {
+    var keys = Object.keys(map);
+    if (!keys.length) return '<p class="empty">Pas encore de données sur la période.</p>';
+    var vals = keys.map(function (k) { return map[k]; });
+    var max = niceMax(Math.max.apply(null, vals.concat([0])));
+    var T = 4, ticks = []; for (var i = T; i >= 0; i--) ticks.push(Math.round(max * i / T));
+    var step = Math.max(1, Math.round(keys.length / 6));
+    var bars = keys.map(function (k) {
+      var v = map[k], h = max > 0 ? (v / max * 100) : 0;
+      var tip = fmtDay(k) + ' — ' + (money ? chf(v) : (v + ' visite' + (v > 1 ? 's' : '')));
+      return '<div class="chart2__col" title="' + tip + '"><span class="chart2__bar" style="height:' + (v > 0 ? Math.max(3, h) : 0) + '%"></span></div>';
+    }).join('');
+    var yax = ticks.map(function (t) { return '<span>' + t + '</span>'; }).join('');
+    var grid = ticks.map(function () { return '<span class="chart2__gline"></span>'; }).join('');
+    var xax = keys.map(function (k, idx) { return '<span>' + ((idx % step === 0 || idx === keys.length - 1) ? fmtDay(k) : '') + '</span>'; }).join('');
+    return '<div class="chart2">' +
+      '<div class="chart2__yaxis">' + yax + '</div>' +
+      '<div class="chart2__plot"><div class="chart2__grid">' + grid + '</div><div class="chart2__bars">' + bars + '</div></div>' +
+      '<div class="chart2__xaxis">' + xax + '</div>' +
+    '</div>';
   }
   var STATS_PERIOD = 30;
   var PERIOD_LABELS = { 1: 'Aujourd\'hui', 7: '7 jours', 30: '30 jours', 90: '90 jours' };
@@ -96,8 +119,8 @@
           statCard('Produits en ligne', d.products.visible + '/' + d.products.total, d.products.inStock + ' en stock') +
         '</div>' +
         '<div class="dash-grid">' +
-          '<div class="dash-box"><h3>Chiffre d\'affaires (' + lbl + ')</h3>' + bars(d.revenueByDay, chf) + '</div>' +
-          (v ? '<div class="dash-box"><h3>Visites (' + lbl + ')</h3>' + bars(v.byDay) + '</div>' : '') +
+          '<div class="dash-box"><h3>Chiffre d\'affaires <em class="dash-box__meta">' + lbl + ' · ' + chf(d.revenuePeriod) + '</em></h3>' + chart(d.revenueByDay, true) + '</div>' +
+          (v ? '<div class="dash-box"><h3>Visites <em class="dash-box__meta">' + lbl + ' · ' + v.period + ' au total</em></h3>' + chart(v.byDay, false) + '</div>' : '') +
         '</div>' +
         '<div class="dash-grid">' +
           '<div class="dash-box"><h3>Top produits (payés)</h3>' + (d.topProducts.length ? '<ul class="rank">' + d.topProducts.map(function (p) { return '<li><span>' + esc(p.name) + '</span><b>' + chf(p.revenue) + '</b><small>' + p.qty + ' vendus</small></li>'; }).join('') + '</ul>' : '<p class="empty">Aucune vente payée pour l\'instant.</p>') + '</div>' +
