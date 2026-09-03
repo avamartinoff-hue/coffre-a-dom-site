@@ -22,7 +22,7 @@ exports.handler = async (event) => {
   try {
     let orders;
     try {
-      orders = await db.get('orders?select=total,payment_status,created_at,paid_at,fulfilled_at&order=created_at.desc&limit=5000');
+      orders = await db.get('orders?select=total,payment_status,payment_method,created_at,paid_at,fulfilled_at&order=created_at.desc&limit=5000');
     } catch (e) {
       orders = await db.get('orders?select=total,payment_status,created_at,paid_at&order=created_at.desc&limit=5000');
     }
@@ -34,10 +34,13 @@ exports.handler = async (event) => {
 
     const byStatus = { pending: 0, paid: 0, failed: 0, cancelled: 0 };
     let revenue = 0, revenuePeriod = 0, ordersPeriod = 0, paidOrdersPeriod = 0;
+    let revenuePrev = 0, paidOrdersPrev = 0, ordersPrev = 0; // période PRÉCÉDENTE (les N jours d'avant)
+    const payMethods = { twint: 0, sumup: 0, other: 0 };      // répartition des ventes payées (période)
     let toValidate = 0, toShip = 0; // à valider (paiement en attente) · à livrer (payée, non expédiée)
     const today = dayStr(new Date());
     let revenueToday = 0, ordersToday = 0;
     const days = {}; for (let i = N - 1; i >= 0; i--) { const d = new Date(); d.setUTCDate(d.getUTCDate() - i); days[dayStr(d)] = 0; }
+    const prevDays = {}; for (let i = 2 * N - 1; i >= N; i--) { const d = new Date(); d.setUTCDate(d.getUTCDate() - i); prevDays[dayStr(d)] = true; }
 
     orders.forEach((o) => {
       byStatus[o.payment_status] = (byStatus[o.payment_status] || 0) + 1;
@@ -46,10 +49,16 @@ exports.handler = async (event) => {
       const d = (o.created_at || '').slice(0, 10);
       if (d === today) ordersToday++;
       if (d in days) ordersPeriod++;
+      if (d in prevDays) ordersPrev++;
       if (o.payment_status === 'paid') {
         const t = Number(o.total) || 0;
         revenue += t;
-        if (d in days) { days[d] += t; revenuePeriod += t; paidOrdersPeriod++; }
+        if (d in days) {
+          days[d] += t; revenuePeriod += t; paidOrdersPeriod++;
+          const m = o.payment_method === 'twint' ? 'twint' : o.payment_method === 'sumup' ? 'sumup' : 'other';
+          payMethods[m]++;
+        }
+        if (d in prevDays) { revenuePrev += t; paidOrdersPrev++; }
         if (d === today) revenueToday += t;
       }
     });
@@ -73,16 +82,18 @@ exports.handler = async (event) => {
     try {
       const pv = await db.get('page_views?select=path,day&limit=100000');
       const vDays = {}; for (let i = N - 1; i >= 0; i--) { const d = new Date(); d.setUTCDate(d.getUTCDate() - i); vDays[dayStr(d)] = 0; }
+      const vPrevDays = {}; for (let i = 2 * N - 1; i >= N; i--) { const d = new Date(); d.setUTCDate(d.getUTCDate() - i); vPrevDays[dayStr(d)] = true; }
       const paths = {};
-      let total = 0, visitsToday = 0, visitsPeriod = 0;
+      let total = 0, visitsToday = 0, visitsPeriod = 0, visitsPrev = 0;
       pv.forEach((v) => {
         total++;
         if (v.day in vDays) { vDays[v.day]++; visitsPeriod++; }
+        if (v.day in vPrevDays) visitsPrev++;
         if (v.day === today) visitsToday++;
         const p = v.path || '/'; paths[p] = (paths[p] || 0) + 1;
       });
       const topPaths = Object.entries(paths).sort((a, b) => b[1] - a[1]).slice(0, 8).map(([path, n]) => ({ path, n }));
-      visits = { total, today: visitsToday, period: visitsPeriod, byDay: vDays, topPaths };
+      visits = { total, today: visitsToday, period: visitsPeriod, prev: visitsPrev, byDay: vDays, topPaths };
     } catch (e) { visits = null; }
 
     return json(200, {
@@ -95,6 +106,10 @@ exports.handler = async (event) => {
       ordersPeriod,
       paidOrdersPeriod,
       ordersToday,
+      revenuePrev: Math.round(revenuePrev * 100) / 100,
+      paidOrdersPrev,
+      ordersPrev,
+      payMethods,
       byStatus,
       toValidate,
       toShip,

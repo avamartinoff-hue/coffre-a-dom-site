@@ -1098,8 +1098,25 @@ h1,h2,h3{ letter-spacing:0; }                 /* DM Serif respire mieux sans tra
 .stat-cards{ display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:14px; margin-bottom:24px; }
 .stat-card{ background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); padding:20px 22px; box-shadow:0 2px 10px rgba(58,42,22,.05); display:flex; flex-direction:column; gap:2px; }
 .stat-card__label{ font-size:.74rem; text-transform:uppercase; letter-spacing:.08em; color:var(--muted); font-weight:700; }
-.stat-card__value{ font-family:var(--font-display); font-size:2rem; color:var(--gold); line-height:1.1; }
+.stat-card__value{ font-family:var(--font-display); font-size:2rem; color:var(--gold); line-height:1.1; display:flex; align-items:baseline; gap:8px; flex-wrap:wrap; }
 .stat-card__sub{ font-size:.82rem; color:var(--muted); }
+/* Badge de variation vs période précédente */
+.stat-card__trend{ font-family:var(--font-sans,inherit); font-size:.72rem; font-weight:700; padding:2px 7px; border-radius:100px; line-height:1; white-space:nowrap; }
+.stat-card__trend--up{ color:#2ec27e; background:rgba(46,194,126,.14); }
+.stat-card__trend--down{ color:#e0603a; background:rgba(224,96,58,.14); }
+/* Répartition des paiements (barre empilée) */
+.dash-grid--full{ grid-template-columns:1fr; }
+.paysplit__bar{ display:flex; height:16px; border-radius:8px; overflow:hidden; background:var(--line); }
+.paysplit__seg{ height:100%; }
+.paysplit__seg--twint{ background:linear-gradient(180deg,#3aa0ff,#1877d1); }
+.paysplit__seg--card{ background:linear-gradient(180deg,var(--gold-2),var(--gold)); }
+.paysplit__seg--other{ background:var(--muted); }
+.paysplit__legend{ display:flex; flex-wrap:wrap; gap:8px 22px; margin-top:12px; font-size:.85rem; color:var(--muted); }
+.paysplit__legend b{ color:var(--text); }
+.paysplit__dot{ display:inline-block; width:10px; height:10px; border-radius:50%; margin-right:5px; vertical-align:middle; }
+.paysplit__dot--twint{ background:#1877d1; }
+.paysplit__dot--card{ background:var(--gold); }
+.paysplit__dot--other{ background:var(--muted); }
 .dash-section-label{ font-size:.74rem; text-transform:uppercase; letter-spacing:.08em; color:var(--muted); font-weight:700; margin:0 0 10px; }
 .stat-cards--actions{ grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); }
 .dash-period{ margin-bottom:18px; }

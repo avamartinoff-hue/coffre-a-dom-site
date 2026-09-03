@@ -87,6 +87,26 @@
       '<div class="chart2__xaxis">' + xax + '</div>' +
     '</div>';
   }
+  // Variation vs période précédente → badge « +18 % » (vert) ou « -5 % » (rouge). null si pas de base.
+  function delta(cur, prev) {
+    if (prev == null || prev <= 0) return null;
+    var pct = Math.round((cur - prev) / prev * 100);
+    return { txt: (pct >= 0 ? '+' : '') + pct + ' %', cls: pct >= 0 ? 'up' : 'down' };
+  }
+  // Répartition des ventes payées par mode de paiement (barre empilée TWINT / Carte).
+  function paySplit(pm, lbl) {
+    var t = (pm && pm.twint) || 0, c = (pm && pm.sumup) || 0, o = (pm && pm.other) || 0;
+    var tot = t + c + o, body;
+    if (!tot) { body = '<p class="empty">Aucune vente payée sur la période.</p>'; }
+    else {
+      var pct = function (n) { return Math.round(n / tot * 100); };
+      var seg = function (n, k) { return n ? '<span class="paysplit__seg paysplit__seg--' + k + '" style="width:' + pct(n) + '%" title="' + n + ' (' + pct(n) + '%)"></span>' : ''; };
+      var leg = function (n, k, name) { return '<span><i class="paysplit__dot paysplit__dot--' + k + '"></i> ' + name + ' — <b>' + n + '</b> · ' + pct(n) + '%</span>'; };
+      body = '<div class="paysplit"><div class="paysplit__bar">' + seg(t, 'twint') + seg(c, 'card') + seg(o, 'other') + '</div>' +
+        '<div class="paysplit__legend">' + leg(t, 'twint', 'TWINT') + leg(c, 'card', 'Carte') + (o ? leg(o, 'other', 'Autre') : '') + '</div></div>';
+    }
+    return '<div class="dash-box"><h3>Répartition des paiements <em class="dash-box__meta">' + lbl + '</em></h3>' + body + '</div>';
+  }
   var STATS_PERIOD = 30;
   var PERIOD_LABELS = { 1: 'Aujourd\'hui', 7: '7 jours', 30: '30 jours', 90: '90 jours' };
   function periodSelector() {
@@ -107,6 +127,10 @@
       var paidP = d.paidOrdersPeriod || 0;
       var basket = paidP > 0 ? (d.revenuePeriod / paidP) : 0;
       var conv = (v && v.period > 0) ? (paidP / v.period * 100) : null;
+      // Période précédente (pour les variations)
+      var paidPr = d.paidOrdersPrev || 0;
+      var basketPr = paidPr > 0 ? (d.revenuePrev / paidPr) : 0;
+      var convPr = (v && v.prev > 0) ? (paidPr / v.prev * 100) : null;
       panels.stats.innerHTML =
         '<p class="dash-section-label">À traiter</p>' +
         '<div class="stat-cards stat-cards--actions">' +
@@ -115,12 +139,12 @@
         '</div>' +
         '<div class="dash-period"><p class="dash-section-label">Période</p>' + periodSelector() + '</div>' +
         '<div class="stat-cards">' +
-          statCard('CA ' + lbl, chf(d.revenuePeriod), d.ordersPeriod + ' commande' + (d.ordersPeriod > 1 ? 's' : '') + ' ' + lblLow) +
-          statCard('Visites ' + lbl, v ? v.period : '–', v ? (v.today + ' aujourd\'hui') : 'compteur à activer') +
+          statCard('CA ' + lbl, chf(d.revenuePeriod), d.ordersPeriod + ' commande' + (d.ordersPeriod > 1 ? 's' : '') + ' ' + lblLow, null, null, delta(d.revenuePeriod, d.revenuePrev)) +
+          statCard('Visites ' + lbl, v ? v.period : '–', v ? (v.today + ' aujourd\'hui') : 'compteur à activer', null, null, (v ? delta(v.period, v.prev) : null)) +
           statCard('CA aujourd\'hui', chf(d.revenueToday), d.ordersToday + ' commande' + (d.ordersToday > 1 ? 's' : '') + ' ce jour') +
           statCard('Chiffre d\'affaires', chf(d.revenue), 'total encaissé') +
-          statCard('Panier moyen', paidP > 0 ? chf(basket) : '–', paidP > 0 ? (paidP + ' vente' + (paidP > 1 ? 's' : '') + ' payée' + (paidP > 1 ? 's' : '') + ' ' + lblLow) : 'aucune vente ' + lblLow) +
-          statCard('Taux de conversion', conv != null ? conv.toFixed(1).replace('.', ',') + ' %' : '–', conv != null ? (paidP + ' vente' + (paidP > 1 ? 's' : '') + ' / ' + v.period + ' visite' + (v.period > 1 ? 's' : '')) : 'visites requises') +
+          statCard('Panier moyen', paidP > 0 ? chf(basket) : '–', paidP > 0 ? (paidP + ' vente' + (paidP > 1 ? 's' : '') + ' payée' + (paidP > 1 ? 's' : '') + ' ' + lblLow) : 'aucune vente ' + lblLow, null, null, delta(basket, basketPr)) +
+          statCard('Taux de conversion', conv != null ? conv.toFixed(1).replace('.', ',') + ' %' : '–', conv != null ? (paidP + ' vente' + (paidP > 1 ? 's' : '') + ' / ' + v.period + ' visite' + (v.period > 1 ? 's' : '')) : 'visites requises', null, null, ((conv != null && convPr != null) ? delta(conv, convPr) : null)) +
           statCard('Commandes', d.ordersTotal, d.byStatus.paid + ' payées · ' + d.byStatus.pending + ' en attente') +
           statCard('Produits en ligne', d.products.visible + '/' + d.products.total, d.products.inStock + ' en stock') +
         '</div>' +
@@ -131,13 +155,15 @@
         '<div class="dash-grid">' +
           '<div class="dash-box"><h3>Top produits (payés)</h3>' + (d.topProducts.length ? '<ul class="rank">' + d.topProducts.map(function (p) { return '<li><span>' + esc(p.name) + '</span><b>' + chf(p.revenue) + '</b><small>' + p.qty + ' vendus</small></li>'; }).join('') + '</ul>' : '<p class="empty">Aucune vente payée pour l\'instant.</p>') + '</div>' +
           (v ? '<div class="dash-box"><h3>Pages les plus vues</h3><ul class="rank">' + v.topPaths.map(function (p) { return '<li><span>' + esc(p.path) + '</span><b>' + p.n + '</b></li>'; }).join('') + '</ul></div>' : '<div class="dash-box"><h3>Visites</h3><p class="empty">Le compteur de visites s\'active après avoir créé la table page_views (voir supabase/analytics.sql).</p></div>') +
-        '</div>';
+        '</div>' +
+        '<div class="dash-grid dash-grid--full">' + paySplit(d.payMethods, lbl) + '</div>';
     }).catch(function () {});
   }
-  function statCard(label, value, sub, mod, goto) {
+  function statCard(label, value, sub, mod, goto, trend) {
     var cls = 'stat-card' + (mod ? ' stat-card--' + mod.replace(/ is-alert/, '') + (/is-alert/.test(mod) ? ' is-alert' : '') : '');
     var attr = goto ? ' data-goto="' + goto + '" role="button" tabindex="0"' : '';
-    return '<div class="' + cls + '"' + attr + '><span class="stat-card__label">' + label + '</span><span class="stat-card__value">' + value + '</span><span class="stat-card__sub">' + sub + '</span></div>';
+    var tr = trend ? ' <span class="stat-card__trend stat-card__trend--' + trend.cls + '">' + trend.txt + '</span>' : '';
+    return '<div class="' + cls + '"' + attr + '><span class="stat-card__label">' + label + '</span><span class="stat-card__value">' + value + tr + '</span><span class="stat-card__sub">' + sub + '</span></div>';
   }
 
   /* ========== CODES PROMO ========== */
