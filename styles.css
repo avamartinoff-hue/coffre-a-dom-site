@@ -774,6 +774,8 @@ blockquote{
 }
 .news-form input:focus{ outline:none; border-color:var(--gold); box-shadow:0 0 0 3px rgba(245,196,81,.15); }
 .news-msg{ flex-basis:100%; margin-top:12px; font-size:.9rem; min-height:1.2em; }
+/* Vide : on le retire du flux → pas de 3e ligne fantôme qui décentre le contenu de l'encadré */
+.news-msg:empty{ display:none; }
 .news-msg.is-ok{ color:var(--gold); }
 .news-msg.is-err{ color:var(--magenta); }
 
