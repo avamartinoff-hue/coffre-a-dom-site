@@ -89,6 +89,18 @@
     if (e.target.closest('[data-qty-minus]')) input.value = Math.max(1, v - 1);
   });
 
+  /* ---- Recalage de la quantité tapée au clavier : min 1, max = stock (data-max) ---- */
+  document.addEventListener('change', function (e) {
+    var input = e.target.closest('[data-qty-input]');
+    if (!input) return;
+    var wrap = input.closest('[data-qty]');
+    var max = wrap ? (parseInt(wrap.getAttribute('data-max'), 10) || 0) : 0; // 0 = illimité
+    var v = parseInt(input.value, 10);
+    if (isNaN(v) || v < 1) v = 1;
+    if (max && v > max) v = max;
+    input.value = v;
+  });
+
   /* ---- render cart page ---- */
   function renderCart() {
     var view = document.querySelector('[data-cart-view]');
@@ -127,20 +139,33 @@
     if (!box) return;
     var items = load();
     var field = document.querySelector('[data-cart-field]');
+    // Frais de port : ajoutés dès que « Livraison postale » est choisie (tarif lu sur data-ship-poste).
+    var modeSel = document.querySelector('[data-mode]');
+    var isPoste = !!(modeSel && modeSel.value === 'poste');
+    var shipFee = parseFloat(box.getAttribute('data-ship-poste')) || 8.9;
+    var sub = total();
+    var ship = isPoste ? shipFee : 0;
+    var grand = Math.round((sub + ship) * 100) / 100;
     if (!items.length) {
       box.innerHTML = '<p class="empty">' + T('summary_empty', 'Votre panier est vide.') + ' <a href="' + B + '/boutique/">' + T('add_articles', 'Ajouter des articles →') + '</a></p>';
     } else {
-      box.innerHTML = '<h2 class="cat__subtitle">' + T('your_order', 'Votre commande') + '</h2><div class="cart-table">' +
-        items.map(function (i) {
-          return '<div class="cart-row"><div class="cart-row__name">' + i.qty + '× ' + i.name +
-            (i.preorder ? ' <span class="preorder-tag">' + T('preorder_tag', 'Précommande') + '</span>' : '') +
-            '</div><div class="cart-row__price">' + chf(i.qty * i.price) + '</div></div>';
-        }).join('') +
-        '</div><div class="cart-foot"><div class="cart-total">' + T('total', 'Total') + ' <b>' + chf(total()) + '</b></div></div>';
+      var rows = items.map(function (i) {
+        return '<div class="cart-row"><div class="cart-row__name">' + i.qty + '× ' + i.name +
+          (i.preorder ? ' <span class="preorder-tag">' + T('preorder_tag', 'Précommande') + '</span>' : '') +
+          '</div><div class="cart-row__price">' + chf(i.qty * i.price) + '</div></div>';
+      }).join('');
+      var foot = '<div class="cart-foot">';
+      if (isPoste) {
+        foot += '<div class="cart-line"><span>' + T('subtotal', 'Sous-total') + '</span><span>' + chf(sub) + '</span></div>' +
+                '<div class="cart-line"><span>' + T('shipping_poste', 'Livraison postale') + '</span><span>' + chf(ship) + '</span></div>';
+      }
+      foot += '<div class="cart-total">' + T('total', 'Total') + ' <b>' + chf(grand) + '</b></div></div>';
+      box.innerHTML = '<h2 class="cat__subtitle">' + T('your_order', 'Votre commande') + '</h2><div class="cart-table">' + rows + '</div>' + foot;
     }
     if (field) {
       field.value = items.map(function (i) { return (i.preorder ? '[PRÉCOMMANDE] ' : '') + i.qty + 'x ' + i.name + ' (' + chf(i.price) + ')'; }).join(' · ')
-        + ' | TOTAL ' + chf(total());
+        + (isPoste ? ' · ' + T('shipping_poste', 'Livraison postale') + ' ' + chf(ship) : '')
+        + ' | TOTAL ' + chf(grand);
     }
   }
 

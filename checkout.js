@@ -18,8 +18,12 @@
   var chf = function (n) { return 'CHF ' + Number(n).toFixed(2); };
   function promoNote(d) { return (d && d.discount > 0) ? ' · <span class="confirm__promo">' + T('discount', 'Remise') + ' −' + chf(d.discount) + (d.promoCode ? ' (' + d.promoCode + ')' : '') + '</span>' : ''; }
 
-  // Adresse visible seulement si livraison postale
-  function syncAddr() { if (addrField) addrField.hidden = modeSel.value !== 'poste'; }
+  // Adresse visible seulement si livraison postale ; on rafraîchit aussi le résumé
+  // (les frais de port s'ajoutent/se retirent selon le mode choisi).
+  function syncAddr() {
+    if (addrField) addrField.hidden = modeSel.value !== 'poste';
+    document.dispatchEvent(new CustomEvent('cart:change')); // → cart.js re-render le résumé (avec/sans port)
+  }
   if (modeSel) { modeSel.addEventListener('change', syncAddr); syncAddr(); }
 
   function setMsg(t, ok) { if (msg) { msg.textContent = t; msg.className = 'form__msg ' + (ok ? 'is-ok' : 'is-err'); } }
