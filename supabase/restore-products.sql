@@ -1,10 +1,90 @@
 -- =========================================================
--- RESTAURATION des produits supprimés par erreur au back-office.
--- Source : data/catalog.json (142 produits).
--- Réinsère UNIQUEMENT les produits manquants (ON CONFLICT DO NOTHING) :
--- ne touche PAS aux produits encore présents (stock, prix récents conservés).
--- À jouer une fois dans Supabase -> SQL Editor.
+-- RESTAURATION catalogue Coffre à Dom (suppression accidentelle).
+-- Source : data/catalog.json — 36 catégories + 142 produits.
+-- Ne réinsère que le manquant (ON CONFLICT DO NOTHING) : n'écrase rien.
+-- À jouer dans Supabase -> SQL Editor.
 -- =========================================================
+
+-- 1) Catégories (sans parent d'abord, pour éviter les erreurs de clé étrangère)
+insert into public.categories (slug, name, description)
+values
+('30-anniversaire','30ᵉ Anniversaire',''),
+('booster-en-loose','Booster en Loose',''),
+('cartes-en','Cartes EN',''),
+('cartes-fr','Cartes FR',''),
+('carte-jap','Cartes JAP',''),
+('dragon-ball-anglais','Dragon Ball – Anglais',''),
+('epee-bouclier','Epée & Bouclier',''),
+('flammes-obsidiennes','EV03 Flammes Obsidiennes',''),
+('151','EV03.5 151',''),
+('couronne-stellaire','EV07 Couronne stellaire',''),
+('etincelles-deferlantes','Ev08 Etincelles déferlantes',''),
+('evolutions-prismatiques','EV08.5 Évolutions Prismatiques',''),
+('aventures-ensemble','EV09 Aventures Ensemble',''),
+('rivaux-predestines','EV10 Rivalités Destinées',''),
+('foudre-noire-flamme-blanche','EV10.5 Foudre Noire & Flamme Blanche',''),
+('pop','Funko Pop','Figurines Funko POP à collectionner.'),
+('coffret-cadeau','Idées Cadeaux','Des idées cadeaux prêtes à offrir.'),
+('jeu-de-cartes-a-collectionner','Jeu de cartes à collectionner','Pokémon, Magic, One Piece, Dragon Ball, Naruto… à l''unité, en booster ou en scellé.'),
+('magic-the-gathering','Magic The Gathering',''),
+('me01-mega-evolution','ME01 Mega Evolution',''),
+('me02-flammes-fantasmagoriques','ME02 Flammes Fantasmagoriques',''),
+('me2-5-heros-transcendants','ME02.5 Héros Transcendants',''),
+('me03-equilibre-parfait','ME03 Equilibre Parfait',''),
+('me04-chaos-rising','ME04 Chaos Ascendant',''),
+('me05-abyss-eye','ME05 Nuit Noire',''),
+('naruto-mythos','Naruto Mythos',''),
+('one-piece','One piece – FR & EN & Jap',''),
+('carte','Pokemon – Cartes',''),
+('collection-coffrets','Pokemon – Collection Coffrets & Box',''),
+('pokemon-cartes','Pokémon — Cartes',''),
+('pokemon-japonais','Pokemon – Japonais',''),
+('promo','Promo','Bons plans et prix cassés du moment.'),
+('promo-pokemon','Promo Pokémon',''),
+('protections','Protections',''),
+('figurine-pvc-resine','Répliques · PVC · Résine','Répliques, figurines PVC et résine, du collector à l''exposition.'),
+('vip','VIP','Avantages et récompenses réservés aux membres du Coffre.')
+on conflict (slug) do nothing;
+
+-- 2) Rattacher les parents (seulement si le parent existe bien)
+update public.categories c set parent = v.parent
+from (values
+('30-anniversaire','pokemon-cartes'),
+('booster-en-loose','pokemon-cartes'),
+('cartes-en','carte'),
+('cartes-fr','carte'),
+('carte-jap','carte'),
+('dragon-ball-anglais','jeu-de-cartes-a-collectionner'),
+('epee-bouclier','pokemon-cartes'),
+('flammes-obsidiennes','pokemon-cartes'),
+('151','pokemon-cartes'),
+('couronne-stellaire','pokemon-cartes'),
+('etincelles-deferlantes','pokemon-cartes'),
+('evolutions-prismatiques','pokemon-cartes'),
+('aventures-ensemble','pokemon-cartes'),
+('rivaux-predestines','pokemon-cartes'),
+('foudre-noire-flamme-blanche','pokemon-cartes'),
+('magic-the-gathering','jeu-de-cartes-a-collectionner'),
+('me01-mega-evolution','pokemon-cartes'),
+('me02-flammes-fantasmagoriques','pokemon-cartes'),
+('me2-5-heros-transcendants','pokemon-cartes'),
+('me03-equilibre-parfait','pokemon-cartes'),
+('me04-chaos-rising','pokemon-cartes'),
+('me05-abyss-eye','pokemon-cartes'),
+('naruto-mythos','jeu-de-cartes-a-collectionner'),
+('one-piece','jeu-de-cartes-a-collectionner'),
+('carte','jeu-de-cartes-a-collectionner'),
+('collection-coffrets','jeu-de-cartes-a-collectionner'),
+('pokemon-cartes','jeu-de-cartes-a-collectionner'),
+('pokemon-japonais','jeu-de-cartes-a-collectionner'),
+('promo-pokemon','pokemon-cartes'),
+('protections','jeu-de-cartes-a-collectionner')
+) as v(slug, parent)
+where c.slug = v.slug
+  and c.parent is null
+  and exists (select 1 from public.categories x where x.slug = v.parent);
+
+-- 3) Produits
 insert into public.products (slug, name, price, category, on_sale, in_stock, description, image, translations)
 values
 ('pokemon-pokemon-day-2026-collection','Pokémon – Pokémon Day 2026 Collection',24.9,'collection-coffrets',false,true,'🚨 Les précommandes 🚨 Date de disponibilité prévu: 28.08.2026','assets/products/pokemon-pokemon-day-2026-collection.webp','{"en":{"name":"Pokémon – Pokémon Day 2026 Collection","desc":"🚨 Pre-orders 🚨 Expected availability date: 28.08.2026"},"it":{"name":"Pokémon – Pokémon Day 2026 Collection","desc":"🚨 Preordini 🚨 Data di disponibilità prevista: 28.08.2026"},"de":{"name":"Pokémon – Pokémon Day 2026 Collection","desc":"🚨 Vorbestellungen 🚨 Voraussichtliches Verfügbarkeitsdatum: 28.08.2026"}}'::jsonb),
@@ -151,5 +231,6 @@ values
 ('leia-on-speeder-bike-star-wars-228','Luke Skywalker with speeder bike – STAR WARS (229) – Chase',29.9,'pop',true,true,'','assets/products/leia-on-speeder-bike-star-wars-228.png','{"en":{"name":"Luke Skywalker with speeder bike – STAR WARS (229) – Chase","desc":""},"it":{"name":"Luke Skywalker with speeder bike – STAR WARS (229) – Chase","desc":""},"de":{"name":"Luke Skywalker with speeder bike – STAR WARS (229) – Chase","desc":""}}'::jsonb)
 on conflict (slug) do nothing;
 
--- Vérification : nombre de produits après restauration
-select count(*) as total_produits from public.products;
+-- 4) Vérifications
+select (select count(*) from public.categories) as categories,
+       (select count(*) from public.products)   as produits;
