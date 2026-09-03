@@ -494,7 +494,9 @@ for (const c of cats) {
   }
   crumbItems.push({ name: cName(c) });
 
-  const visKids = kids.filter(catVisible);
+  // On n'affiche dans « Explorer » que les sous-catégories qui ont au moins 1 article
+  // (productsDeep compte aussi les sous-sous-catégories) → « rubrique à 0 = pas affichée ».
+  const visKids = kids.filter((k) => catVisible(k) && productsDeep(k.slug).length > 0);
   const subGrid = visKids.length
     ? `<h2 class="cat__subtitle">${t('cat.explore')}</h2><div class="ccard-grid">${visKids.map(subcatCard).join('')}</div>`
     : '';
