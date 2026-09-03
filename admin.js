@@ -619,9 +619,8 @@
       '<td><input type="checkbox" data-psel="' + esc(p.slug) + '"' + (SELECTED[p.slug] ? ' checked' : '') + '></td>' +
       '<td class="pt-thumb">' + (img ? '<img src="' + esc(img) + '" alt="">' : '<span class="pt-noimg">—</span>') + '</td>' +
       '<td class="pt-name">' + esc(p.name) + '<small>' + esc(catName(p.category)) + '</small></td>' +
-      '<td>' + chf(p.price) + '</td>' +
+      '<td class="pt-price">' + chf(p.price) + '</td>' +
       '<td>' + (p.stock_qty == null ? '—' : p.stock_qty) + '</td>' +
-      '<td><label class="tgl"><input type="checkbox" data-ptoggle="in_stock" data-slug="' + esc(p.slug) + '"' + (p.in_stock ? ' checked' : '') + '><span></span></label></td>' +
       '<td><label class="tgl tgl--on"><input type="checkbox" data-ptoggle="visible" data-slug="' + esc(p.slug) + '"' + (p.visible ? ' checked' : '') + '><span></span></label></td>' +
       '<td class="pt-act"><button class="linkbtn" data-pedit="' + esc(p.slug) + '">Éditer</button></td>' +
     '</tr>';
@@ -636,7 +635,7 @@
       var byCat = {};
       list.forEach(function (p) { (byCat[p.category] = byCat[p.category] || []).push(p); });
       rows = Object.keys(byCat).sort(function (a, b) { return catName(a).localeCompare(catName(b)); }).map(function (cat) {
-        return '<tr class="pt-group"><td colspan="8">' + esc(catName(cat) || '(sans catégorie)') + ' <small>' + byCat[cat].length + '</small></td></tr>' + byCat[cat].map(productRow).join('');
+        return '<tr class="pt-group"><td colspan="7">' + esc(catName(cat) || '(sans catégorie)') + ' <small>' + byCat[cat].length + '</small></td></tr>' + byCat[cat].map(productRow).join('');
       }).join('');
     } else {
       rows = list.map(productRow).join('');
@@ -656,7 +655,7 @@
         '<button class="btn btn--ghost btn--sm pt-del" data-pbulk="del">Supprimer</button>' +
       '</div>' +
       '<div class="pt-wrap"><table class="pt"><thead><tr>' +
-        '<th><input type="checkbox" data-psel-all></th><th></th><th>Produit</th><th>Prix</th><th>Stock</th><th>En stock</th><th>En ligne</th><th></th>' +
+        '<th><input type="checkbox" data-psel-all></th><th></th><th>Produit</th><th>Prix</th><th>Stock</th><th>En ligne</th><th></th>' +
       '</tr></thead><tbody>' + rows + '</tbody></table></div>';
     var s = panels.products.querySelector('.pt-search');
     if (s) s.addEventListener('input', function () { pFilter.name = s.value; renderProducts(); setTimeout(function () { var el = panels.products.querySelector('.pt-search'); if (el) { el.focus(); el.selectionStart = el.selectionEnd = el.value.length; } }, 0); });
@@ -787,8 +786,8 @@
         '<button type="button" class="linkbtn" data-mnewcat style="margin:-8px 0 14px;align-self:flex-start">+ Nouvelle catégorie</button>' +
         '<label class="field"><span>Marque <em class="seo-hint">Google Shopping — auto-détectée si vide</em></span><input data-mf="brand" value="' + esc(p.brand || '') + '" placeholder="Ex. Pokémon, Bandai, Funko, Hasbro…"></label>' +
         '<label class="field"><span>Description</span><textarea data-mf="description" rows="3">' + esc(p.description || '') + '</textarea></label>' +
-        '<div class="modal__checks"><label><input type="checkbox" data-mf="in_stock"' + (p.in_stock ? ' checked' : '') + '> En stock</label>' +
-          '<label><input type="checkbox" data-mf="visible"' + (p.visible ? ' checked' : '') + '> En ligne</label></div>' +
+        '<div class="modal__checks"><label><input type="checkbox" data-mf="visible"' + (p.visible ? ' checked' : '') + '> En ligne</label></div>' +
+        '<p class="seo-hint">💡 « En stock » est automatique : laisse la quantité vide/0 → produit retiré du site ; mets une quantité &gt; 0 → produit en ligne et vendable.</p>' +
         '<details class="seo-box"' + ((p.seo_title || p.seo_description) ? ' open' : '') + '><summary>🔍 Référencement Google (SEO) — optionnel</summary>' +
           '<label class="field"><span>Titre SEO <em class="seo-hint" data-seocount="seo_title">0/60</em></span>' +
             '<input data-mf="seo_title" maxlength="70" value="' + esc(p.seo_title || '') + '" placeholder="Ex. Pokémon 151 – Coffret Dracaufeu ex – FR"></label>' +

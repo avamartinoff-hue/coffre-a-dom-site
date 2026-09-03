@@ -1255,3 +1255,4 @@ h1,h2,h3{ letter-spacing:0; }                 /* DM Serif respire mieux sans tra
 .lbl-quad-btn{ padding:12px 10px; border-radius:10px; border:1px solid var(--line-strong); background:var(--surface); color:var(--muted); font:inherit; font-size:.85rem; cursor:pointer; transition:.15s var(--ease); }
 .lbl-quad-btn:hover{ color:var(--text); border-color:var(--gold); }
 .lbl-quad-btn.is-active{ background:linear-gradient(120deg,var(--gold),var(--gold-2)); color:#0a0e1c; border-color:transparent; font-weight:600; }
+.pt-price{ white-space:nowrap; }

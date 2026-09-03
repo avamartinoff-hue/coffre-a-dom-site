@@ -135,10 +135,10 @@ async function loadCatalog() {
       // (migration seo.sql pas jouée), on relit SANS — sans jamais retomber sur le catalogue local.
       let prods;
       try {
-        prods = await get('products?select=slug,name,description,price,category,image,on_sale,in_stock,seo_title,seo_description,brand,translations,created_at&visible=eq.true&order=position&limit=2000');
+        prods = await get('products?select=slug,name,description,price,category,image,on_sale,in_stock,seo_title,seo_description,brand,translations,created_at&visible=eq.true&in_stock=eq.true&order=position&limit=2000');
       } catch (seoErr) {
         console.warn('⚠️  Colonnes SEO/marque/traductions absentes (jouez supabase/seo.sql) — lecture sans elles.');
-        prods = await get('products?select=slug,name,description,price,category,image,on_sale,in_stock,created_at&visible=eq.true&order=position&limit=2000');
+        prods = await get('products?select=slug,name,description,price,category,image,on_sale,in_stock,created_at&visible=eq.true&in_stock=eq.true&order=position&limit=2000');
       }
       if (Array.isArray(cats) && Array.isArray(prods) && prods.length) {
         console.log(`↪ Catalogue chargé depuis Supabase : ${cats.length} catégories, ${prods.length} produits`);
