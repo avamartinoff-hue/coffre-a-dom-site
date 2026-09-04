@@ -1065,13 +1065,9 @@
     }
     // Publier (déclenche un nouveau build → met en ligne les changements du back office)
     if (e.target.closest('[data-admin-republish]')) {
-      var b = e.target.closest('[data-admin-republish]');
-      if (!confirm('Publier les changements ?\n\nLe site va se régénérer et se mettre à jour en ligne dans 1 à 2 minutes.')) return;
-      var label = b.textContent; b.disabled = true; b.textContent = '⏳ Publication…';
-      api('POST', 'republish').then(function (r) {
-        showFlash((r && r.message) || (r && r.error) || 'Fait.', !!(r && r.ok));
-        b.disabled = false; b.textContent = label;
-      }).catch(function () { b.disabled = false; b.textContent = label; });
+      // Pas de publication instantanée (maîtrise des crédits) : le site se régénère
+      // automatiquement à 12h et à minuit, uniquement s'il y a eu des modifications.
+      showFlash('✅ Tes changements sont bien enregistrés. Le site se met à jour automatiquement à 12h et à minuit.', true);
     }
     if (e.target.closest('[data-admin-logout]')) logout();
   });
