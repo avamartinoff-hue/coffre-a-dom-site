@@ -698,7 +698,7 @@
     panels.products.innerHTML =
       '<div class="pt-bar">' +
         '<input type="search" class="pt-search" placeholder="🔍 Filtrer par nom…" value="' + esc(pFilter.name) + '">' +
-        '<select class="pt-catfilter"><option value="">Toutes les catégories</option>' + CATEGORIES.map(function (c) { return '<option value="' + esc(c.slug) + '"' + (c.slug === pFilter.cat ? ' selected' : '') + '>' + esc(c.name) + '</option>'; }).join('') + '</select>' +
+        '<select class="pt-catfilter"><option value="">Toutes les catégories</option>' + categoryOptions(pFilter.cat) + '</select>' +
         '<label class="pt-grouptgl"><input type="checkbox" class="pt-group-cb"' + (pGroup ? ' checked' : '') + '> Grouper par catégorie</label>' +
         '<span class="pt-count">' + list.length + ' produits</span>' +
         '<button class="btn btn--gold btn--sm" data-padd>+ Ajouter un produit</button>' +
@@ -815,10 +815,25 @@
     });
   }
 
+  // Options de catégories en HIÉRARCHIE : les sous-catégories sont indentées sous leur parent (↳),
+  // pour qu'on puisse choisir aussi bien une catégorie principale qu'une sous-catégorie.
+  function categoryOptions(selected) {
+    var out = '';
+    (function walk(parent, depth) {
+      CATEGORIES.filter(function (c) { return (c.parent || null) === parent; })
+        .sort(function (a, b) { return (a.name || '').localeCompare(b.name || ''); })
+        .forEach(function (c) {
+          var pad = depth ? (new Array(depth + 1).join('   ') + '↳ ') : '';
+          out += '<option value="' + esc(c.slug) + '"' + (c.slug === selected ? ' selected' : '') + '>' + pad + esc(c.name) + '</option>';
+          walk(c.slug, depth + 1);
+        });
+    })(null, 0);
+    return out;
+  }
   function productModal(p) {
     var isNew = !p;
     p = p || { name: '', price: 0, category: '', stock_qty: '', description: '', image: '', in_stock: true, visible: true, on_sale: false, sale_price: null, seo_title: '', seo_description: '', brand: '' };
-    var opts = CATEGORIES.map(function (c) { return '<option value="' + esc(c.slug) + '"' + (c.slug === p.category ? ' selected' : '') + '>' + esc(c.name) + '</option>'; }).join('');
+    var opts = categoryOptions(p.category);
     var img = p.image ? (/^https?:/.test(p.image) ? p.image : '/' + p.image) : '';
     var TR = p.translations || {};
     var trHtml = [['en', 'English 🇬🇧'], ['it', 'Italiano 🇮🇹'], ['de', 'Deutsch 🇩🇪']].map(function (l) {
