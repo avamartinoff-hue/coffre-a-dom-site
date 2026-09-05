@@ -1063,11 +1063,17 @@
       }
       else { api('POST', 'admin-products', { action: 'bulk-set', slugs: slugs, fields: { visible: act === 'on' } }).then(function (r) { if (r && r.ok) { showFlash('Mis à jour.', true); loadProducts(); } }); }
     }
-    // Publier (déclenche un nouveau build → met en ligne les changements du back office)
+    // Mettre en ligne (déclenche un nouveau build → publie les changements du back office)
     if (e.target.closest('[data-admin-republish]')) {
-      // Pas de publication instantanée (maîtrise des crédits) : le site se régénère
-      // automatiquement à 12h et à minuit, uniquement s'il y a eu des modifications.
-      showFlash('✅ Tes changements sont bien enregistrés. Le site se met à jour automatiquement à 12h et à minuit.', true);
+      var btn = e.target.closest('[data-admin-republish]');
+      if (!confirm('Mettre le site en ligne maintenant avec les derniers changements ?\n\nLe site se met à jour dans 1 à 2 minutes.')) return;
+      var lbl = btn.innerHTML;
+      btn.disabled = true; btn.innerHTML = '⏳ Publication…';
+      api('POST', 'republish', {}).then(function (r) {
+        btn.disabled = false; btn.innerHTML = lbl;
+        if (r && r.ok) showFlash('✅ ' + (r.message || 'Mise en ligne lancée — le site sera à jour dans 1 à 2 minutes.'), true);
+        else showFlash('❌ ' + ((r && r.error) || 'La mise en ligne a échoué.'), false);
+      });
     }
     if (e.target.closest('[data-admin-logout]')) logout();
   });

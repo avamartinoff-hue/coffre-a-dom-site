@@ -26,11 +26,6 @@
 [functions."abandoned-reminder"]
   schedule = "17 * * * *"
 
-# Publication auto du site à 12h et minuit (heure suisse ≈ 10h/22h UTC).
-# Ne déclenche un build QUE s'il y a eu des modifs produits/catégories → 0 crédit les jours sans changement.
-[functions."scheduled-publish"]
-  schedule = "0 10,22 * * *"
-
 # ---------- En-têtes ----------
 [[headers]]
   for = "/*"
