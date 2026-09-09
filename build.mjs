@@ -50,6 +50,11 @@ const detectBrand = (name) => { for (const [re, b] of BRAND_RULES) if (re.test(n
 const brandOf = (p) => ((p.brand && p.brand.trim()) ? p.brand.trim() : (detectBrand(p.name) || 'Coffre à Dom'));
 // Quantité max qu'un client peut mettre au panier = le plus petit entre le stock dispo et la limite par commande.
 const buyLimit = (p) => { const a = []; if (p.stockQty != null && p.stockQty > 0) a.push(p.stockQty); if (p.maxPerOrder) a.push(p.maxPerOrder); return a.length ? Math.min(...a) : ''; };
+// « Rupture de stock » : produit en ligne (case « en stock » cochée) mais dont la quantité suivie est tombée à 0.
+// (La case décochée = produit retiré du site en amont, dans la requête Supabase.)
+const soldOut = (p) => !!p.inStock && p.stockQty != null && p.stockQty <= 0;
+// Achetable maintenant : en ligne, pas en rupture, et avec un prix.
+const canBuyP = (p) => !!p.inStock && !soldOut(p) && p.price > 0;
 
 /* ---------- i18n (FR défaut, EN, IT, DE) ---------- */
 const UI = readJSON('i18n/ui.json');
@@ -345,7 +350,7 @@ const isPreorder = (p) => /pr[ée]command|disponibilit[ée] pr[ée]vu/i.test(p.d
 const releaseDate = (p) => ((p.desc || '').match(/(\d{1,2}[.\/]\d{1,2}[.\/]\d{2,4})/) || [])[1] || null;
 function productBadges(p) {
   return (onPromo(p) ? `<span class="pcard__badge pcard__badge--sale">-${promoPct(p)}%</span>` : '') +
-    (!p.inStock ? `<span class="pcard__badge pcard__badge--out">${t('badge.out')}</span>` : '');
+    (soldOut(p) ? `<span class="pcard__badge pcard__badge--out">${t('badge.out')}</span>` : '');
 }
 function productCard(p) {
   const cat = catBySlug[p.category];
@@ -354,14 +359,14 @@ function productCard(p) {
   const media = p.image
     ? `<img class="pcard__img" src="${esc(imgDisplay(p.image, 440))}" alt="${esc(nm)}" loading="lazy" decoding="async" />`
     : `<span class="pcard__emoji">${icon}</span>`;
-  const canBuy = p.inStock && p.price > 0;
+  const canBuy = canBuyP(p);
   const action = canBuy
     ? `<button class="pcard__add" type="button" data-add data-slug="${esc(p.slug)}" data-name="${esc(nm)}" data-price="${effPrice(p)}" data-max="${buyLimit(p)}" aria-label="${esc(t('card.add_aria', { name: nm }))}">${t('card.add')}</button>`
     : (p.price > 0
       ? `<span class="pcard__soldout">${t('badge.out')}</span>`
       : `<span class="pcard__soldout">${t('card.on_request')}</span>`);
   const chain = catChain(p.category);
-  return `<a class="pcard" href="${prodUrl(p.slug)}" data-name="${esc(nm)}" data-cats="${chain.join(' ')}" data-stock="${p.inStock ? 1 : 0}" data-sale="${onPromo(p) ? 1 : 0}" data-price="${Number(effPrice(p)) || 0}" data-created="${p.createdAt ? (Date.parse(p.createdAt) || 0) : 0}">
+  return `<a class="pcard" href="${prodUrl(p.slug)}" data-name="${esc(nm)}" data-cats="${chain.join(' ')}" data-stock="${soldOut(p) ? 0 : 1}" data-sale="${onPromo(p) ? 1 : 0}" data-price="${Number(effPrice(p)) || 0}" data-created="${p.createdAt ? (Date.parse(p.createdAt) || 0) : 0}">
     <div class="pcard__media${p.image ? ' has-img' : ''}">${productBadges(p)}${media}</div>
     <div class="pcard__body">
       <h3 class="pcard__name">${esc(nm)}</h3>
@@ -421,8 +426,8 @@ function fillTokens(body) {
         filters.map((c) => opt(c.slug, cName(c), productsDeep(c.slug).length)).join('');
     })())
     .replaceAll('{{FEATURED_PRODUCTS}}', (() => {
-      const sale = products.filter((p) => p.onSale && p.inStock && p.price > 0);
-      const pick = (sale.length >= 8 ? sale : products.filter((p) => p.inStock && p.price > 0)).slice(0, 8);
+      const sale = products.filter((p) => p.onSale && canBuyP(p));
+      const pick = (sale.length >= 8 ? sale : products.filter((p) => canBuyP(p))).slice(0, 8);
       return pick.map(productCard).join('');
     })())
     .replaceAll('{{POST_LIST}}', blog.posts.map(postCard).join(''))
@@ -561,7 +566,7 @@ for (const p of products) {
   const relatedHtml = related.length
     ? `<section class="section"><div class="container"><h2 class="cat__subtitle">${t('prod.related')}</h2><div class="pgrid">${related.map(productCard).join('')}</div></div></section>`
     : '';
-  const canBuy = p.inStock && p.price > 0;
+  const canBuy = canBuyP(p);
   const jsonld = JSON.stringify({
     '@context': 'https://schema.org', '@type': 'Product', name: nm,
     description: dsc, category: cat ? cName(cat) : '',
@@ -570,7 +575,7 @@ for (const p of products) {
     offers: {
       '@type': 'Offer', priceCurrency: 'CHF',
       ...(p.price > 0 ? { price: Number(effPrice(p)).toFixed(2) } : {}),
-      availability: p.inStock ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
+      availability: (p.inStock && !soldOut(p)) ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
     },
   });
   const media = p.image
@@ -603,7 +608,7 @@ for (const p of products) {
           ${dsc ? `<p class="product__desc">${esc(dsc)}</p>` : ''}
           ${actions}
           <ul class="product__meta">
-            <li>${p.inStock ? t('prod.meta_instock') : (pre ? t('prod.meta_pre') : t('prod.meta_oncmd'))}</li>
+            <li>${soldOut(p) ? t('badge.out') : (p.inStock ? t('prod.meta_instock') : (pre ? t('prod.meta_pre') : t('prod.meta_oncmd')))}</li>
             <li>${t('prod.meta_ship')}</li>
             <li>${t('prod.meta_pay')}</li>
           </ul>
@@ -808,7 +813,7 @@ const feedItems = products
     const link = SITE + prodUrl(p.slug);
     const image = /^https?:/.test(p.image) ? p.image : SITE + '/' + p.image;
     // Pas de précommande : disponibilité = en stock / rupture uniquement
-    const availability = p.inStock ? 'in_stock' : 'out_of_stock';
+    const availability = (p.inStock && !soldOut(p)) ? 'in_stock' : 'out_of_stock';
     const availDate = '';
     const desc = (p.seoDesc && p.seoDesc.trim()) ? p.seoDesc.trim() : (p.desc || p.name);
     const type = catPath(p.category);

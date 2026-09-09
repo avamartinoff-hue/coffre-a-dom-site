@@ -280,7 +280,38 @@
       '<input class="ord-search" data-osearch placeholder="🔎 Nom, e-mail ou n° de commande…" value="' + esc(ORDER_Q) + '">' +
       '<button class="btn btn--gold btn--sm" data-onew>➕ Nouvelle commande</button>' +
       '<button class="btn btn--ghost btn--sm" data-oclients>👤 Clients</button>' +
+      '<button class="btn btn--ghost btn--sm" data-oexport title="Télécharger les commandes payées à expédier / remettre (CSV, ouvrable dans Excel)">⬇️ Export CSV (à livrer)</button>' +
       '</div>';
+  }
+  // Export CSV des commandes « à livrer » (payées, pas encore expédiées/remises)
+  function csvCell(v) { v = (v == null ? '' : String(v)); return /[";\n\r]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; }
+  function exportShipCSV() {
+    var rows = ORDERS.filter(function (o) { return orderStage(o) === 'ship'; });
+    if (!rows.length) { showFlash('Aucune commande à livrer pour le moment. 👍', false); return; }
+    var head = ['N° commande', 'Date', 'Client', 'Email', 'Téléphone', 'Mode', 'Adresse', 'NPA', 'Localité', 'Articles', 'Total CHF', 'Paiement', 'N° suivi', 'Note'];
+    var lines = [head.map(csvCell).join(';')];
+    rows.forEach(function (o) {
+      var a = o.shipping_address || {};
+      var poste = o.shipping_mode === 'poste';
+      var addr = poste ? [a.rue, a.numero].filter(Boolean).join(' ') : 'Retrait en boutique';
+      var items = (o.order_items || []).map(function (i) { return i.qty + '× ' + i.name; }).join(' ; ');
+      var pay = o.payment_method === 'twint' ? 'TWINT' : o.payment_method === 'sumup' ? 'SumUp' : (o.payment_method || '');
+      lines.push([
+        o.order_number, frDate(o.created_at), o.full_name, o.email || '', o.phone || '',
+        poste ? 'Poste' : 'Retrait', addr, poste ? (a.npa || '') : '', poste ? (a.localite || '') : '',
+        items, Number(o.total || 0).toFixed(2), pay, o.tracking_number || '', o.note || ''
+      ].map(csvCell).join(';'));
+    });
+    var csv = '﻿' + lines.join('\r\n'); // BOM = accents corrects dans Excel
+    var blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    var url = URL.createObjectURL(blob);
+    var d = new Date(), p = function (n) { return String(n).padStart(2, '0'); };
+    var stamp = d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate());
+    var link = document.createElement('a');
+    link.href = url; link.download = 'commandes-a-livrer_' + stamp + '.csv';
+    document.body.appendChild(link); link.click(); link.remove();
+    setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+    showFlash('✅ ' + rows.length + ' commande(s) à livrer exportée(s) en CSV.', true);
   }
   function bulkBar() {
     var n = Object.keys(SELECTED_ORDERS).length;
@@ -1026,6 +1057,7 @@
     if (olb) { var oL = ORDERS.filter(function (x) { return x.id === olb.getAttribute('data-olabel'); })[0]; if (oL) labelModal(oL); }
     if (e.target.closest('[data-onew]')) newOrderModal();
     if (e.target.closest('[data-oclients]')) clientsModal();
+    if (e.target.closest('[data-oexport]')) exportShipCSV();
     var ofl = e.target.closest('[data-ofilter]');
     if (ofl) { ORDER_FILTER = ofl.getAttribute('data-ofilter'); renderOrderBody(); }
     var osel = e.target.closest('[data-osel]');
