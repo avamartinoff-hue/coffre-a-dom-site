@@ -19,6 +19,11 @@ const T = {
     addr: 'Adresse de livraison', pay: 'Paiement', paid: 'Payé ✅',
     confirm_sub: (n) => `Confirmation de votre commande ${n} — Coffre à Dom`,
     confirm_intro: 'Nous avons bien reçu votre commande et votre paiement. Voici le récapitulatif :',
+    pay_h: 'Votre commande est prête 🗝️',
+    pay_sub: (n) => `Réglez votre commande ${n} — Coffre à Dom`,
+    pay_intro: 'Votre commande est enregistrée. Il ne reste plus qu\'à la régler en ligne, en toute sécurité (TWINT ou carte bancaire) :',
+    pay_cta: 'Payer ma commande',
+    pay_note: 'Votre commande est réservée. Elle sera confirmée automatiquement dès réception du paiement.',
     ship_sub_poste: (n) => `Votre commande ${n} a été expédiée 📦`,
     ship_sub_retrait: (n) => `Votre commande ${n} est prête au retrait 🏪`,
     ship_body_poste: 'Bonne nouvelle : votre commande vient d\'être expédiée par la Poste. Vous devriez la recevoir sous quelques jours ouvrables.',
@@ -43,6 +48,11 @@ const T = {
     addr: 'Delivery address', pay: 'Payment', paid: 'Paid ✅',
     confirm_sub: (n) => `Order confirmation ${n} — Coffre à Dom`,
     confirm_intro: 'We\'ve received your order and payment. Here\'s your summary:',
+    pay_h: 'Your order is ready 🗝️',
+    pay_sub: (n) => `Pay for your order ${n} — Coffre à Dom`,
+    pay_intro: 'Your order is saved. All that\'s left is to pay online, securely (TWINT or card):',
+    pay_cta: 'Pay for my order',
+    pay_note: 'Your order is reserved. It will be confirmed automatically as soon as we receive your payment.',
     ship_sub_poste: (n) => `Your order ${n} has shipped 📦`,
     ship_sub_retrait: (n) => `Your order ${n} is ready for pickup 🏪`,
     ship_body_poste: 'Good news: your order has just been shipped by post. You should receive it within a few business days.',
@@ -67,6 +77,11 @@ const T = {
     addr: 'Indirizzo di consegna', pay: 'Pagamento', paid: 'Pagato ✅',
     confirm_sub: (n) => `Conferma del tuo ordine ${n} — Coffre à Dom`,
     confirm_intro: 'Abbiamo ricevuto il tuo ordine e il pagamento. Ecco il riepilogo:',
+    pay_h: 'Il tuo ordine è pronto 🗝️',
+    pay_sub: (n) => `Paga il tuo ordine ${n} — Coffre à Dom`,
+    pay_intro: 'Il tuo ordine è registrato. Non resta che pagarlo online, in tutta sicurezza (TWINT o carta):',
+    pay_cta: 'Paga il mio ordine',
+    pay_note: 'Il tuo ordine è riservato. Sarà confermato automaticamente non appena riceviamo il pagamento.',
     ship_sub_poste: (n) => `Il tuo ordine ${n} è stato spedito 📦`,
     ship_sub_retrait: (n) => `Il tuo ordine ${n} è pronto per il ritiro 🏪`,
     ship_body_poste: 'Buone notizie: il tuo ordine è appena stato spedito per posta. Dovresti riceverlo entro pochi giorni lavorativi.',
@@ -91,6 +106,11 @@ const T = {
     addr: 'Lieferadresse', pay: 'Zahlung', paid: 'Bezahlt ✅',
     confirm_sub: (n) => `Bestellbestätigung ${n} — Coffre à Dom`,
     confirm_intro: 'Wir haben deine Bestellung und Zahlung erhalten. Hier die Übersicht:',
+    pay_h: 'Deine Bestellung ist bereit 🗝️',
+    pay_sub: (n) => `Bezahle deine Bestellung ${n} — Coffre à Dom`,
+    pay_intro: 'Deine Bestellung ist gespeichert. Jetzt musst du sie nur noch online bezahlen, ganz sicher (TWINT oder Karte):',
+    pay_cta: 'Meine Bestellung bezahlen',
+    pay_note: 'Deine Bestellung ist reserviert. Sie wird automatisch bestätigt, sobald wir deine Zahlung erhalten.',
     ship_sub_poste: (n) => `Deine Bestellung ${n} wurde versandt 📦`,
     ship_sub_retrait: (n) => `Deine Bestellung ${n} ist abholbereit 🏪`,
     ship_body_poste: 'Gute Nachrichten: Deine Bestellung wurde soeben per Post versandt. Du solltest sie in wenigen Werktagen erhalten.',
@@ -188,6 +208,17 @@ function orderConfirmation(order, items) {
   return { subject: t.confirm_sub(order.order_number), html: shell(inner, order.lang) };
 }
 
+// Lien de paiement (commande créée au back office, en attente de règlement en ligne)
+function paymentLink(order, items) {
+  const t = T[L(order.lang)];
+  const payUrl = `${SITE}/payer/?o=${encodeURIComponent(order.id)}`;
+  const inner = h(t.pay_h) + greeting(order, t) + p(t.pay_intro) +
+    p(`<b>${t.order} ${esc(order.order_number)}</b>`) +
+    itemsTable(items, t) + totals(order, t) + addrBlock(order, t) +
+    btn(payUrl, t.pay_cta) + p(t.pay_note) + p(t.help) + sign(t);
+  return { subject: t.pay_sub(order.order_number), html: shell(inner, order.lang) };
+}
+
 function orderShipped(order) {
   const t = T[L(order.lang)];
   const poste = order.shipping_mode === 'poste';
@@ -243,4 +274,4 @@ function newsletterWelcome(lang) {
   return { subject: t.news_sub, html: shell(inner, lang) };
 }
 
-module.exports = { orderConfirmation, orderShipped, orderCancelled, abandonedCart, merchantNewOrder, newsletterWelcome };
+module.exports = { orderConfirmation, paymentLink, orderShipped, orderCancelled, abandonedCart, merchantNewOrder, newsletterWelcome };

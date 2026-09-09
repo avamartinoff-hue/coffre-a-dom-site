@@ -31,6 +31,14 @@
       "noindex": true
     },
     {
+      "file": "payer.html",
+      "url": "/payer/",
+      "title": "Régler ma commande | Coffre à Dom",
+      "desc": "Payez votre commande Coffre à Dom en ligne (TWINT ou carte).",
+      "nav": "",
+      "noindex": true
+    },
+    {
       "file": "mon-compte.html",
       "url": "/mon-compte/",
       "title": "Mon compte | Coffre à Dom",

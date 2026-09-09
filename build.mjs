@@ -14,7 +14,7 @@ const OUT = join(__dirname, 'dist');
 
 // Versions de cache-busting : l'URL des assets change dès que leur contenu change.
 const ver = (f) => createHash('md5').update(readFileSync(join(__dirname, f))).digest('hex').slice(0, 8);
-const V = { css: ver('styles.css'), site: ver('site.js'), cart: ver('cart.js'), checkout: ver('checkout.js'), admin: ver('admin.js'), shop: ver('shop.js') };
+const V = { css: ver('styles.css'), site: ver('site.js'), cart: ver('cart.js'), checkout: ver('checkout.js'), admin: ver('admin.js'), shop: ver('shop.js'), pay: ver('pay.js') };
 
 /* ---------- utils ---------- */
 const read = (p) => readFileSync(join(__dirname, p), 'utf8');
@@ -318,6 +318,7 @@ ${body}
 ${footer}
 <script src="/cart.js?v=${V.cart}" defer></script>
 <script src="/checkout.js?v=${V.checkout}" defer></script>
+<script src="/pay.js?v=${V.pay}" defer></script>
 <script src="/site.js?v=${V.site}" defer></script>
 </body>
 </html>`;
@@ -732,7 +733,7 @@ for (const ev of events) {
 LANG = DEFAULT_LANG;
 
 /* 6) static assets */
-for (const f of ['styles.css', 'site.js', 'cart.js', 'checkout.js', 'admin.js', 'shop.js', 'robots.txt']) {
+for (const f of ['styles.css', 'site.js', 'cart.js', 'checkout.js', 'admin.js', 'shop.js', 'pay.js', 'robots.txt']) {
   if (existsSync(join(__dirname, f))) cpSync(join(__dirname, f), join(OUT, f));
 }
 cpSync(join(__dirname, 'data/catalog.json'), join(OUT, 'data/catalog.json'));

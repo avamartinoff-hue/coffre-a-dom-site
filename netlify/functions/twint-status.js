@@ -39,7 +39,7 @@ exports.handler = async (event) => {
 
     // Payé → commande payée.
     // (Le stock a déjà été réservé à la création de la commande — pas de décrément ici.)
-    await db.patch(`orders?id=eq.${order.id}`, { payment_status: 'paid', paid_at: new Date().toISOString() });
+    await db.patch(`orders?id=eq.${order.id}`, { payment_status: 'paid', paid_at: new Date().toISOString(), payment_method: 'twint' });
     const items = await db.get(`order_items?select=product_slug,qty,name,line_total&order_id=eq.${order.id}`);
     // E-mails + Brevo (une seule fois, jamais bloquant)
     if (!order.confirmation_sent_at) {

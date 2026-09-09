@@ -111,13 +111,27 @@ exports.handler = async (event) => {
         if (r && r.ok === false) return json(502, { ok: false, error: 'Envoi refusé.', detail: r.detail || r.error });
         return json(200, { ok: true, sentTo: order.email });
       }
+      if (action === 'send-payment-link') {
+        if (!orderId) return json(400, { ok: false, error: 'orderId requis.' });
+        const [order] = await db.get(`orders?select=*&id=eq.${encodeURIComponent(orderId)}`);
+        if (!order) return json(404, { ok: false, error: 'Commande introuvable.' });
+        if (order.payment_status === 'paid') return json(400, { ok: false, error: 'Commande déjà payée.' });
+        if (!order.email) return json(400, { ok: false, error: 'Cette commande n’a pas d’e-mail.' });
+        const items = await db.get(`order_items?select=name,qty,line_total&order_id=eq.${encodeURIComponent(orderId)}`);
+        const r = await notify.sendPaymentLink(order, items);
+        if (!r.ok) return json(502, { ok: false, error: 'Envoi refusé.', detail: r.detail });
+        const SITE = process.env.SITE_URL || 'https://coffreadom-ch.netlify.app';
+        return json(200, { ok: true, sentTo: order.email, payUrl: `${SITE}/payer/?o=${order.id}` });
+      }
       if (action === 'create-manual') {
         const b = JSON.parse(event.body || '{}');
         const c = b.customer || {};
         if (!c.nom || !c.nom.trim()) return json(400, { ok: false, error: 'Nom du client requis.' });
         const email = String(c.email || '').trim().toLowerCase();
-        const wantEmail = b.sendEmail !== false;
-        if (wantEmail && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return json(400, { ok: false, error: 'E-mail invalide (requis pour envoyer la confirmation).' });
+        // pay-link : commande en attente + envoi d'un lien de paiement en ligne au client.
+        const wantPayLink = b.status === 'pay-link';
+        const wantEmail = wantPayLink ? true : (b.sendEmail !== false);
+        if (wantEmail && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return json(400, { ok: false, error: wantPayLink ? 'E-mail requis pour envoyer le lien de paiement.' : 'E-mail invalide (requis pour envoyer la confirmation).' });
         const rawItems = Array.isArray(b.items) ? b.items : [];
         if (!rawItems.length) return json(400, { ok: false, error: 'Ajoutez au moins un article.' });
 
@@ -156,7 +170,7 @@ exports.handler = async (event) => {
         const mode = c.mode === 'poste' ? 'poste' : 'retrait';
         const shipping = mode === 'poste' ? Number(process.env.SHIPPING_POSTE_FEE || 8.9) : 0;
         const total = Math.max(0, Math.round((subtotal + shipping) * 100) / 100);
-        const status = b.status === 'pending' ? 'pending' : 'paid';
+        const status = (wantPayLink || b.status === 'pending') ? 'pending' : 'paid';
         const num = orderNumber();
 
         let order;
@@ -178,11 +192,16 @@ exports.handler = async (event) => {
           await releaseM();
           throw e;
         }
-        // Confirmation + notif commerçant + Brevo si payé et e-mail fourni
-        if (status === 'paid' && wantEmail) {
+        // pay-link → lien de paiement au client ; sinon confirmation si payé.
+        let payLinkSent = false;
+        if (wantPayLink) {
+          const r = await notify.sendPaymentLink({ ...order }, lines).catch(() => ({ ok: false }));
+          payLinkSent = !!(r && r.ok);
+        } else if (status === 'paid' && wantEmail) {
           await notify.afterPaid({ ...order }, lines).catch(() => {});
         }
-        return json(200, { ok: true, orderId: order.id, orderNumber: num, total, status });
+        const SITE = process.env.SITE_URL || 'https://coffreadom-ch.netlify.app';
+        return json(200, { ok: true, orderId: order.id, orderNumber: num, total, status, payUrl: `${SITE}/payer/?o=${order.id}`, payLinkSent });
       }
       if (action === 'set-fulfillment') {
         const { fulfilled } = JSON.parse(event.body || '{}');

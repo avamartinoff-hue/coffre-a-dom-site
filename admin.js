@@ -239,6 +239,7 @@
     // Actions contextuelles selon l'étape
     if (stage === 'validate') {
       a += '<button class="btn btn--gold btn--sm" data-oset="paid" data-id="' + o.id + '">✓ Marquer payée</button>';
+      if (o.email) a += '<button class="btn btn--ghost btn--sm" data-opaylink="' + o.id + '" title="Renvoyer au client un e-mail avec le lien de paiement en ligne">💳 Lien de paiement</button>';
       a += '<button class="btn btn--ghost btn--sm" data-oset="cancelled" data-id="' + o.id + '">Annuler</button>';
     } else if (stage === 'ship') {
       var lbl = o.shipping_mode === 'poste' ? '📦 Marquer expédiée' : '🏪 Marquer remise';
@@ -459,8 +460,9 @@
         '<div class="no-results" data-nresults hidden></div>' +
         '<div class="no-cart" data-ncart><p class="empty empty--sm">Aucun article. Cherchez un produit ci-dessus.</p></div>' +
       '</div>' +
-      '<div class="form__row"><label class="field"><span>Statut</span><select data-nf="status"><option value="paid">Payée</option><option value="pending">En attente de paiement</option></select></label>' +
-        '<label class="field field--check"><input type="checkbox" data-nf="sendEmail" checked><span>Envoyer l\'e-mail de confirmation</span></label></div>' +
+      '<div class="form__row"><label class="field"><span>Statut</span><select data-nf="status"><option value="pay-link">💳 Envoyer un lien de paiement au client</option><option value="paid">Déjà payée</option><option value="pending">En attente (sans e-mail)</option></select></label>' +
+        '<label class="field field--check"><input type="checkbox" data-nf="sendEmail" checked><span>Envoyer un e-mail au client</span></label></div>' +
+      '<p class="seo-hint" data-nstatus-hint>Le client recevra un e-mail avec un lien pour régler sa commande en ligne (TWINT ou carte).</p>' +
       '<p class="no-total">Total : <b data-ntotal>CHF 0.00</b> <small class="seo-hint" data-nship></small></p>' +
       '<div class="modal__foot"><span style="flex:1"></span><button class="btn btn--gold" data-ncreate>Créer la commande</button></div>' +
       '</div>';
@@ -492,6 +494,16 @@
     }
     ov.querySelector('[data-nf="mode"]').addEventListener('change', function (e) { ov.querySelector('[data-naddr]').hidden = e.target.value !== 'poste'; renderCart(); });
     ov.querySelector('[data-nsearch]').addEventListener('input', function (e) { renderResults(e.target.value); });
+    var statusSel = ov.querySelector('[data-nf="status"]'), statusHint = ov.querySelector('[data-nstatus-hint]');
+    function syncStatusHint() {
+      var v = statusSel.value;
+      statusHint.textContent = v === 'pay-link'
+        ? 'Le client recevra un e-mail avec un lien pour régler sa commande en ligne (TWINT ou carte). E-mail obligatoire.'
+        : v === 'paid'
+          ? 'Commande marquée payée : le client reçoit la confirmation (si « Envoyer un e-mail » est coché).'
+          : 'Commande en attente : aucun e-mail envoyé, à valider vous-même plus tard.';
+    }
+    statusSel.addEventListener('change', syncStatusHint); syncStatusHint();
     ov.addEventListener('click', function (e) {
       if (e.target === ov || e.target.closest('[data-mx]')) { ov.remove(); return; }
       var add = e.target.closest('[data-nadd]');
@@ -512,7 +524,7 @@
         if (!items.length) { showFlash('Ajoutez au moins un article.', false); return; }
         var btn = ov.querySelector('[data-ncreate]'); btn.disabled = true; btn.textContent = 'Création…';
         api('POST', 'admin-orders', { action: 'create-manual', customer: customer, items: items, status: g('status'), sendEmail: g('sendEmail') }).then(function (r) {
-          if (r && r.ok) { ov.remove(); showFlash('Commande ' + r.orderNumber + ' créée ✅', true); loadOrders(); }
+          if (r && r.ok) { ov.remove(); showFlash(r.payLinkSent ? ('Commande ' + r.orderNumber + ' créée · 💳 lien de paiement envoyé ✅') : ('Commande ' + r.orderNumber + ' créée ✅'), true); loadOrders(); }
           else { btn.disabled = false; btn.textContent = 'Créer la commande'; showFlash((r && r.error) || 'Erreur.', false); }
         }).catch(function () { btn.disabled = false; btn.textContent = 'Créer la commande'; });
         return;
@@ -1050,6 +1062,18 @@
         orr.disabled = false;
         showFlash(r && r.ok ? 'E-mail renvoyé ✅' : ((r && r.error) || 'Échec de l\'envoi.'), !!(r && r.ok));
       }).catch(function () { orr.disabled = false; showFlash('Échec de l\'envoi.', false); });
+    }
+    var opl = e.target.closest('[data-opaylink]');
+    if (opl) {
+      if (!confirm('Envoyer au client un e-mail avec le lien de paiement en ligne ?')) return;
+      opl.disabled = true;
+      api('POST', 'admin-orders', { action: 'send-payment-link', orderId: opl.getAttribute('data-opaylink') }).then(function (r) {
+        opl.disabled = false;
+        if (r && r.ok) {
+          showFlash('💳 Lien de paiement envoyé à ' + (r.sentTo || 'client') + ' ✅', true);
+          if (r.payUrl && navigator.clipboard) navigator.clipboard.writeText(r.payUrl).catch(function () {});
+        } else showFlash((r && r.error) || 'Échec de l\'envoi.', false);
+      }).catch(function () { opl.disabled = false; showFlash('Échec de l\'envoi.', false); });
     }
     var ocl = e.target.closest('[data-oclient]');
     if (ocl) clientModal(ocl.getAttribute('data-oclient'));

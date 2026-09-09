@@ -47,6 +47,15 @@ async function afterPaid(order, items) {
   await Promise.allSettled(tasks);
 }
 
+// Envoi du lien de paiement au client (commande créée au back office, à régler en ligne).
+async function sendPaymentLink(order, items) {
+  try {
+    const m = E.paymentLink(order, items);
+    const r = await brevo.sendEmail({ to: order.email, toName: order.full_name, subject: m.subject, html: m.html, tag: 'payment-link' });
+    return (r && r.ok === false) ? { ok: false, detail: r.detail || r.error } : { ok: true };
+  } catch (e) { return { ok: false, detail: String(e.message || e) }; }
+}
+
 async function afterShipped(order) {
   try {
     const m = E.orderShipped(order);
@@ -61,4 +70,4 @@ async function afterCancelled(order) {
   } catch (e) { /* ignore */ }
 }
 
-module.exports = { afterPaid, afterShipped, afterCancelled };
+module.exports = { afterPaid, sendPaymentLink, afterShipped, afterCancelled };
