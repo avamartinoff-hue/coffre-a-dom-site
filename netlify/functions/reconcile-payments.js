@@ -8,6 +8,7 @@
    ========================================================= */
 const twint = require('./_twint.js');
 const notify = require('./_notify.js');
+const { beat } = require('./_heartbeat.js');
 
 function sb() {
   const url = process.env.SUPABASE_URL, key = process.env.SUPABASE_SECRET_KEY;
@@ -60,6 +61,7 @@ async function sumupPaid(order) {
 
 exports.handler = async () => {
   if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SECRET_KEY) return { statusCode: 200, body: 'skip: no db' };
+  await beat('reconcile'); // battement de cœur : prouve que la tâche s'est bien exécutée
   const db = sb();
   const now = Date.now();
   const olderThan = new Date(now - 2 * 60 * 1000).toISOString();   // laisser 2 min au flux normal

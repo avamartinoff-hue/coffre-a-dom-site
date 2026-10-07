@@ -6,6 +6,7 @@
    ========================================================= */
 const brevo = require('./_brevo.js');
 const E = require('./_emails.js');
+const { beat } = require('./_heartbeat.js');
 
 function sb() {
   const url = process.env.SUPABASE_URL, key = process.env.SUPABASE_SECRET_KEY;
@@ -17,6 +18,7 @@ function sb() {
 }
 
 exports.handler = async () => {
+  await beat('abandoned'); // battement de cœur : prouve que la tâche s'est bien exécutée
   if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SECRET_KEY || !brevo.hasKey()) {
     return { statusCode: 200, body: 'skip' };
   }
