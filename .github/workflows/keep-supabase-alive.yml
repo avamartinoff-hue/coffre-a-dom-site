@@ -1,0 +1,33 @@
+name: Keep Supabase alive
+
+# Empêche la mise en pause automatique du projet Supabase (offre gratuite,
+# pause après ~7 jours d'inactivité). Une requête de lecture quotidienne
+# suffit comme « activité ». Tourne sur l'infra GitHub (indépendante de
+# Netlify et de Supabase) → fiable même si le site n'est pas redéployé.
+#
+# La clé ci-dessous est la clé PUBLIQUE "publishable" (anon), déjà présente
+# publiquement dans netlify.toml et protégée par les règles RLS de Supabase.
+# Aucun secret sensible ici.
+
+on:
+  schedule:
+    - cron: '0 6 * * *'      # tous les jours à 06:00 UTC
+  workflow_dispatch:          # permet aussi un déclenchement manuel
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Supabase (REST, lecture légère)
+        run: |
+          code=$(curl -sS -o /dev/null -w "%{http_code}" \
+            "https://bjdmeeqzzfxroicxrsna.supabase.co/rest/v1/products?select=slug&limit=1" \
+            -H "apikey: sb_publishable_Niou6fd3VZH_qGTAJRjBeQ_u_Zm8q-z" \
+            -H "Authorization: Bearer sb_publishable_Niou6fd3VZH_qGTAJRjBeQ_u_Zm8q-z")
+          echo "Supabase a répondu : HTTP $code"
+          # On considère l'activité enregistrée tant que la base répond (2xx/4xx).
+          # Un 5xx/000 (base injoignable) fait échouer le job pour être visible.
+          if [ "$code" -ge 500 ] || [ "$code" -eq 000 ]; then
+            echo "::error::Supabase injoignable (HTTP $code)"
+            exit 1
+          fi
