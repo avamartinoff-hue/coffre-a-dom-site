@@ -733,7 +733,7 @@ for (const ev of events) {
 LANG = DEFAULT_LANG;
 
 /* 6) static assets */
-for (const f of ['styles.css', 'site.js', 'cart.js', 'checkout.js', 'admin.js', 'shop.js', 'pay.js', 'robots.txt']) {
+for (const f of ['styles.css', 'site.js', 'cart.js', 'checkout.js', 'admin.js', 'shop.js', 'pay.js', 'robots.txt', 'maintenance.html']) {
   if (existsSync(join(__dirname, f))) cpSync(join(__dirname, f), join(OUT, f));
 }
 cpSync(join(__dirname, 'data/catalog.json'), join(OUT, 'data/catalog.json'));
