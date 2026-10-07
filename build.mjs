@@ -167,9 +167,17 @@ async function loadCatalog() {
           products: prods.map((p) => ({ slug: p.slug, name: p.name, desc: p.description || '', price: Number(p.price), salePrice: (p.sale_price == null ? null : Number(p.sale_price)), category: p.category, image: p.image, onSale: !!p.on_sale, inStock: !!p.in_stock, seoTitle: p.seo_title || '', seoDesc: p.seo_description || '', brand: p.brand || '', translations: p.translations || null, createdAt: p.created_at || '', maxPerOrder: p.max_per_order || null, stockQty: (p.stock_qty == null ? null : Number(p.stock_qty)) })),
         };
       }
-      console.warn('⚠️  Supabase configuré mais réponse inattendue, repli sur data/catalog.json');
+      // Réponse vide/inattendue : on ne publie PAS un catalogue vide.
+      throw new Error(`réponse inattendue (catégories=${Array.isArray(cats) ? cats.length : '?'}, produits=${Array.isArray(prods) ? prods.length : '?'})`);
     } catch (e) {
-      console.warn(`⚠️  Supabase indisponible (${e.message}), repli sur data/catalog.json`);
+      // GARDE-FOU : Supabase est configuré mais injoignable. On ARRÊTE le build
+      // au lieu de republier le vieux data/catalog.json (ce qui faisait régresser
+      // le site vers une ancienne version). La dernière bonne version déployée
+      // reste donc en ligne, et Netlify signale l'échec du build.
+      console.error(`\n❌  Supabase configuré mais indisponible : ${e.message}`);
+      console.error('    Build interrompu pour NE PAS publier un catalogue périmé.');
+      console.error('    La dernière version en ligne est conservée. Vérifiez Supabase, puis relancez la publication.\n');
+      throw new Error('BUILD ANNULÉ : Supabase injoignable (publication d’un catalogue périmé évitée).');
     }
   } else {
     console.log('↪ Catalogue local (data/catalog.json), Supabase non configuré');

@@ -3,6 +3,30 @@
    ========================================================= */
 (function () {
   'use strict';
+
+  /* ---- Auto-maintenance : bascule le visiteur vers la page de maintenance
+     si la base est confirmée hors service. Tolérant (double vérification à
+     2,5 s d'intervalle) pour éviter les faux positifs sur un simple hoquet.
+     Ne tourne ni sur la page de maintenance, ni sur le back office. ---- */
+  (function () {
+    var p = location.pathname;
+    if (/maintenance\.html$/.test(p) || /\/admin(\/|$)/.test(p)) return;
+    try {
+      var last = sessionStorage.getItem('cad_health_ok');
+      if (last && (Date.now() - parseInt(last, 10)) < 120000) return; // vérifié récemment : OK
+    } catch (e) {}
+    function check(cb) {
+      fetch('/.netlify/functions/health', { cache: 'no-store' })
+        .then(function (r) { return r.json(); })
+        .then(function (d) { cb(!!(d && d.ok === false)); }) // true = base confirmée down
+        .catch(function () { cb(false); });                  // erreur réseau du client : on ne touche à rien
+    }
+    check(function (down1) {
+      if (!down1) { try { sessionStorage.setItem('cad_health_ok', String(Date.now())); } catch (e) {} return; }
+      setTimeout(function () { check(function (down2) { if (down2) location.replace('/maintenance.html'); }); }, 2500);
+    });
+  })();
+
   var mq = window.matchMedia('(max-width: 900px)');
 
   /* ---- Nav shadow on scroll ---- */

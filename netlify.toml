@@ -26,22 +26,6 @@
 [functions."abandoned-reminder"]
   schedule = "17 * * * *"
 
-# ========================================================================
-# MODE MAINTENANCE  (⚠️ tout le site renvoie la page maintenance.html)
-# Pour RÉACTIVER le site : supprimer ce bloc entier puis redéployer.
-# Les fonctions (/.netlify/*) restent accessibles.
-# ========================================================================
-[[redirects]]
-  from = "/.netlify/*"
-  to = "/.netlify/:splat"
-  status = 200
-[[redirects]]
-  from = "/*"
-  to = "/maintenance.html"
-  status = 503
-  force = true
-# ======================= FIN MODE MAINTENANCE ===========================
-
 # ---------- En-têtes ----------
 [[headers]]
   for = "/*"
