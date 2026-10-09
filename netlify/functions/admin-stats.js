@@ -22,7 +22,7 @@ exports.handler = async (event) => {
   try {
     let orders;
     try {
-      orders = await db.get('orders?select=total,payment_status,payment_method,created_at,paid_at,fulfilled_at&order=created_at.desc&limit=5000');
+      orders = await db.get('orders?select=total,payment_status,payment_method,shipping_mode,created_at,paid_at,fulfilled_at&order=created_at.desc&limit=5000');
     } catch (e) {
       orders = await db.get('orders?select=total,payment_status,created_at,paid_at&order=created_at.desc&limit=5000');
     }
@@ -36,6 +36,8 @@ exports.handler = async (event) => {
     let revenue = 0, revenuePeriod = 0, ordersPeriod = 0, paidOrdersPeriod = 0;
     let revenuePrev = 0, paidOrdersPrev = 0, ordersPrev = 0; // période PRÉCÉDENTE (les N jours d'avant)
     const payMethods = { twint: 0, sumup: 0, other: 0 };      // répartition des ventes payées (période)
+    // Répartition par canal (ventes payées de la période) : boutique (comptoir) · retrait (en ligne retiré) · poste (en ligne expédié)
+    const channels = { boutique: { orders: 0, revenue: 0 }, retrait: { orders: 0, revenue: 0 }, poste: { orders: 0, revenue: 0 } };
     let toValidate = 0, toShip = 0; // à valider (paiement en attente) · à livrer (payée, non expédiée)
     const today = dayStr(new Date());
     let revenueToday = 0, ordersToday = 0;
@@ -57,6 +59,8 @@ exports.handler = async (event) => {
           days[d] += t; revenuePeriod += t; paidOrdersPeriod++;
           const m = o.payment_method === 'twint' ? 'twint' : o.payment_method === 'sumup' ? 'sumup' : 'other';
           payMethods[m]++;
+          const ch = o.shipping_mode === 'boutique' ? 'boutique' : o.shipping_mode === 'poste' ? 'poste' : 'retrait';
+          channels[ch].orders++; channels[ch].revenue += t;
         }
         if (d in prevDays) { revenuePrev += t; paidOrdersPrev++; }
         if (d === today) revenueToday += t;
@@ -110,6 +114,11 @@ exports.handler = async (event) => {
       paidOrdersPrev,
       ordersPrev,
       payMethods,
+      channels: {
+        boutique: { orders: channels.boutique.orders, revenue: Math.round(channels.boutique.revenue * 100) / 100 },
+        retrait: { orders: channels.retrait.orders, revenue: Math.round(channels.retrait.revenue * 100) / 100 },
+        poste: { orders: channels.poste.orders, revenue: Math.round(channels.poste.revenue * 100) / 100 },
+      },
       byStatus,
       toValidate,
       toShip,

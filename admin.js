@@ -22,6 +22,8 @@
     var full = [l1, l2].filter(Boolean).join(', ');
     return full ? '<br><span class="ord__addr">' + esc(full) + '</span>' : '';
   };
+  // Libellé du canal de vente (boutique = vente comptoir, retrait = en ligne retiré, poste = en ligne expédié)
+  var modeLabel = function (m) { return m === 'boutique' ? '🏪 Boutique' : m === 'poste' ? '📦 Poste' : '🛍️ Retrait'; };
   var pwd = function () { try { return sessionStorage.getItem(KEY) || ''; } catch (e) { return ''; } };
   var frDate = function (iso) { try { return new Date(iso).toLocaleString('fr-CH', { day: '2-digit', month: '2-digit', year: '2-digit', hour: '2-digit', minute: '2-digit' }); } catch (e) { return iso; } };
 
@@ -107,6 +109,26 @@
     }
     return '<div class="dash-box"><h3>Répartition des paiements <em class="dash-box__meta">' + lbl + '</em></h3>' + body + '</div>';
   }
+  // Répartition des ventes payées par canal : boutique (comptoir) · retrait (en ligne retiré) · poste (en ligne expédié)
+  function channelSplit(ch, lbl) {
+    ch = ch || {};
+    var rows = [
+      { name: '🏪 Boutique (comptoir)', d: ch.boutique },
+      { name: '🛍️ En ligne, retiré magasin', d: ch.retrait },
+      { name: '📦 En ligne, expédié', d: ch.poste },
+    ];
+    var tot = rows.reduce(function (s, r) { return s + ((r.d && r.d.orders) || 0); }, 0);
+    var totRev = rows.reduce(function (s, r) { return s + ((r.d && r.d.revenue) || 0); }, 0);
+    var body;
+    if (!tot) { body = '<p class="empty">Aucune vente payée sur la période.</p>'; }
+    else {
+      body = '<ul class="rank">' + rows.map(function (r) {
+        var o = (r.d && r.d.orders) || 0, rev = (r.d && r.d.revenue) || 0, pc = Math.round(o / tot * 100);
+        return '<li><span>' + r.name + '</span><b>' + chf(rev) + '</b><small>' + o + ' vente' + (o > 1 ? 's' : '') + ' · ' + pc + ' %</small></li>';
+      }).join('') + '</ul>';
+    }
+    return '<div class="dash-box"><h3>Ventes par canal <em class="dash-box__meta">' + lbl + ' · ' + chf(totRev) + '</em></h3>' + body + '</div>';
+  }
   var STATS_PERIOD = 30;
   var PERIOD_LABELS = { 1: 'Aujourd\'hui', 7: '7 jours', 30: '30 jours', 90: '90 jours' };
   function periodSelector() {
@@ -156,7 +178,7 @@
           '<div class="dash-box"><h3>Top produits (payés)</h3>' + (d.topProducts.length ? '<ul class="rank">' + d.topProducts.map(function (p) { return '<li><span>' + esc(p.name) + '</span><b>' + chf(p.revenue) + '</b><small>' + p.qty + ' vendus</small></li>'; }).join('') + '</ul>' : '<p class="empty">Aucune vente payée pour l\'instant.</p>') + '</div>' +
           (v ? '<div class="dash-box"><h3>Pages les plus vues</h3><ul class="rank">' + v.topPaths.map(function (p) { return '<li><span>' + esc(p.path) + '</span><b>' + p.n + '</b></li>'; }).join('') + '</ul></div>' : '<div class="dash-box"><h3>Visites</h3><p class="empty">Le compteur de visites s\'active après avoir créé la table page_views (voir supabase/analytics.sql).</p></div>') +
         '</div>' +
-        '<div class="dash-grid dash-grid--full">' + paySplit(d.payMethods, lbl) + '</div>';
+        '<div class="dash-grid">' + channelSplit(d.channels, lbl) + paySplit(d.payMethods, lbl) + '</div>';
     }).catch(function () {});
   }
   function statCard(label, value, sub, mod, goto, trend) {
@@ -255,13 +277,13 @@
     if (o.email) a += '<button class="btn btn--ghost btn--sm" data-oresend="' + o.id + '">📧 Renvoyer</button>';
     if (o.shipping_mode === 'poste' && o.shipping_address) a += '<button class="btn btn--ghost btn--sm" data-olabel="' + o.id + '">🏷️ Étiquette' + (o.label_generated_at ? ' ↻' : '') + '</button>';
     var badge = STATUS[o.payment_status] || o.payment_status;
-    if (o.fulfilled_at) badge += ' · ' + (o.shipping_mode === 'poste' ? '📦 Expédiée' : '🏪 Remise');
+    if (o.fulfilled_at) badge += ' · ' + (o.shipping_mode === 'poste' ? '📦 Expédiée' : o.shipping_mode === 'boutique' ? '🏪 Vendue' : '🏪 Remise');
     return '<article class="ord ord--' + o.payment_status + (o.fulfilled_at ? ' ord--fulfilled' : '') + '">' +
       '<div class="ord__head"><label class="ord__sel" title="Sélectionner"><input type="checkbox" data-osel="' + o.id + '"' + (SELECTED_ORDERS[o.id] ? ' checked' : '') + '></label><b>' + esc(o.order_number) + '</b><span class="ord__status">' + badge + '</span></div>' +
       '<div class="ord__grid">' +
         '<div><span class="ord__k">Client</span>' + (o.email ? '<button class="linkbtn" data-oclient="' + esc(o.email) + '">' + esc(o.full_name) + '</button>' : esc(o.full_name)) + '<br>' + esc(o.email) + (o.phone ? '<br>' + esc(o.phone) : '') + '</div>' +
         '<div><span class="ord__k">Articles</span>' + (items || '–') + '</div>' +
-        '<div><span class="ord__k">Livraison</span>' + (o.shipping_mode === 'poste' ? '📦 Poste' : '🏪 Retrait') + fmtAddr(o.shipping_address) + (o.tracking_number ? '<br><span class="ord__k">Suivi</span>' + esc(o.tracking_number) : '') + '<br><span class="ord__k">Paiement</span>' + (o.payment_method === 'twint' ? '📱 TWINT' : '💳 SumUp') + '</div>' +
+        '<div><span class="ord__k">Canal</span>' + modeLabel(o.shipping_mode) + fmtAddr(o.shipping_address) + (o.tracking_number ? '<br><span class="ord__k">Suivi</span>' + esc(o.tracking_number) : '') + '<br><span class="ord__k">Paiement</span>' + (o.payment_method === 'twint' ? '📱 TWINT' : '💳 SumUp') + '</div>' +
         '<div><span class="ord__k">Total</span><b>' + chf(o.total) + '</b><br><span class="ord__date">' + frDate(o.created_at) + '</span></div>' +
       '</div>' + (o.note ? '<p class="ord__note">📝 ' + esc(o.note) + '</p>' : '') +
       '<div class="ord__actions">' + a + '</div></article>';
@@ -299,7 +321,7 @@
       var pay = o.payment_method === 'twint' ? 'TWINT' : o.payment_method === 'sumup' ? 'SumUp' : (o.payment_method || '');
       lines.push([
         o.order_number, frDate(o.created_at), o.full_name, o.email || '', o.phone || '',
-        poste ? 'Poste' : 'Retrait', addr, poste ? (a.npa || '') : '', poste ? (a.localite || '') : '',
+        o.shipping_mode === 'boutique' ? 'Boutique' : poste ? 'Poste' : 'Retrait', addr, poste ? (a.npa || '') : '', poste ? (a.localite || '') : '',
         items, Number(o.total || 0).toFixed(2), pay, o.tracking_number || '', o.note || ''
       ].map(csvCell).join(';'));
     });
@@ -450,15 +472,16 @@
       '<label class="field"><span>Nom du client *</span><input data-nf="nom" placeholder="Prénom Nom"></label>' +
       '<div class="form__row"><label class="field"><span>E-mail</span><input data-nf="email" type="email" placeholder="client@exemple.ch"></label>' +
         '<label class="field"><span>Téléphone</span><input data-nf="telephone" placeholder="+41…"></label></div>' +
-      '<label class="field"><span>Remise / retrait</span><select data-nf="mode"><option value="retrait">Retrait en boutique</option><option value="poste">Livraison postale</option></select></label>' +
+      '<label class="field"><span>Canal de vente</span><select data-nf="mode"><option value="boutique">🏪 Direct boutique (vente en magasin)</option><option value="retrait">🛍️ Retrait en magasin (commande en ligne)</option><option value="poste">📦 Livraison postale (expédition)</option></select></label>' +
       '<div data-naddr hidden>' +
         '<div class="form__row"><label class="field"><span>Rue</span><input data-na="rue"></label><label class="field"><span>N°</span><input data-na="numero"></label></div>' +
         '<div class="form__row"><label class="field"><span>NPA</span><input data-na="npa" inputmode="numeric" maxlength="4"></label><label class="field"><span>Localité</span><input data-na="localite"></label></div>' +
       '</div>' +
       '<div class="no-picker"><span class="ord__k">Articles</span>' +
-        '<input class="ord-search" data-nsearch placeholder="🔎 Rechercher un produit…">' +
+        '<input class="ord-search" data-nsearch placeholder="🔎 Rechercher un produit du catalogue…">' +
         '<div class="no-results" data-nresults hidden></div>' +
-        '<div class="no-cart" data-ncart><p class="empty empty--sm">Aucun article. Cherchez un produit ci-dessus.</p></div>' +
+        '<button type="button" class="btn btn--ghost btn--sm no-manual-btn" data-nmanual>➕ Article manuel (hors catalogue)</button>' +
+        '<div class="no-cart" data-ncart><p class="empty empty--sm">Aucun article. Cherchez un produit ou ajoutez un article manuel.</p></div>' +
       '</div>' +
       '<div class="form__row"><label class="field"><span>Statut</span><select data-nf="status"><option value="pay-link">💳 Envoyer un lien de paiement au client</option><option value="paid">Déjà payée</option><option value="pending">En attente (sans e-mail)</option></select></label>' +
         '<label class="field field--check"><input type="checkbox" data-nf="sendEmail" checked><span>Envoyer un e-mail au client</span></label></div>' +
@@ -468,20 +491,33 @@
       '</div>';
     document.body.appendChild(ov);
     var results = ov.querySelector('[data-nresults]'), cartEl = ov.querySelector('[data-ncart]');
+    var manual = []; // articles hors catalogue : [{ name, price, qty }]
     function shipFee() { return ov.querySelector('[data-nf="mode"]').value === 'poste' ? Number(SHIP_POSTE) : 0; }
-    function subtotal() { return Object.keys(picked).reduce(function (s, k) { return s + picked[k].price * picked[k].qty; }, 0); }
+    function subtotal() {
+      var s = Object.keys(picked).reduce(function (a, k) { return a + picked[k].price * picked[k].qty; }, 0);
+      return s + manual.reduce(function (a, m) { return a + (Number(m.price) || 0) * (Number(m.qty) || 0); }, 0);
+    }
+    function updateTotal() {
+      ov.querySelector('[data-ntotal]').textContent = chf(subtotal() + shipFee());
+      ov.querySelector('[data-nship]').textContent = shipFee() > 0 ? '(dont ' + chf(shipFee()) + ' de port)' : '';
+    }
     function renderCart() {
-      var keys = Object.keys(picked);
-      cartEl.innerHTML = keys.length ? keys.map(function (k) {
+      var catHtml = Object.keys(picked).map(function (k) {
         var it = picked[k];
         return '<div class="no-line"><span class="no-line__n">' + esc(it.name) + '</span>' +
           '<span class="no-line__p">' + chf(it.price) + '</span>' +
           '<input class="no-qty" type="number" min="1" max="99" value="' + it.qty + '" data-nqty="' + esc(k) + '">' +
           '<button class="linkbtn" data-ndel="' + esc(k) + '">✕</button></div>';
-      }).join('') : '<p class="empty empty--sm">Aucun article. Cherchez un produit ci-dessus.</p>';
-      var st = subtotal(), tot = st + shipFee();
-      ov.querySelector('[data-ntotal]').textContent = chf(tot);
-      ov.querySelector('[data-nship]').textContent = shipFee() > 0 ? '(dont ' + chf(shipFee()) + ' de port)' : '';
+      }).join('');
+      var manHtml = manual.map(function (m, i) {
+        return '<div class="no-line no-line--manual">' +
+          '<input class="no-mname" type="text" placeholder="Nom de l\'article" value="' + esc(m.name || '') + '" data-nmname="' + i + '">' +
+          '<input class="no-mprice" type="number" min="0" step="0.05" placeholder="Prix" value="' + (m.price === '' || m.price == null ? '' : m.price) + '" data-nmprice="' + i + '">' +
+          '<input class="no-qty" type="number" min="1" max="99" value="' + (m.qty || 1) + '" data-nmqty="' + i + '">' +
+          '<button class="linkbtn" data-nmdel="' + i + '">✕</button></div>';
+      }).join('');
+      cartEl.innerHTML = (catHtml + manHtml) || '<p class="empty empty--sm">Aucun article. Cherchez un produit ou ajoutez un article manuel.</p>';
+      updateTotal();
     }
     function renderResults(q) {
       q = (q || '').trim().toLowerCase();
@@ -492,17 +528,33 @@
         return '<button class="no-res" data-nadd="' + esc(p.slug) + '"><span>' + esc(p.name) + '</span><b>' + chf(p.price) + '</b></button>';
       }).join('') : '<p class="empty empty--sm">Aucun produit.</p>';
     }
-    ov.querySelector('[data-nf="mode"]').addEventListener('change', function (e) { ov.querySelector('[data-naddr]').hidden = e.target.value !== 'poste'; renderCart(); });
-    ov.querySelector('[data-nsearch]').addEventListener('input', function (e) { renderResults(e.target.value); });
+    var modeSel = ov.querySelector('[data-nf="mode"]');
     var statusSel = ov.querySelector('[data-nf="status"]'), statusHint = ov.querySelector('[data-nstatus-hint]');
     function syncStatusHint() {
-      var v = statusSel.value;
+      var v = statusSel.value, m = modeSel.value;
       statusHint.textContent = v === 'pay-link'
         ? 'Le client recevra un e-mail avec un lien pour régler sa commande en ligne (TWINT ou carte). E-mail obligatoire.'
         : v === 'paid'
-          ? 'Commande marquée payée : le client reçoit la confirmation (si « Envoyer un e-mail » est coché).'
+          ? (m === 'boutique' ? 'Vente payée au comptoir : encaissée et remise au client immédiatement.' : 'Commande marquée payée : le client reçoit la confirmation (si « Envoyer un e-mail » est coché).')
           : 'Commande en attente : aucun e-mail envoyé, à valider vous-même plus tard.';
     }
+    modeSel.addEventListener('change', function (e) {
+      var m = e.target.value;
+      ov.querySelector('[data-naddr]').hidden = m !== 'poste';
+      statusSel.value = (m === 'boutique') ? 'paid' : 'pay-link'; // comptoir = payé sur place ; en ligne = lien de paiement
+      syncStatusHint();
+      renderCart();
+    });
+    ov.querySelector('[data-nsearch]').addEventListener('input', function (e) { renderResults(e.target.value); });
+    // Édition en direct des quantités et des articles manuels (sans re-render, pour garder le focus)
+    ov.addEventListener('input', function (e) {
+      var q = e.target.closest('[data-nqty]');
+      if (q) { var k = q.getAttribute('data-nqty'); if (picked[k]) { picked[k].qty = Math.max(1, Math.min(99, parseInt(q.value, 10) || 1)); updateTotal(); } return; }
+      var mn = e.target.closest('[data-nmname]'); if (mn) { manual[+mn.getAttribute('data-nmname')].name = mn.value; return; }
+      var mp = e.target.closest('[data-nmprice]'); if (mp) { manual[+mp.getAttribute('data-nmprice')].price = mp.value; updateTotal(); return; }
+      var mq = e.target.closest('[data-nmqty]'); if (mq) { manual[+mq.getAttribute('data-nmqty')].qty = Math.max(1, Math.min(99, parseInt(mq.value, 10) || 1)); updateTotal(); return; }
+    });
+    statusSel.value = (modeSel.value === 'boutique') ? 'paid' : 'pay-link'; // état initial cohérent avec le canal par défaut
     statusSel.addEventListener('change', syncStatusHint); syncStatusHint();
     ov.addEventListener('click', function (e) {
       if (e.target === ov || e.target.closest('[data-mx]')) { ov.remove(); return; }
@@ -514,13 +566,24 @@
       }
       var del = e.target.closest('[data-ndel]');
       if (del) { delete picked[del.getAttribute('data-ndel')]; renderCart(); return; }
+      if (e.target.closest('[data-nmanual]')) {
+        manual.push({ name: '', price: '', qty: 1 }); renderCart();
+        var inp = cartEl.querySelector('.no-line--manual:last-child .no-mname'); if (inp) inp.focus();
+        return;
+      }
+      var mdel = e.target.closest('[data-nmdel]');
+      if (mdel) { manual.splice(+mdel.getAttribute('data-nmdel'), 1); renderCart(); return; }
       if (e.target.closest('[data-ncreate]')) {
         var g = function (n) { var el = ov.querySelector('[data-nf="' + n + '"]'); return el ? (el.type === 'checkbox' ? el.checked : el.value.trim()) : ''; };
         var mode = g('mode');
         var customer = { nom: g('nom'), email: g('email'), telephone: g('telephone'), mode: mode };
         if (mode === 'poste') { var ga = function (n) { var el = ov.querySelector('[data-na="' + n + '"]'); return el ? el.value.trim() : ''; }; customer.rue = ga('rue'); customer.numero = ga('numero'); customer.npa = ga('npa'); customer.localite = ga('localite'); }
         var items = Object.keys(picked).map(function (k) { return { slug: k, qty: picked[k].qty }; });
-        if (!customer.nom) { showFlash('Nom du client requis.', false); return; }
+        manual.forEach(function (m) {
+          var nm = (m.name || '').trim();
+          if (nm) items.push({ name: nm, price: Math.max(0, Number(m.price) || 0), qty: Math.max(1, parseInt(m.qty, 10) || 1) });
+        });
+        if (!customer.nom && mode !== 'boutique') { showFlash('Nom du client requis.', false); return; }
         if (!items.length) { showFlash('Ajoutez au moins un article.', false); return; }
         var btn = ov.querySelector('[data-ncreate]'); btn.disabled = true; btn.textContent = 'Création…';
         api('POST', 'admin-orders', { action: 'create-manual', customer: customer, items: items, status: g('status'), sendEmail: g('sendEmail') }).then(function (r) {
@@ -545,7 +608,7 @@
         '<label class="field"><span>Nom du client</span><input data-of="full_name" value="' + esc(o.full_name || '') + '"></label>' +
         '<div class="form__row"><label class="field"><span>E-mail</span><input data-of="email" type="email" value="' + esc(o.email || '') + '"></label>' +
           '<label class="field"><span>Téléphone</span><input data-of="phone" value="' + esc(o.phone || '') + '"></label></div>' +
-        '<label class="field"><span>Livraison</span><select data-of="shipping_mode"><option value="retrait"' + (!isPoste ? ' selected' : '') + '>Retrait en boutique</option><option value="poste"' + (isPoste ? ' selected' : '') + '>Livraison postale</option></select></label>' +
+        '<label class="field"><span>Canal</span><select data-of="shipping_mode"><option value="boutique"' + (o.shipping_mode === 'boutique' ? ' selected' : '') + '>🏪 Direct boutique</option><option value="retrait"' + (o.shipping_mode === 'retrait' || !o.shipping_mode ? ' selected' : '') + '>🛍️ Retrait en magasin</option><option value="poste"' + (isPoste ? ' selected' : '') + '>📦 Livraison postale</option></select></label>' +
         '<div data-oaddr' + (isPoste ? '' : ' hidden') + '>' +
           '<div class="form__row"><label class="field"><span>Rue</span><input data-oa="rue" value="' + esc(a.rue || '') + '"></label>' +
             '<label class="field"><span>N°</span><input data-oa="numero" value="' + esc(a.numero || '') + '"></label></div>' +

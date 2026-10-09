@@ -126,23 +126,37 @@ exports.handler = async (event) => {
       if (action === 'create-manual') {
         const b = JSON.parse(event.body || '{}');
         const c = b.customer || {};
-        if (!c.nom || !c.nom.trim()) return json(400, { ok: false, error: 'Nom du client requis.' });
+        // Canal : boutique (vente comptoir) | retrait (en ligne, retiré) | poste (en ligne, expédié).
+        const mode = ['boutique', 'poste', 'retrait'].includes(c.mode) ? c.mode : 'retrait';
+        // Nom : requis en ligne ; au comptoir on tolère un nom vide (vente anonyme).
+        let fullName = String(c.nom || '').trim();
+        if (!fullName) {
+          if (mode === 'boutique') fullName = 'Vente comptoir';
+          else return json(400, { ok: false, error: 'Nom du client requis.' });
+        }
         const email = String(c.email || '').trim().toLowerCase();
-        // pay-link : commande en attente + envoi d'un lien de paiement en ligne au client.
+        const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+        // pay-link : commande en attente + lien de paiement en ligne (e-mail obligatoire).
         const wantPayLink = b.status === 'pay-link';
-        const wantEmail = wantPayLink ? true : (b.sendEmail !== false);
-        if (wantEmail && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return json(400, { ok: false, error: wantPayLink ? 'E-mail requis pour envoyer le lien de paiement.' : 'E-mail invalide (requis pour envoyer la confirmation).' });
+        if (wantPayLink && !emailValid) return json(400, { ok: false, error: 'E-mail requis pour envoyer le lien de paiement.' });
+        // Sinon : e-mail envoyé seulement si demandé ET valide (pas d'erreur au comptoir sans e-mail).
+        const wantEmail = wantPayLink ? true : (b.sendEmail !== false && emailValid);
+
         const rawItems = Array.isArray(b.items) ? b.items : [];
         if (!rawItems.length) return json(400, { ok: false, error: 'Ajoutez au moins un article.' });
 
-        // Prix depuis la base (jamais la valeur du client)
-        const slugs = [...new Set(rawItems.map((i) => String(i.slug || '').trim()).filter(Boolean))];
-        if (!slugs.length) return json(400, { ok: false, error: 'Aucun article valide.' });
-        const inList = slugs.map((s) => `"${s.replace(/"/g, '')}"`).join(',');
-        const prods = await db.get(`products?select=slug,name,price&slug=in.(${encodeURIComponent(inList)})`);
-        const bySlug = Object.fromEntries(prods.map((p) => [p.slug, p]));
+        // Articles catalogue (prix depuis la base) + articles manuels (prix saisi, de confiance = back office).
+        const catItems = rawItems.filter((i) => i.slug);
+        const manualItems = rawItems.filter((i) => !i.slug && i.name);
+        let bySlug = {};
+        const slugs = [...new Set(catItems.map((i) => String(i.slug || '').trim()).filter(Boolean))];
+        if (slugs.length) {
+          const inList = slugs.map((s) => `"${s.replace(/"/g, '')}"`).join(',');
+          const prods = await db.get(`products?select=slug,name,price&slug=in.(${encodeURIComponent(inList)})`);
+          bySlug = Object.fromEntries(prods.map((p) => [p.slug, p]));
+        }
         const lines = []; let subtotal = 0;
-        for (const it of rawItems) {
+        for (const it of catItems) {
           const p = bySlug[String(it.slug || '').trim()];
           if (!p) continue;
           const qty = Math.max(1, Math.min(99, parseInt(it.qty, 10) || 1));
@@ -150,14 +164,23 @@ exports.handler = async (event) => {
           subtotal += line;
           lines.push({ product_slug: p.slug, name: p.name, unit_price: Number(p.price), qty, line_total: line });
         }
+        for (const it of manualItems) {
+          const name = String(it.name || '').trim().slice(0, 200);
+          if (!name) continue;
+          const qty = Math.max(1, Math.min(99, parseInt(it.qty, 10) || 1));
+          const price = Math.max(0, Math.round((Number(it.price) || 0) * 100) / 100);
+          const line = Math.round(price * qty * 100) / 100;
+          subtotal += line;
+          lines.push({ product_slug: null, name, unit_price: price, qty, line_total: line });
+        }
         if (!lines.length) return json(400, { ok: false, error: 'Aucun article valide.' });
         subtotal = Math.round(subtotal * 100) / 100;
 
-        // Réservation atomique du stock (best-effort : une vente au comptoir au-delà
-        // du stock suivi n'est pas bloquée, mais on ne réserve alors rien).
+        // Réservation atomique du stock : uniquement pour les articles du catalogue (les manuels n'ont pas de stock suivi).
         const reservedM = [];
         let allReserved = true;
         for (const l of lines) {
+          if (!l.product_slug) continue;
           let val;
           try { val = await db.rpc('reserve_stock', { p_slug: l.product_slug, p_qty: l.qty }); } catch (e) { val = -1; }
           if (Number(val) === -1) allReserved = false;
@@ -167,20 +190,22 @@ exports.handler = async (event) => {
         if (!allReserved) await releaseM();
         const stockReserved = allReserved && reservedM.length > 0;
 
-        const mode = c.mode === 'poste' ? 'poste' : 'retrait';
         const shipping = mode === 'poste' ? Number(process.env.SHIPPING_POSTE_FEE || 8.9) : 0;
         const total = Math.max(0, Math.round((subtotal + shipping) * 100) / 100);
         const status = (wantPayLink || b.status === 'pending') ? 'pending' : 'paid';
+        // Vente directe en boutique payée = encaissée ET remise immédiatement → commande terminée.
+        const fulfilledAt = (mode === 'boutique' && status === 'paid') ? new Date().toISOString() : null;
         const num = orderNumber();
 
         let order;
         try {
           [order] = await db.post('orders', {
             order_number: num, email: email || null, phone: c.telephone ? String(c.telephone).trim() : null,
-            full_name: c.nom.trim(), shipping_mode: mode, payment_method: 'manuel', lang: c.lang || 'fr',
+            full_name: fullName, shipping_mode: mode, payment_method: 'manuel', lang: c.lang || 'fr',
             subtotal, shipping_fee: shipping, total, discount: 0, stock_reserved: stockReserved,
-            note: c.remarque ? String(c.remarque).trim() : 'Commande créée au back office',
+            note: c.remarque ? String(c.remarque).trim() : (mode === 'boutique' ? 'Vente directe en boutique' : 'Commande créée au back office'),
             payment_status: status, paid_at: status === 'paid' ? new Date().toISOString() : null,
+            fulfilled_at: fulfilledAt,
             confirmation_sent_at: (status === 'paid' && wantEmail) ? new Date().toISOString() : null,
             shipping_address: mode === 'poste' ? { rue: String(c.rue || '').trim(), numero: String(c.numero || '').trim(), npa: String(c.npa || '').trim(), localite: String(c.localite || '').trim(), pays: 'CH' } : null,
           });
