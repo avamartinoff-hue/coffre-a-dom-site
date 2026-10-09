@@ -35,7 +35,7 @@ exports.handler = async (event) => {
     const byStatus = { pending: 0, paid: 0, failed: 0, cancelled: 0 };
     let revenue = 0, revenuePeriod = 0, ordersPeriod = 0, paidOrdersPeriod = 0;
     let revenuePrev = 0, paidOrdersPrev = 0, ordersPrev = 0; // période PRÉCÉDENTE (les N jours d'avant)
-    const payMethods = { twint: 0, sumup: 0, other: 0 };      // répartition des ventes payées (période)
+    const payMethods = { twint: 0, sumup: 0, especes: 0, other: 0 }; // répartition des ventes payées (période)
     // Répartition par canal (ventes payées de la période) : boutique (comptoir) · retrait (en ligne retiré) · poste (en ligne expédié)
     const channels = { boutique: { orders: 0, revenue: 0 }, retrait: { orders: 0, revenue: 0 }, poste: { orders: 0, revenue: 0 } };
     let toValidate = 0, toShip = 0; // à valider (paiement en attente) · à livrer (payée, non expédiée)
@@ -57,7 +57,7 @@ exports.handler = async (event) => {
         revenue += t;
         if (d in days) {
           days[d] += t; revenuePeriod += t; paidOrdersPeriod++;
-          const m = o.payment_method === 'twint' ? 'twint' : o.payment_method === 'sumup' ? 'sumup' : 'other';
+          const m = o.payment_method === 'twint' ? 'twint' : o.payment_method === 'sumup' ? 'sumup' : o.payment_method === 'especes' ? 'especes' : 'other';
           payMethods[m]++;
           const ch = o.shipping_mode === 'boutique' ? 'boutique' : o.shipping_mode === 'poste' ? 'poste' : 'retrait';
           channels[ch].orders++; channels[ch].revenue += t;

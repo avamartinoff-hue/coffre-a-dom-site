@@ -195,13 +195,17 @@ exports.handler = async (event) => {
         const status = (wantPayLink || b.status === 'pending') ? 'pending' : 'paid';
         // Vente directe en boutique payée = encaissée ET remise immédiatement → commande terminée.
         const fulfilledAt = (mode === 'boutique' && status === 'paid') ? new Date().toISOString() : null;
+        // Encaissement : pour une vente boutique, on enregistre le moyen choisi (espèces/TWINT/carte)
+        // pour les stats de caisse. Sinon 'manuel' (le paiement en ligne posera twint/sumup à la confirmation).
+        const payChoices = ['especes', 'twint', 'sumup'];
+        const payMethod = (mode === 'boutique' && payChoices.includes(b.paymethod)) ? b.paymethod : 'manuel';
         const num = orderNumber();
 
         let order;
         try {
           [order] = await db.post('orders', {
             order_number: num, email: email || null, phone: c.telephone ? String(c.telephone).trim() : null,
-            full_name: fullName, shipping_mode: mode, payment_method: 'manuel', lang: c.lang || 'fr',
+            full_name: fullName, shipping_mode: mode, payment_method: payMethod, lang: c.lang || 'fr',
             subtotal, shipping_fee: shipping, total, discount: 0, stock_reserved: stockReserved,
             note: c.remarque ? String(c.remarque).trim() : (mode === 'boutique' ? 'Vente directe en boutique' : 'Commande créée au back office'),
             payment_status: status, paid_at: status === 'paid' ? new Date().toISOString() : null,

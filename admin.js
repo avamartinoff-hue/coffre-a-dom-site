@@ -24,6 +24,8 @@
   };
   // Libellé du canal de vente (boutique = vente comptoir, retrait = en ligne retiré, poste = en ligne expédié)
   var modeLabel = function (m) { return m === 'boutique' ? '🏪 Boutique' : m === 'poste' ? '📦 Poste' : '🛍️ Retrait'; };
+  // Libellé du moyen de paiement
+  var payLabel = function (pm) { return pm === 'twint' ? '📱 TWINT' : pm === 'sumup' ? '💳 Carte' : pm === 'especes' ? '💵 Espèces' : pm === 'manuel' ? '📝 Manuel' : (pm || '–'); };
   var pwd = function () { try { return sessionStorage.getItem(KEY) || ''; } catch (e) { return ''; } };
   var frDate = function (iso) { try { return new Date(iso).toLocaleString('fr-CH', { day: '2-digit', month: '2-digit', year: '2-digit', hour: '2-digit', minute: '2-digit' }); } catch (e) { return iso; } };
 
@@ -97,15 +99,15 @@
   }
   // Répartition des ventes payées par mode de paiement (barre empilée TWINT / Carte).
   function paySplit(pm, lbl) {
-    var t = (pm && pm.twint) || 0, c = (pm && pm.sumup) || 0, o = (pm && pm.other) || 0;
-    var tot = t + c + o, body;
+    var t = (pm && pm.twint) || 0, c = (pm && pm.sumup) || 0, e = (pm && pm.especes) || 0, o = (pm && pm.other) || 0;
+    var tot = t + c + e + o, body;
     if (!tot) { body = '<p class="empty">Aucune vente payée sur la période.</p>'; }
     else {
       var pct = function (n) { return Math.round(n / tot * 100); };
       var seg = function (n, k) { return n ? '<span class="paysplit__seg paysplit__seg--' + k + '" style="width:' + pct(n) + '%" title="' + n + ' (' + pct(n) + '%)"></span>' : ''; };
-      var leg = function (n, k, name) { return '<span><i class="paysplit__dot paysplit__dot--' + k + '"></i> ' + name + ' — <b>' + n + '</b> · ' + pct(n) + '%</span>'; };
-      body = '<div class="paysplit"><div class="paysplit__bar">' + seg(t, 'twint') + seg(c, 'card') + seg(o, 'other') + '</div>' +
-        '<div class="paysplit__legend">' + leg(t, 'twint', 'TWINT') + leg(c, 'card', 'Carte') + (o ? leg(o, 'other', 'Autre') : '') + '</div></div>';
+      var leg = function (n, k, name) { return '<span><i class="paysplit__dot paysplit__dot--' + k + '"></i> ' + name + ' : <b>' + n + '</b> · ' + pct(n) + '%</span>'; };
+      body = '<div class="paysplit"><div class="paysplit__bar">' + seg(t, 'twint') + seg(c, 'card') + seg(e, 'cash') + seg(o, 'other') + '</div>' +
+        '<div class="paysplit__legend">' + leg(t, 'twint', 'TWINT') + leg(c, 'card', 'Carte') + (e ? leg(e, 'cash', 'Espèces') : '') + (o ? leg(o, 'other', 'Autre') : '') + '</div></div>';
     }
     return '<div class="dash-box"><h3>Répartition des paiements <em class="dash-box__meta">' + lbl + '</em></h3>' + body + '</div>';
   }
@@ -283,7 +285,7 @@
       '<div class="ord__grid">' +
         '<div><span class="ord__k">Client</span>' + (o.email ? '<button class="linkbtn" data-oclient="' + esc(o.email) + '">' + esc(o.full_name) + '</button>' : esc(o.full_name)) + '<br>' + esc(o.email) + (o.phone ? '<br>' + esc(o.phone) : '') + '</div>' +
         '<div><span class="ord__k">Articles</span>' + (items || '–') + '</div>' +
-        '<div><span class="ord__k">Canal</span>' + modeLabel(o.shipping_mode) + fmtAddr(o.shipping_address) + (o.tracking_number ? '<br><span class="ord__k">Suivi</span>' + esc(o.tracking_number) : '') + '<br><span class="ord__k">Paiement</span>' + (o.payment_method === 'twint' ? '📱 TWINT' : '💳 SumUp') + '</div>' +
+        '<div><span class="ord__k">Canal</span>' + modeLabel(o.shipping_mode) + fmtAddr(o.shipping_address) + (o.tracking_number ? '<br><span class="ord__k">Suivi</span>' + esc(o.tracking_number) : '') + '<br><span class="ord__k">Paiement</span>' + payLabel(o.payment_method) + '</div>' +
         '<div><span class="ord__k">Total</span><b>' + chf(o.total) + '</b><br><span class="ord__date">' + frDate(o.created_at) + '</span></div>' +
       '</div>' + (o.note ? '<p class="ord__note">📝 ' + esc(o.note) + '</p>' : '') +
       '<div class="ord__actions">' + a + '</div></article>';
@@ -486,6 +488,7 @@
       '<div class="form__row"><label class="field"><span>Statut</span><select data-nf="status"><option value="pay-link">💳 Envoyer un lien de paiement au client</option><option value="paid">Déjà payée</option><option value="pending">En attente (sans e-mail)</option></select></label>' +
         '<label class="field field--check"><input type="checkbox" data-nf="sendEmail" checked><span>Envoyer un e-mail au client</span></label></div>' +
       '<p class="seo-hint" data-nstatus-hint>Le client recevra un e-mail avec un lien pour régler sa commande en ligne (TWINT ou carte).</p>' +
+      '<label class="field" data-npay-wrap hidden><span>💰 Encaissement</span><select data-nf="paymethod"><option value="especes">💵 Espèces</option><option value="twint">📱 TWINT</option><option value="sumup">💳 Carte</option></select></label>' +
       '<p class="no-total">Total : <b data-ntotal>CHF 0.00</b> <small class="seo-hint" data-nship></small></p>' +
       '<div class="modal__foot"><span style="flex:1"></span><button class="btn btn--gold" data-ncreate>Créer la commande</button></div>' +
       '</div>';
@@ -541,6 +544,7 @@
     modeSel.addEventListener('change', function (e) {
       var m = e.target.value;
       ov.querySelector('[data-naddr]').hidden = m !== 'poste';
+      ov.querySelector('[data-npay-wrap]').hidden = m !== 'boutique'; // encaissement : ventes comptoir uniquement
       statusSel.value = (m === 'boutique') ? 'paid' : 'pay-link'; // comptoir = payé sur place ; en ligne = lien de paiement
       syncStatusHint();
       renderCart();
@@ -555,6 +559,7 @@
       var mq = e.target.closest('[data-nmqty]'); if (mq) { manual[+mq.getAttribute('data-nmqty')].qty = Math.max(1, Math.min(99, parseInt(mq.value, 10) || 1)); updateTotal(); return; }
     });
     statusSel.value = (modeSel.value === 'boutique') ? 'paid' : 'pay-link'; // état initial cohérent avec le canal par défaut
+    ov.querySelector('[data-npay-wrap]').hidden = modeSel.value !== 'boutique';
     statusSel.addEventListener('change', syncStatusHint); syncStatusHint();
     ov.addEventListener('click', function (e) {
       if (e.target === ov || e.target.closest('[data-mx]')) { ov.remove(); return; }
@@ -586,7 +591,7 @@
         if (!customer.nom && mode !== 'boutique') { showFlash('Nom du client requis.', false); return; }
         if (!items.length) { showFlash('Ajoutez au moins un article.', false); return; }
         var btn = ov.querySelector('[data-ncreate]'); btn.disabled = true; btn.textContent = 'Création…';
-        api('POST', 'admin-orders', { action: 'create-manual', customer: customer, items: items, status: g('status'), sendEmail: g('sendEmail') }).then(function (r) {
+        api('POST', 'admin-orders', { action: 'create-manual', customer: customer, items: items, status: g('status'), sendEmail: g('sendEmail'), paymethod: g('paymethod') }).then(function (r) {
           if (r && r.ok) { ov.remove(); showFlash(r.payLinkSent ? ('Commande ' + r.orderNumber + ' créée · 💳 lien de paiement envoyé ✅') : ('Commande ' + r.orderNumber + ' créée ✅'), true); loadOrders(); }
           else { btn.disabled = false; btn.textContent = 'Créer la commande'; showFlash((r && r.error) || 'Erreur.', false); }
         }).catch(function () { btn.disabled = false; btn.textContent = 'Créer la commande'; });

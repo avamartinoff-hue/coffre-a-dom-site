@@ -1110,12 +1110,14 @@ h1,h2,h3{ letter-spacing:0; }                 /* DM Serif respire mieux sans tra
 .paysplit__seg{ height:100%; }
 .paysplit__seg--twint{ background:linear-gradient(180deg,#3aa0ff,#1877d1); }
 .paysplit__seg--card{ background:linear-gradient(180deg,var(--gold-2),var(--gold)); }
+.paysplit__seg--cash{ background:linear-gradient(180deg,#4bd07a,#2fa85d); }
 .paysplit__seg--other{ background:var(--muted); }
 .paysplit__legend{ display:flex; flex-wrap:wrap; gap:8px 22px; margin-top:12px; font-size:.85rem; color:var(--muted); }
 .paysplit__legend b{ color:var(--text); }
 .paysplit__dot{ display:inline-block; width:10px; height:10px; border-radius:50%; margin-right:5px; vertical-align:middle; }
 .paysplit__dot--twint{ background:#1877d1; }
 .paysplit__dot--card{ background:var(--gold); }
+.paysplit__dot--cash{ background:#2fa85d; }
 .paysplit__dot--other{ background:var(--muted); }
 .dash-section-label{ font-size:.74rem; text-transform:uppercase; letter-spacing:.08em; color:var(--muted); font-weight:700; margin:0 0 10px; }
 .stat-cards--actions{ grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); }
