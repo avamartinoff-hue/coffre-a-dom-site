@@ -293,7 +293,8 @@
   var ORDER_Q = '';
   var ORDER_FILTER = 'all';
   var ORDER_FROM = '', ORDER_TO = ''; // filtre par dates (côté serveur) pour voir tout l'historique
-  var RENDER_CAP = 250;               // nb max de cartes affichées par étape (perf) ; le reste via recherche/dates/export
+  var ORDER_LIMIT = 400;              // nb de commandes chargées (augmenté via « Charger plus »)
+  var ORDER_MORE = false;             // vrai s'il reste probablement des commandes à charger
   var SELECTED_ORDERS = {};
   var ORDER_FILTERS = [
     { k: 'all', label: 'Toutes' },
@@ -358,7 +359,7 @@
   // Export COMPLET : toutes les commandes de la période affichée (pour la comptabilité / suivi).
   function exportAllCSV() {
     showFlash('Préparation de l\'export complet…', true);
-    api('GET', 'admin-orders' + orderQuery('limit=5000')).then(function (d) {
+    api('GET', 'admin-orders' + orderQuery('limit=10000')).then(function (d) {
       if (!d || !d.ok || !d.orders) { showFlash('Erreur lors de l\'export.', false); return; }
       var rows = d.orders;
       if (!rows.length) { showFlash('Aucune commande sur cette période.', false); return; }
@@ -470,15 +471,18 @@
       // En vue "Toutes" : étapes terminées/annulées masquées si vides. En vue filtrée : toujours affichée.
       if (ORDER_FILTER === 'all' && !g.length && s.collapsed) return '';
       var inner = g.length
-        ? '<div class="ord-list">' + g.slice(0, RENDER_CAP).map(orderCard).join('') + '</div>' +
-          (g.length > RENDER_CAP ? '<p class="ord-stage__more">+ ' + (g.length - RENDER_CAP) + ' autres non affichées. Affine par recherche ou par dates, ou utilise « 📊 Export complet ».</p>' : '')
+        ? '<div class="ord-list">' + g.map(orderCard).join('') + '</div>'
         : '<p class="empty empty--sm">Aucune commande' + (q ? ' ne correspond à « ' + esc(ORDER_Q.trim()) + ' »' : ' à cette étape. 👍') + '</p>';
       return '<section class="ord-stage ord-stage--' + s.key + '">' +
         '<div class="ord-stage__head"><h3>' + s.label + ' <span class="ord-stage__n">' + g.length + '</span></h3>' +
         (s.hint ? '<p class="ord-stage__hint">' + s.hint + '</p>' : '') + '</div>' +
         inner + '</section>';
     }).join('');
-    body.innerHTML = chips + bulkBar() + (sections || '<p class="empty">Aucune commande ne correspond à « ' + esc(ORDER_Q.trim()) + ' ».</p>');
+    var more = ORDER_MORE
+      ? '<div class="ord-loadmore"><button class="btn btn--ghost btn--sm" data-oloadmore>⬇️ Charger plus de commandes</button>' +
+        '<span class="ord-datefilter__hint">' + ORDERS.length + ' commandes chargées · astuce : filtre par dates ou « 📊 Export complet » pour la compta</span></div>'
+      : '';
+    body.innerHTML = chips + bulkBar() + (sections || '<p class="empty">Aucune commande ne correspond à « ' + esc(ORDER_Q.trim()) + ' ».</p>') + more;
   }
   function bulkApply(kind) {
     var ids = Object.keys(SELECTED_ORDERS); if (!ids.length) return;
@@ -505,9 +509,10 @@
   }
   function loadOrders() {
     panels.orders.innerHTML = orderToolbar() + '<div id="ord-body"><p class="empty">Chargement…</p></div>';
-    api('GET', 'admin-orders' + orderQuery()).then(function (d) {
+    api('GET', 'admin-orders' + orderQuery('limit=' + ORDER_LIMIT)).then(function (d) {
       if (!d || !d.ok) { var b = document.getElementById('ord-body'); if (b) b.innerHTML = '<p class="empty">Erreur.</p>'; return; }
       ORDERS = d.orders || [];
+      ORDER_MORE = ORDERS.length >= ORDER_LIMIT; // autant que demandé = il en reste probablement
       renderOrderBody();
     }).catch(function () {});
   }
@@ -1248,7 +1253,8 @@
     if (e.target.closest('[data-oexport]')) exportShipCSV();
     if (e.target.closest('[data-oexportall]')) exportAllCSV();
     if (e.target.closest('[data-oimport]')) importWooModal();
-    if (e.target.closest('[data-odatereset]')) { ORDER_FROM = ''; ORDER_TO = ''; loadOrders(); }
+    if (e.target.closest('[data-odatereset]')) { ORDER_FROM = ''; ORDER_TO = ''; ORDER_LIMIT = 400; loadOrders(); }
+    if (e.target.closest('[data-oloadmore]')) { ORDER_LIMIT += 1000; loadOrders(); }
     var ofl = e.target.closest('[data-ofilter]');
     if (ofl) { ORDER_FILTER = ofl.getAttribute('data-ofilter'); renderOrderBody(); }
     var osel = e.target.closest('[data-osel]');
@@ -1302,8 +1308,8 @@
   });
   // Produits : toggles instantanés + sélection
   document.addEventListener('change', function (e) {
-    var ofr = e.target.closest('[data-ofrom]'); if (ofr) { ORDER_FROM = ofr.value; loadOrders(); return; }
-    var oto = e.target.closest('[data-oto]'); if (oto) { ORDER_TO = oto.value; loadOrders(); return; }
+    var ofr = e.target.closest('[data-ofrom]'); if (ofr) { ORDER_FROM = ofr.value; ORDER_LIMIT = 400; loadOrders(); return; }
+    var oto = e.target.closest('[data-oto]'); if (oto) { ORDER_TO = oto.value; ORDER_LIMIT = 400; loadOrders(); return; }
     var tg = e.target.closest('[data-ptoggle]');
     if (tg) { var f = {}; f[tg.getAttribute('data-ptoggle')] = tg.checked; api('POST', 'admin-products', { action: 'update', slug: tg.getAttribute('data-slug'), fields: f }).then(function (r) { if (r && r.ok) { var pr = PRODUCTS.filter(function (x) { return x.slug === tg.getAttribute('data-slug'); })[0]; if (pr) pr[tg.getAttribute('data-ptoggle')] = tg.checked; } }); }
     var ps = e.target.closest('[data-psel]');

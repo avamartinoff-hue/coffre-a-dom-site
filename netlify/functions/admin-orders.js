@@ -51,7 +51,7 @@ exports.handler = async (event) => {
     if (event.httpMethod === 'GET') {
       const cols = 'id,order_number,email,phone,full_name,shipping_mode,shipping_address,payment_method,payment_status,subtotal,shipping_fee,total,note,created_at,paid_at,discount,promo_code,lang,confirmation_sent_at,fulfilled_at,tracking_number,label_generated_at';
       const qs = event.queryStringParameters || {};
-      const limit = Math.min(5000, Math.max(1, parseInt(qs.limit, 10) || 1000));
+      const limit = Math.min(10000, Math.max(1, parseInt(qs.limit, 10) || 400));
       let flt = '';
       if (qs.from) flt += '&created_at=gte.' + encodeURIComponent(qs.from);
       if (qs.to) flt += '&created_at=lte.' + encodeURIComponent(qs.to);
