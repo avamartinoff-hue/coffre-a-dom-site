@@ -292,6 +292,8 @@
   }
   var ORDER_Q = '';
   var ORDER_FILTER = 'all';
+  var ORDER_FROM = '', ORDER_TO = ''; // filtre par dates (côté serveur) pour voir tout l'historique
+  var RENDER_CAP = 250;               // nb max de cartes affichées par étape (perf) ; le reste via recherche/dates/export
   var SELECTED_ORDERS = {};
   var ORDER_FILTERS = [
     { k: 'all', label: 'Toutes' },
@@ -306,7 +308,13 @@
       '<button class="btn btn--gold btn--sm" data-onew>➕ Nouvelle commande</button>' +
       '<button class="btn btn--ghost btn--sm" data-oclients>👤 Clients</button>' +
       '<button class="btn btn--ghost btn--sm" data-oexport title="Télécharger les commandes payées à expédier / remettre (CSV, ouvrable dans Excel)">⬇️ Export CSV (à livrer)</button>' +
+      '<button class="btn btn--ghost btn--sm" data-oexportall title="Exporter TOUTES les commandes de la période affichée (CSV complet pour la comptabilité)">📊 Export complet</button>' +
       '<button class="btn btn--ghost btn--sm" data-oimport title="Importer les anciennes commandes de l\'ancien site WooCommerce (avant la refonte)">📥 Importer l\'historique</button>' +
+      '</div>' +
+      '<div class="ord-datefilter"><span class="ord__k">Période</span>' +
+        '<label>Du <input type="date" data-ofrom value="' + esc(ORDER_FROM) + '"></label>' +
+        '<label>Au <input type="date" data-oto value="' + esc(ORDER_TO) + '"></label>' +
+        ((ORDER_FROM || ORDER_TO) ? '<button class="linkbtn" data-odatereset>Réinitialiser</button>' : '<span class="ord-datefilter__hint">laisse vide = commandes récentes</span>') +
       '</div>';
   }
   // Export CSV des commandes « à livrer » (payées, pas encore expédiées/remises)
@@ -338,6 +346,42 @@
     document.body.appendChild(link); link.click(); link.remove();
     setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
     showFlash('✅ ' + rows.length + ' commande(s) à livrer exportée(s) en CSV.', true);
+  }
+  function downloadCSV(filename, head, rows) {
+    var lines = [head.map(csvCell).join(';')].concat(rows.map(function (r) { return r.map(csvCell).join(';'); }));
+    var blob = new Blob(['﻿' + lines.join('\r\n')], { type: 'text/csv;charset=utf-8;' });
+    var url = URL.createObjectURL(blob);
+    var link = document.createElement('a'); link.href = url; link.download = filename;
+    document.body.appendChild(link); link.click(); link.remove();
+    setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+  }
+  // Export COMPLET : toutes les commandes de la période affichée (pour la comptabilité / suivi).
+  function exportAllCSV() {
+    showFlash('Préparation de l\'export complet…', true);
+    api('GET', 'admin-orders' + orderQuery('limit=5000')).then(function (d) {
+      if (!d || !d.ok || !d.orders) { showFlash('Erreur lors de l\'export.', false); return; }
+      var rows = d.orders;
+      if (!rows.length) { showFlash('Aucune commande sur cette période.', false); return; }
+      var payPlain = function (pm) { return pm === 'twint' ? 'TWINT' : pm === 'sumup' ? 'Carte' : pm === 'especes' ? 'Espèces' : pm === 'manuel' ? 'Manuel' : (pm || ''); };
+      var head = ['N° commande', 'Date', 'Statut', 'Client', 'Email', 'Téléphone', 'Canal', 'Adresse', 'NPA', 'Localité', 'Articles', 'Sous-total', 'Port', 'Remise', 'Total CHF', 'Encaissement', 'N° suivi', 'Note'];
+      var data = rows.map(function (o) {
+        var a = o.shipping_address || {};
+        var poste = o.shipping_mode === 'poste';
+        var addr = poste ? [a.rue, a.numero].filter(Boolean).join(' ') : (o.shipping_mode === 'boutique' ? 'Boutique' : 'Retrait');
+        var items = (o.order_items || []).map(function (i) { return i.qty + '× ' + i.name; }).join(' ; ');
+        return [
+          o.order_number, frDate(o.created_at), (STATUS[o.payment_status] || o.payment_status), o.full_name, o.email || '', o.phone || '',
+          o.shipping_mode === 'boutique' ? 'Boutique' : poste ? 'Poste' : 'Retrait', addr, poste ? (a.npa || '') : '', poste ? (a.localite || '') : '',
+          items, Number(o.subtotal || 0).toFixed(2), Number(o.shipping_fee || 0).toFixed(2), Number(o.discount || 0).toFixed(2), Number(o.total || 0).toFixed(2),
+          payPlain(o.payment_method), o.tracking_number || '', o.note || ''
+        ];
+      });
+      var d2 = new Date(), p = function (n) { return String(n).padStart(2, '0'); };
+      var stamp = d2.getFullYear() + '-' + p(d2.getMonth() + 1) + '-' + p(d2.getDate());
+      var suffix = (ORDER_FROM || ORDER_TO) ? ('_' + (ORDER_FROM || 'debut') + '_au_' + (ORDER_TO || stamp)) : '_toutes';
+      downloadCSV('commandes' + suffix + '.csv', head, data);
+      showFlash('✅ ' + rows.length + ' commande(s) exportée(s).', true);
+    }).catch(function () { showFlash('Erreur réseau lors de l\'export.', false); });
   }
   // Import de l'historique WooCommerce (anciennes commandes) → Supabase, page par page.
   function importWooModal() {
@@ -426,7 +470,8 @@
       // En vue "Toutes" : étapes terminées/annulées masquées si vides. En vue filtrée : toujours affichée.
       if (ORDER_FILTER === 'all' && !g.length && s.collapsed) return '';
       var inner = g.length
-        ? '<div class="ord-list">' + g.map(orderCard).join('') + '</div>'
+        ? '<div class="ord-list">' + g.slice(0, RENDER_CAP).map(orderCard).join('') + '</div>' +
+          (g.length > RENDER_CAP ? '<p class="ord-stage__more">+ ' + (g.length - RENDER_CAP) + ' autres non affichées. Affine par recherche ou par dates, ou utilise « 📊 Export complet ».</p>' : '')
         : '<p class="empty empty--sm">Aucune commande' + (q ? ' ne correspond à « ' + esc(ORDER_Q.trim()) + ' »' : ' à cette étape. 👍') + '</p>';
       return '<section class="ord-stage ord-stage--' + s.key + '">' +
         '<div class="ord-stage__head"><h3>' + s.label + ' <span class="ord-stage__n">' + g.length + '</span></h3>' +
@@ -451,9 +496,16 @@
       loadOrders();
     }).catch(function () { SELECTED_ORDERS = {}; showFlash('Erreur lors de l\'application en lot.', false); loadOrders(); });
   }
+  function orderQuery(extra) {
+    var qp = [];
+    if (ORDER_FROM) qp.push('from=' + encodeURIComponent(ORDER_FROM));
+    if (ORDER_TO) qp.push('to=' + encodeURIComponent(ORDER_TO + 'T23:59:59'));
+    if (extra) qp.push(extra);
+    return qp.length ? '?' + qp.join('&') : '';
+  }
   function loadOrders() {
     panels.orders.innerHTML = orderToolbar() + '<div id="ord-body"><p class="empty">Chargement…</p></div>';
-    api('GET', 'admin-orders').then(function (d) {
+    api('GET', 'admin-orders' + orderQuery()).then(function (d) {
       if (!d || !d.ok) { var b = document.getElementById('ord-body'); if (b) b.innerHTML = '<p class="empty">Erreur.</p>'; return; }
       ORDERS = d.orders || [];
       renderOrderBody();
@@ -1194,7 +1246,9 @@
     if (e.target.closest('[data-onew]')) newOrderModal();
     if (e.target.closest('[data-oclients]')) clientsModal();
     if (e.target.closest('[data-oexport]')) exportShipCSV();
+    if (e.target.closest('[data-oexportall]')) exportAllCSV();
     if (e.target.closest('[data-oimport]')) importWooModal();
+    if (e.target.closest('[data-odatereset]')) { ORDER_FROM = ''; ORDER_TO = ''; loadOrders(); }
     var ofl = e.target.closest('[data-ofilter]');
     if (ofl) { ORDER_FILTER = ofl.getAttribute('data-ofilter'); renderOrderBody(); }
     var osel = e.target.closest('[data-osel]');
@@ -1248,6 +1302,8 @@
   });
   // Produits : toggles instantanés + sélection
   document.addEventListener('change', function (e) {
+    var ofr = e.target.closest('[data-ofrom]'); if (ofr) { ORDER_FROM = ofr.value; loadOrders(); return; }
+    var oto = e.target.closest('[data-oto]'); if (oto) { ORDER_TO = oto.value; loadOrders(); return; }
     var tg = e.target.closest('[data-ptoggle]');
     if (tg) { var f = {}; f[tg.getAttribute('data-ptoggle')] = tg.checked; api('POST', 'admin-products', { action: 'update', slug: tg.getAttribute('data-slug'), fields: f }).then(function (r) { if (r && r.ok) { var pr = PRODUCTS.filter(function (x) { return x.slug === tg.getAttribute('data-slug'); })[0]; if (pr) pr[tg.getAttribute('data-ptoggle')] = tg.checked; } }); }
     var ps = e.target.closest('[data-psel]');

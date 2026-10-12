@@ -1238,7 +1238,12 @@ h1,h2,h3{ letter-spacing:0; }                 /* DM Serif respire mieux sans tra
 .pt-catfilter:focus{ outline:none; border-color:var(--gold); }
 
 /* ===== Back office : barre commandes, clients, création manuelle ===== */
-.ord-toolbar{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-bottom:22px; }
+.ord-toolbar{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-bottom:12px; }
+.ord-datefilter{ display:flex; gap:12px; flex-wrap:wrap; align-items:center; margin-bottom:20px; font-size:.85rem; color:var(--muted); }
+.ord-datefilter label{ display:inline-flex; gap:6px; align-items:center; }
+.ord-datefilter input[type=date]{ padding:5px 8px; border-radius:8px; border:1px solid var(--line-strong); background:var(--bg); color:var(--text); font:inherit; }
+.ord-datefilter__hint{ font-style:italic; opacity:.75; }
+.ord-stage__more{ font-size:.82rem; color:var(--muted); text-align:center; padding:10px; font-style:italic; }
 .ord-search{ flex:1; min-width:220px; padding:12px 16px; border-radius:100px; border:1px solid var(--line-strong); background:var(--surface); color:var(--text); font:inherit; }
 .ord-search:focus{ outline:none; border-color:var(--gold); }
 .modal--lg{ width:min(720px,100%); }
