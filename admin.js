@@ -310,7 +310,6 @@
       '<button class="btn btn--ghost btn--sm" data-oclients>👤 Clients</button>' +
       '<button class="btn btn--ghost btn--sm" data-oexport title="Télécharger les commandes payées à expédier / remettre (CSV, ouvrable dans Excel)">⬇️ Export CSV (à livrer)</button>' +
       '<button class="btn btn--ghost btn--sm" data-oexportall title="Exporter TOUTES les commandes de la période affichée (CSV complet pour la comptabilité)">📊 Export complet</button>' +
-      '<button class="btn btn--ghost btn--sm" data-oimport title="Importer les anciennes commandes de l\'ancien site WooCommerce (avant la refonte)">📥 Importer l\'historique</button>' +
       '</div>' +
       '<div class="ord-datefilter"><span class="ord__k">Période</span>' +
         '<label>Du <input type="date" data-ofrom value="' + esc(ORDER_FROM) + '"></label>' +
@@ -1252,7 +1251,6 @@
     if (e.target.closest('[data-oclients]')) clientsModal();
     if (e.target.closest('[data-oexport]')) exportShipCSV();
     if (e.target.closest('[data-oexportall]')) exportAllCSV();
-    if (e.target.closest('[data-oimport]')) importWooModal();
     if (e.target.closest('[data-odatereset]')) { ORDER_FROM = ''; ORDER_TO = ''; ORDER_LIMIT = 400; loadOrders(); }
     if (e.target.closest('[data-oloadmore]')) { ORDER_LIMIT += 1000; loadOrders(); }
     var ofl = e.target.closest('[data-ofilter]');
