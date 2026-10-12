@@ -306,6 +306,7 @@
       '<button class="btn btn--gold btn--sm" data-onew>➕ Nouvelle commande</button>' +
       '<button class="btn btn--ghost btn--sm" data-oclients>👤 Clients</button>' +
       '<button class="btn btn--ghost btn--sm" data-oexport title="Télécharger les commandes payées à expédier / remettre (CSV, ouvrable dans Excel)">⬇️ Export CSV (à livrer)</button>' +
+      '<button class="btn btn--ghost btn--sm" data-oimport title="Importer les anciennes commandes de l\'ancien site WooCommerce (avant la refonte)">📥 Importer l\'historique</button>' +
       '</div>';
   }
   // Export CSV des commandes « à livrer » (payées, pas encore expédiées/remises)
@@ -337,6 +338,49 @@
     document.body.appendChild(link); link.click(); link.remove();
     setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
     showFlash('✅ ' + rows.length + ' commande(s) à livrer exportée(s) en CSV.', true);
+  }
+  // Import de l'historique WooCommerce (anciennes commandes) → Supabase, page par page.
+  function importWooModal() {
+    var ov = document.createElement('div'); ov.className = 'modal-ov';
+    ov.innerHTML = '<div class="modal"><button class="modal__x" data-mx>✕</button>' +
+      '<h3>📥 Importer l\'historique WooCommerce</h3>' +
+      '<p class="seo-hint">Rapatrie les anciennes commandes (avant la refonte) dans ce back-office, avec leurs dates d\'origine. Rejouable : les commandes déjà importées sont ignorées.</p>' +
+      '<details class="import-help"><summary>Comment obtenir la clé API (lecture seule) ?</summary>' +
+        '<ol><li>Sur l\'ancien site : <b>WooCommerce → Réglages → Avancé → API REST</b></li>' +
+        '<li><b>Ajouter une clé</b> : description « Import », droits <b>Lecture</b>, puis <b>Générer</b></li>' +
+        '<li>Copie la <b>Clé client</b> (ck_…) et le <b>Secret client</b> (cs_…) ci-dessous</li></ol></details>' +
+      '<label class="field"><span>URL de l\'ancien site</span><input data-wf="url" value="https://gestion.coffreadom.ch"></label>' +
+      '<div class="form__row"><label class="field"><span>Clé client (ck_…)</span><input data-wf="key" autocomplete="off" placeholder="ck_…"></label>' +
+        '<label class="field"><span>Secret client (cs_…)</span><input data-wf="secret" autocomplete="off" placeholder="cs_…"></label></div>' +
+      '<div class="modal__foot"><span style="flex:1"></span><button class="btn btn--gold" data-wimport>Lancer l\'import</button></div>' +
+      '<div class="import-log" data-wlog hidden></div>' +
+      '</div>';
+    document.body.appendChild(ov);
+    ov.addEventListener('click', function (e) {
+      if (e.target === ov || e.target.closest('[data-mx]')) { ov.remove(); return; }
+      if (!e.target.closest('[data-wimport]')) return;
+      var g = function (n) { var el = ov.querySelector('[data-wf="' + n + '"]'); return el ? el.value.trim() : ''; };
+      var wooUrl = g('url'), wooKey = g('key'), wooSecret = g('secret');
+      if (!wooUrl || !wooKey || !wooSecret) { showFlash('URL + clé + secret requis.', false); return; }
+      var btn = e.target.closest('[data-wimport]'); btn.disabled = true; btn.textContent = 'Import en cours…';
+      var log = ov.querySelector('[data-wlog]'); log.hidden = false; log.innerHTML = '';
+      var tot = { imported: 0, skipped: 0, failed: 0 };
+      function addLog(msg) { var p = document.createElement('p'); p.textContent = msg; log.appendChild(p); log.scrollTop = log.scrollHeight; }
+      function run(page) {
+        api('POST', 'admin-import-woo', { wooUrl: wooUrl, wooKey: wooKey, wooSecret: wooSecret, page: page, perPage: 12 }).then(function (r) {
+          if (!r || !r.ok) { addLog('❌ ' + ((r && r.error) || 'Erreur') + (r && r.detail ? ' · ' + r.detail : '')); btn.disabled = false; btn.textContent = 'Reprendre'; return; }
+          tot.imported += r.imported; tot.skipped += r.skipped; tot.failed += r.failed;
+          addLog('Page ' + r.page + '/' + r.totalPages + ' : ' + r.imported + ' importées, ' + r.skipped + ' déjà présentes' + (r.failed ? ', ' + r.failed + ' en échec' : ''));
+          if (r.hasMore) { setTimeout(function () { run(page + 1); }, 300); }
+          else {
+            addLog('✅ Terminé : ' + tot.imported + ' importées, ' + tot.skipped + ' déjà présentes' + (tot.failed ? ', ' + tot.failed + ' en échec' : '') + '.');
+            btn.textContent = 'Terminé'; showFlash('Import terminé : ' + tot.imported + ' commande(s) importée(s).', true); loadOrders();
+          }
+        }).catch(function () { addLog('❌ Erreur réseau, réessayez (« Reprendre »).'); btn.disabled = false; btn.textContent = 'Reprendre'; });
+      }
+      addLog('Démarrage de l\'import…');
+      run(1);
+    });
   }
   function bulkBar() {
     var n = Object.keys(SELECTED_ORDERS).length;
@@ -1150,6 +1194,7 @@
     if (e.target.closest('[data-onew]')) newOrderModal();
     if (e.target.closest('[data-oclients]')) clientsModal();
     if (e.target.closest('[data-oexport]')) exportShipCSV();
+    if (e.target.closest('[data-oimport]')) importWooModal();
     var ofl = e.target.closest('[data-ofilter]');
     if (ofl) { ORDER_FILTER = ofl.getAttribute('data-ofilter'); renderOrderBody(); }
     var osel = e.target.closest('[data-osel]');
