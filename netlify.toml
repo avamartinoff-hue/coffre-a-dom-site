@@ -22,9 +22,7 @@
 [functions."reconcile-payments"]
   schedule = "*/15 * * * *"
 
-# Relance des paniers abandonnés : une fois par heure
-[functions."abandoned-reminder"]
-  schedule = "17 * * * *"
+# (Relance des paniers abandonnés : désactivée à la demande du client — plus d'e-mail automatique.)
 
 # ---------- En-têtes ----------
 [[headers]]
