@@ -759,6 +759,16 @@ blockquote{
 .pcard__badge--sale{ background:linear-gradient(120deg,var(--magenta),#ff8a5b); color:#fff; }
 .pcard__badge--out{ left:auto; right:10px; background:rgba(10,14,28,.82); color:#fff; border:1px solid var(--line-strong); }
 .pcard__soldout{ font-size:.8rem; font-weight:600; color:var(--muted); }
+/* Stock restant visible par le client */
+.pcard__stock{ margin:8px 0 0; font-size:.78rem; color:var(--muted); display:flex; align-items:center; gap:5px; }
+.pcard__stock::before{ content:""; width:7px; height:7px; border-radius:50%; background:#2fa85d; flex:none; }
+.pcard__stock.is-low{ color:#e0803a; font-weight:600; }
+.pcard__stock.is-low::before{ background:#e0803a; animation:stockpulse 1.6s infinite; }
+.product__stock{ margin:-6px 0 14px; font-size:.95rem; color:var(--muted); display:inline-flex; align-items:center; gap:7px; }
+.product__stock::before{ content:""; width:9px; height:9px; border-radius:50%; background:#2fa85d; flex:none; }
+.product__stock.is-low{ color:#e0803a; font-weight:700; }
+.product__stock.is-low::before{ background:#e0803a; animation:stockpulse 1.6s infinite; }
+@keyframes stockpulse{ 0%,100%{ opacity:1; } 50%{ opacity:.35; } }
 .product__media.has-img{ background:#f4f6fb; }
 .product__media.has-img img{ width:100%; height:100%; object-fit:contain; padding:22px; }
 .product__unavailable{ padding:14px 18px; border-radius:12px; background:rgba(255,93,184,.08); border:1px solid rgba(255,93,184,.25); color:var(--text); margin-bottom:24px; }

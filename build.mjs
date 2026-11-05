@@ -55,6 +55,16 @@ const buyLimit = (p) => { const a = []; if (p.stockQty != null && p.stockQty > 0
 const soldOut = (p) => !!p.inStock && p.stockQty != null && p.stockQty <= 0;
 // Achetable maintenant : en ligne, pas en rupture, et avec un prix.
 const canBuyP = (p) => !!p.inStock && !soldOut(p) && p.price > 0;
+// Stock restant à AFFICHER au client : uniquement si le stock est suivi (quantité saisie)
+// et le produit achetable. Renvoie le nombre, sinon null (stock non suivi → rien affiché).
+const LOW_STOCK = 5; // seuil « Plus que X ! » (urgence)
+const stockLeft = (p) => (canBuyP(p) && p.stockQty != null && p.stockQty > 0) ? p.stockQty : null;
+// Libellé localisé du stock : « Dernier en stock ! » (1), « Plus que X ! » (≤5), « X en stock » (>5).
+function stockLabel(p) {
+  const n = stockLeft(p);
+  if (n == null) return '';
+  return t(n === 1 ? 'stock.one' : (n <= LOW_STOCK ? 'stock.low' : 'stock.left'), { n });
+}
 
 /* ---------- i18n (FR défaut, EN, IT, DE) ---------- */
 const UI = readJSON('i18n/ui.json');
@@ -383,6 +393,7 @@ function productCard(p) {
         <span class="pcard__price">${priceHtml(p)}</span>
         ${action}
       </div>
+      ${stockLeft(p) != null ? `<p class="pcard__stock${stockLeft(p) <= LOW_STOCK ? ' is-low' : ''}">${stockLabel(p)}</p>` : ''}
     </div>
   </a>`;
 }
@@ -614,6 +625,7 @@ for (const p of products) {
           <a class="chip chip--sm" href="${catUrl(p.category)}">${esc(cat ? cName(cat) : '')}</a>
           <h1>${esc(nm)}</h1>
           <p class="product__price">${priceHtml(p)}</p>
+          ${stockLabel(p) ? `<p class="product__stock${stockLeft(p) <= LOW_STOCK ? ' is-low' : ''}">${stockLabel(p)}</p>` : ''}
           ${dsc ? `<p class="product__desc">${esc(dsc)}</p>` : ''}
           ${actions}
           <ul class="product__meta">
