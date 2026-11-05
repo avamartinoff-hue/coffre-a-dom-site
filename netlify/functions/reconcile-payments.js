@@ -78,6 +78,11 @@ exports.handler = async () => {
         : order.payment_method === 'sumup' ? await sumupPaid(order)
           : false;
       if (paid) { await finalizePaid(db, order); recovered++; continue; }
+      // Factures manuelles / liens de paiement (créées au back office, payment_method 'manuel') :
+      // JAMAIS expirées automatiquement. Le client peut régler le lien quand il veut ;
+      // le commerçant garde la main et peut annuler la commande pour libérer le stock.
+      // Seuls les paniers abandonnés en ligne (twint/sumup) sont libérés après le délai.
+      if (order.payment_method === 'manuel') continue;
       // Non payée et assez ancienne → on considère le paiement abandonné :
       // on marque la commande "expirée" et on REND le stock réservé.
       const age = now - new Date(order.created_at).getTime();
