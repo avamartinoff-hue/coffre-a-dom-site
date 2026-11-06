@@ -18,6 +18,11 @@
 [functions]
   directory = "netlify/functions"
 
+# Autorise le CDN d'images Netlify à traiter les images hébergées sur Supabase
+# (uploads back office) → nécessaire pour les redimensionner (flux Google Merchant).
+[images]
+  remote_images = ["https://bjdmeeqzzfxroicxrsna.supabase.co/storage/.*"]
+
 # Filet de sécurité paiements : re-vérifie les commandes en attente toutes les 15 min
 [functions."reconcile-payments"]
   schedule = "*/15 * * * *"
