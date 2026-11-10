@@ -38,6 +38,14 @@
   }
 
   function paid(data) {
+    // Suivi de conversion GA4 : « purchase » (si gtag chargé = consentement donné), dédoublonné par n° de commande.
+    try {
+      var done = (localStorage.getItem('cad_ga_purch') || '').split(',');
+      if (window.gtag && done.indexOf(data.orderNumber) === -1) {
+        window.gtag('event', 'purchase', { transaction_id: data.orderNumber, value: Number(data.total) || 0, currency: 'CHF' });
+        done.push(data.orderNumber); localStorage.setItem('cad_ga_purch', done.slice(-50).join(','));
+      }
+    } catch (e) {}
     box(head(data) + '<div class="confirm__check">✅</div><p class="confirm__twint-note">' + T('payment_received', '✅ Paiement reçu, merci !') + '</p>' +
       '<div class="confirm__actions"><a href="' + B + '/" class="btn btn--ghost">' + T('home', 'Accueil') + '</a><a href="' + B + '/boutique/" class="btn btn--gold">' + T('continue', 'Continuer mes achats') + '</a></div>');
   }

@@ -167,6 +167,16 @@
     var twintHtml = '';
     if (paid) {
       twintHtml = '<p class="confirm__twint-note">' + T('payment_received', '✅ Paiement reçu, merci !') + '</p>';
+      // Suivi de conversion GA4 : événement « purchase » (uniquement si gtag chargé = consentement donné),
+      // dédoublonné par n° de commande pour ne pas compter deux fois si la page est rechargée.
+      try {
+        var done = (localStorage.getItem('cad_ga_purch') || '').split(',');
+        if (window.gtag && done.indexOf(data.orderNumber) === -1) {
+          var gaItems = ((window.CADCart && window.CADCart.load()) || []).map(function (i) { return { item_id: i.slug, item_name: i.name, price: Number(i.price) || 0, quantity: i.qty }; });
+          window.gtag('event', 'purchase', { transaction_id: data.orderNumber, value: Number(data.total) || 0, currency: 'CHF', items: gaItems });
+          done.push(data.orderNumber); localStorage.setItem('cad_ga_purch', done.slice(-50).join(','));
+        }
+      } catch (e) {}
     } else if (data.method === 'twint' && data.twint) {
       twintHtml =
         '<div class="confirm__twint">' +
