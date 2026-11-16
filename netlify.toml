@@ -48,6 +48,15 @@
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
 
+# ---------- Domaine unique : rediriger l'ancienne adresse Netlify vers coffreadom.ch (SEO) ----------
+# Évite le contenu dupliqué entre coffreadom-ch.netlify.app et coffreadom.ch
+# (Google choisissait l'ancienne URL comme canonique).
+[[redirects]]
+  from = "https://coffreadom-ch.netlify.app/*"
+  to = "https://coffreadom.ch/:splat"
+  status = 301
+  force = true
+
 # ---------- Redirections des anciennes URL WordPress (SEO) ----------
 [[redirects]]
   from = "/accueil"
