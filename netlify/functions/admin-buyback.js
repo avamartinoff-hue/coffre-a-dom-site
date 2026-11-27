@@ -140,6 +140,21 @@ exports.handler = async (event) => {
       return json(200, { ok: true });
     }
 
+    if (action === 'tag-products') {
+      // Enregistre les cartes mises en vente (slug + coût de rachat) pour la marge réalisée.
+      const items = Array.isArray(body.items) ? body.items : [];
+      const rows = items.filter((x) => x && x.slug).map((x) => ({
+        slug: String(x.slug).slice(0, 160),
+        offer_id: body.offer_id || null,
+        offer_number: body.offer_number != null ? parseInt(body.offer_number, 10) : null,
+        cost_chf: round2(x.cost_chf),
+        card_name: (x.card_name || '').slice(0, 160) || null,
+      }));
+      if (!rows.length) return json(200, { ok: true, tagged: 0 });
+      try { await db.post('buyback_products', rows, 'resolution=merge-duplicates,return=minimal'); return json(200, { ok: true, tagged: rows.length }); }
+      catch (e) { return json(200, { ok: true, tagged: 0, persisted: false }); }
+    }
+
     if (action === 'create') {
       const p = await loadParams(db);
       const rawLines = Array.isArray(body.lines) ? body.lines : [];

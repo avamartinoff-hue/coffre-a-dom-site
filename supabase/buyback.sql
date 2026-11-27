@@ -69,7 +69,21 @@ alter table public.buyback_offers add column if not exists listed_at timestamptz
 -- Méthode de paiement du rachat (especes | virement | twint).
 alter table public.buyback_offers add column if not exists payment_mode text;
 
+-- ---------- Produits issus d'un rachat (pour la marge réalisée) ----------
+-- Chaque carte mise en vente depuis une offre est enregistrée ici avec son
+-- COÛT de rachat (CHF). Croisé avec les commandes payées, cela donne les
+-- ventes réelles issues des rachats et la marge réellement réalisée.
+create table if not exists public.buyback_products (
+  slug          text primary key,              -- slug du produit créé dans la boutique
+  offer_id      uuid,
+  offer_number  integer,
+  cost_chf      numeric(12,2) not null default 0, -- coût de rachat unitaire (CHF)
+  card_name     text,
+  created_at    timestamptz not null default now()
+);
+
 -- RLS : tout verrouillé côté public ; service_role (fonctions) bypass.
 alter table public.buyback_config enable row level security;
 alter table public.buyback_offers enable row level security;
+alter table public.buyback_products enable row level security;
 -- (Aucune policy = aucun accès pour anon/authenticated. Volontaire.)

@@ -67,19 +67,42 @@ exports.handler = async (event) => {
       }
     });
 
-    // Top produits (sur commandes payées)
+    // Rachats (P1) : nb d'offres (période) + ventes réelles issues des rachats + marge réalisée
+    const buyback = { offersPeriod: 0, offersTotal: 0, salesQty: 0, salesRevenue: 0, realizedMargin: 0 };
+    const costMap = {};
+    try {
+      const offersBB = await db.get('buyback_offers?select=created_at&limit=10000');
+      buyback.offersTotal = offersBB.length;
+      buyback.offersPeriod = offersBB.filter((o) => ((o.created_at || '').slice(0, 10)) in days).length;
+    } catch (e) { /* table absente */ }
+    try {
+      const bp = await db.get('buyback_products?select=slug,cost_chf&limit=20000');
+      bp.forEach((x) => { costMap[x.slug] = Number(x.cost_chf) || 0; });
+    } catch (e) { /* table absente */ }
+
+    // Top produits (sur commandes payées) + ventes issues des rachats (même source)
     let topProducts = [];
     try {
-      const items = await db.get('order_items?select=product_slug,name,qty,line_total,orders(payment_status)&limit=10000');
+      const items = await db.get('order_items?select=product_slug,name,qty,line_total,orders(payment_status,created_at)&limit=10000');
       const agg = {};
       items.forEach((it) => {
         if (!it.orders || it.orders.payment_status !== 'paid' || !it.product_slug) return;
         const k = it.product_slug;
         agg[k] = agg[k] || { slug: k, name: (it.name || '').replace(/^⏳ /, ''), qty: 0, revenue: 0 };
         agg[k].qty += it.qty; agg[k].revenue += Number(it.line_total) || 0;
+        // Vente issue d'un rachat (produit tagué) dans la période ?
+        if (k in costMap) {
+          const dd = (it.orders.created_at || '').slice(0, 10);
+          if (dd in days) {
+            const q = Number(it.qty) || 0, rev = Number(it.line_total) || 0;
+            buyback.salesQty += q; buyback.salesRevenue += rev; buyback.realizedMargin += rev - costMap[k] * q;
+          }
+        }
       });
       topProducts = Object.values(agg).sort((a, b) => b.revenue - a.revenue).slice(0, 8);
     } catch (e) { /* order_items facultatif */ }
+    buyback.salesRevenue = Math.round(buyback.salesRevenue * 100) / 100;
+    buyback.realizedMargin = Math.round(buyback.realizedMargin * 100) / 100;
 
     // Visites (table page_views facultative)
     let visits = null;
@@ -125,6 +148,7 @@ exports.handler = async (event) => {
       revenueByDay: days,
       topProducts,
       products: { total: products.length, visible: products.filter((p) => p.visible).length, inStock: products.filter((p) => p.in_stock).length },
+      buyback,
       visits,
     });
   } catch (e) {

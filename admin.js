@@ -156,6 +156,7 @@
       var paidPr = d.paidOrdersPrev || 0;
       var basketPr = paidPr > 0 ? (d.revenuePrev / paidPr) : 0;
       var convPr = (v && v.prev > 0) ? (paidPr / v.prev * 100) : null;
+      var bb = d.buyback || { offersPeriod: 0, offersTotal: 0, salesQty: 0, realizedMargin: 0 };
       panels.stats.innerHTML =
         '<p class="dash-section-label">À traiter</p>' +
         '<div class="stat-cards stat-cards--actions">' +
@@ -172,6 +173,12 @@
           statCard('Taux de conversion', conv != null ? conv.toFixed(1).replace('.', ',') + ' %' : '–', conv != null ? (paidP + ' vente' + (paidP > 1 ? 's' : '') + ' / ' + v.period + ' visite' + (v.period > 1 ? 's' : '')) : 'visites requises', null, null, ((conv != null && convPr != null) ? delta(conv, convPr) : null)) +
           statCard('Commandes', d.ordersTotal, d.byStatus.paid + ' payées · ' + d.byStatus.pending + ' en attente') +
           statCard('Produits en ligne', d.products.visible + '/' + d.products.total, d.products.inStock + ' en stock') +
+        '</div>' +
+        '<p class="dash-section-label">Rachats</p>' +
+        '<div class="stat-cards">' +
+          statCard('Rachats ' + lbl, bb.offersPeriod, bb.offersTotal + ' au total', null, 'rachat') +
+          statCard('Cartes rachetées vendues', bb.salesQty, 'issues des rachats ' + lblLow) +
+          statCard('Marge réalisée', chf(bb.realizedMargin), 'revente − coût de rachat ' + lblLow, (bb.realizedMargin < 0 ? 'is-alert' : null)) +
         '</div>' +
         '<div class="dash-grid">' +
           '<div class="dash-box"><h3>Chiffre d\'affaires <em class="dash-box__meta">' + lbl + ' · ' + chf(d.revenuePeriod) + '</em></h3>' + chart(d.revenueByDay, true) + '</div>' +
@@ -1682,22 +1689,31 @@
     ov.addEventListener('click', function (e) { if (e.target === ov || e.target.hasAttribute('data-mx')) close(); });
     ov.querySelector('[data-screate]').addEventListener('click', function () {
       var cat = ov.querySelector('[data-scat]').value || null;
+      var pr = R.params || {};
+      var buyRate = Number((offer.params && offer.params.eur_chf_buy) != null ? offer.params.eur_chf_buy : (pr.eur_chf_buy != null ? pr.eur_chf_buy : pr.eur_chf)) || 1;
       var jobs = [];
       (offer.lines || []).forEach(function (l, i) {
         var cb = ov.querySelector('[data-sl="' + i + '"]'); if (!cb || !cb.checked) return;
         var name = (ov.querySelector('[data-sn="' + i + '"]').value || '').trim() || l.name || 'Carte';
         var price = Number(ov.querySelector('[data-sp="' + i + '"]').value) || 0;
-        jobs.push({ name: name, price: price, stock_qty: l.qty || 1, category: cat, image: l.img || '', brand: 'Pokémon', visible: false });
+        var qty = l.qty || 1;
+        var costUnit = Math.round(((Number(l.offre_eur) || 0) / qty) * buyRate * 100) / 100; // coût de rachat / unité (CHF)
+        jobs.push({ product: { name: name, price: price, stock_qty: qty, category: cat, image: l.img || '', brand: 'Pokémon', visible: false, sku: 'RCH-' + offer.offer_number }, cost_chf: costUnit });
       });
       if (!jobs.length) { showFlash('Sélectionnez au moins une carte.', false); return; }
       var btn = ov.querySelector('[data-screate]'); btn.disabled = true; btn.textContent = 'Création…';
-      var done = 0, fail = 0;
-      Promise.all(jobs.map(function (p) {
-        return api('POST', 'admin-products', { action: 'create', product: p }).then(function (r) { if (r && r.ok) done++; else fail++; }).catch(function () { fail++; });
+      var done = 0, fail = 0, created = [];
+      Promise.all(jobs.map(function (j) {
+        return api('POST', 'admin-products', { action: 'create', product: j.product }).then(function (r) {
+          if (r && r.ok && r.product) { done++; created.push({ slug: r.product.slug, cost_chf: j.cost_chf, card_name: j.product.name }); }
+          else fail++;
+        }).catch(function () { fail++; });
       })).then(function () {
         close();
         showFlash(done + ' produit(s) créé(s) en brouillon' + (fail ? ' (' + fail + ' échec)' : '') + '. À compléter dans l\'onglet Produits.', !fail);
         PRODUCTS = []; // forcera un rechargement de l'onglet Produits
+        // Enregistre les cartes rachetées (coût) → marge réalisée au tableau de bord.
+        if (created.length) api('POST', 'admin-buyback', { action: 'tag-products', offer_id: offer.id, offer_number: offer.offer_number, items: created }).catch(function () {});
         if (done > 0) { api('POST', 'admin-buyback', { action: 'mark-listed', id: offer.id }).then(function () { refreshOffers(); }).catch(function () { refreshOffers(); }); }
       });
     });
