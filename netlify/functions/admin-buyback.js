@@ -39,8 +39,12 @@ async function loadParams(db) {
   const rows = await db.get('buyback_config?id=eq.1&select=data');
   const data = (rows[0] && rows[0].data) || {};
   const p = { ...DEFAULTS, ...data, merchant: { ...DEFAULTS.merchant, ...(data.merchant || {}) } };
-  // Rétro-compat : ancienne config à taux unique `eur_chf` → sert aux deux si les nouveaux manquent.
-  if (data.eur_chf != null) { if (data.eur_chf_buy == null) p.eur_chf_buy = Number(data.eur_chf); if (data.eur_chf_sell == null) p.eur_chf_sell = Number(data.eur_chf); }
+  // Les nouveaux taux séparés (eur_chf_buy / eur_chf_sell) priment ; l'ancien `eur_chf`
+  // ne sert QUE si AUCUN des deux n'a jamais été défini dans la config (vraie config legacy).
+  if (data.eur_chf != null && data.eur_chf_buy == null && data.eur_chf_sell == null) {
+    p.eur_chf_buy = DEFAULTS.eur_chf_buy;   // garde les défauts calibrés (0.91 / 0.93)
+    p.eur_chf_sell = DEFAULTS.eur_chf_sell; // plutôt que l'ancien taux unique
+  }
   return p;
 }
 
