@@ -47,7 +47,7 @@
 
   /* ---------- Onglets ---------- */
   var tabs = document.querySelectorAll('.admin-tab');
-  var panels = { stats: document.querySelector('[data-panel="stats"]'), orders: document.querySelector('[data-panel="orders"]'), products: document.querySelector('[data-panel="products"]'), categories: document.querySelector('[data-panel="categories"]'), promos: document.querySelector('[data-panel="promos"]') };
+  var panels = { stats: document.querySelector('[data-panel="stats"]'), orders: document.querySelector('[data-panel="orders"]'), products: document.querySelector('[data-panel="products"]'), categories: document.querySelector('[data-panel="categories"]'), promos: document.querySelector('[data-panel="promos"]'), rachat: document.querySelector('[data-panel="rachat"]') };
   var loaded = {};
   function switchTab(name) {
     tabs.forEach(function (t) { t.classList.toggle('is-active', t.getAttribute('data-tab') === name); });
@@ -57,6 +57,7 @@
     if (name === 'products') loadProducts();
     if (name === 'categories') loadCategoriesTab();
     if (name === 'promos') loadPromos();
+    if (name === 'rachat') loadRachat();
   }
   tabs.forEach(function (t) { t.addEventListener('click', function () { switchTab(t.getAttribute('data-tab')); }); });
 
@@ -1317,6 +1318,336 @@
     var pt = e.target.closest('[data-promotoggle]');
     if (pt) { pt.disabled = true; api('POST', 'admin-promos', { action: 'toggle', id: pt.getAttribute('data-promotoggle'), active: pt.checked }).then(function (r) { pt.disabled = false; if (!r || !r.ok) { pt.checked = !pt.checked; showFlash('Erreur.', false); } }); }
   });
+
+  /* ========== RACHAT / VALORISATION (P1) ========== */
+  var R = { params: null, lines: [], offers: [], bound: false, searching: false };
+  var ETATS = ['NM', 'EX', 'GD', 'LP', 'PL', 'PO'];       // Near Mint → Poor
+  var LANGUES = ['FR', 'EN', 'JP', 'IT', 'DE', 'ES'];
+  var eur = function (n) { return '€ ' + Number(n || 0).toFixed(2); };
+
+  function repriseForValue(v) {
+    var paliers = (R.params && R.params.paliers) || [];
+    for (var i = 0; i < paliers.length; i++) {
+      if (paliers[i].max == null || Number(v) <= Number(paliers[i].max)) return Number(paliers[i].reprise);
+    }
+    return paliers.length ? Number(paliers[paliers.length - 1].reprise) : 60;
+  }
+  // Même calcul que le serveur (aperçu live).
+  function calcLine(l) {
+    var p = R.params || {};
+    var value = Number(l.value_eur) || 0;
+    var qty = Math.max(1, parseInt(l.qty, 10) || 1);
+    var pct = isFinite(Number(l.reprise_pct)) ? Number(l.reprise_pct) : 60;
+    var offreUnit = Math.round(value * pct) / 100;
+    var ttcEurUnit = offreUnit * (Number(p.marge) || 1) * (1 + (Number(p.tva) || 0));
+    var ttcChfUnit = Math.round(ttcEurUnit * (Number(p.eur_chf) || 1) * 100) / 100;
+    return {
+      offre_eur: Math.round(offreUnit * qty * 100) / 100,
+      ttc_chf: Math.round(ttcChfUnit * qty * 100) / 100,
+    };
+  }
+  function totals() {
+    var te = 0, tc = 0;
+    R.lines.forEach(function (l) { var c = calcLine(l); te += c.offre_eur; tc += c.ttc_chf; });
+    te = Math.round(te * 100) / 100;
+    var rachat = Math.round(te * (Number((R.params || {}).eur_chf) || 1) * 100) / 100;
+    return { offreEur: te, reventeChf: Math.round(tc * 100) / 100, rachatChf: rachat };
+  }
+
+  function loadRachat() {
+    if (R.loaded) return;
+    panels.rachat.innerHTML = '<p class="empty">Chargement…</p>';
+    api('POST', 'admin-buyback', { action: 'params' }).then(function (d) {
+      R.params = (d && d.ok && d.params) || {};
+      R.loaded = true;
+      renderRachat();
+      refreshOffers();
+    }).catch(function () { panels.rachat.innerHTML = '<p class="empty">Erreur de chargement.</p>'; });
+  }
+  function refreshOffers() {
+    api('POST', 'admin-buyback', { action: 'list' }).then(function (d) {
+      R.offers = (d && d.ok && d.offers) || [];
+      var box = panels.rachat.querySelector('[data-rc-offers]');
+      if (box) box.innerHTML = offersHtml();
+    }).catch(function () {});
+  }
+
+  function lineRow(l, i) {
+    var c = calcLine(l);
+    var opt = function (arr, cur) { return arr.map(function (x) { return '<option' + (x === cur ? ' selected' : '') + '>' + x + '</option>'; }).join(''); };
+    return '<tr data-line="' + i + '">' +
+      '<td class="rc-card">' + (l.img ? '<img src="' + esc(l.img) + '" alt="" loading="lazy">' : '') +
+        '<span><b>' + esc(l.name || '—') + '</b><br><small>' + esc(l.set || '') + (l.number ? ' · ' + esc(l.number) : '') + '</small></span></td>' +
+      '<td><select data-f="etat">' + opt(ETATS, l.etat) + '</select></td>' +
+      '<td><select data-f="langue">' + opt(LANGUES, l.langue) + '</select></td>' +
+      '<td><input data-f="qty" type="number" min="1" step="1" value="' + (l.qty || 1) + '"></td>' +
+      '<td><input data-f="value_eur" type="number" min="0" step="0.01" value="' + (Number(l.value_eur) || 0) + '"> €</td>' +
+      '<td><input data-f="reprise_pct" type="number" min="0" max="100" step="1" value="' + (Number(l.reprise_pct) || 0) + '"> %</td>' +
+      '<td data-c="offre" class="rc-num">' + eur(c.offre_eur) + '</td>' +
+      '<td data-c="revente" class="rc-num">' + chf(c.ttc_chf) + '</td>' +
+      '<td><button type="button" class="rc-rm" data-rm title="Retirer">✕</button></td>' +
+    '</tr>';
+  }
+  function linesHtml() {
+    if (!R.lines.length) return '<tr><td colspan="9" class="empty">Aucune carte. Recherchez une carte ci-dessus ou ajoutez une ligne manuelle.</td></tr>';
+    return R.lines.map(lineRow).join('');
+  }
+  function offersHtml() {
+    if (!R.offers.length) return '<p class="empty">Aucune offre enregistrée.</p>';
+    return '<table class="rc-table rc-table--offers"><thead><tr><th>N°</th><th>Date</th><th>Client</th><th>Statut</th><th class="rc-num">Rachat</th><th></th></tr></thead><tbody>' +
+      R.offers.map(function (o) {
+        return '<tr><td><b>N°' + o.offer_number + '</b></td><td>' + frDate(o.created_at) + '</td><td>' + esc(o.client_name || '—') + '</td>' +
+          '<td>' + esc(o.status || '') + '</td><td class="rc-num">' + chf(o.valeur_rachat_chf) + '</td>' +
+          '<td><button type="button" class="btn btn--ghost btn--sm" data-reprint="' + o.id + '">Imprimer</button></td></tr>';
+      }).join('') + '</tbody></table>';
+  }
+
+  function renderRachat() {
+    var t = totals();
+    var p = R.params || {};
+    panels.rachat.innerHTML =
+      '<div class="rc">' +
+      // --- Recherche ---
+      '<section class="rc-sec">' +
+        '<h3>1. Rechercher une carte (cote Cardmarket)</h3>' +
+        '<form class="rc-search" data-rc-search>' +
+          '<input name="name" placeholder="Nom de la carte (ex. Charizard ex)" autocomplete="off" required>' +
+          '<input name="number" placeholder="N° (option.)" class="rc-search__sm">' +
+          '<button type="submit" class="btn btn--gold btn--sm">Rechercher</button>' +
+          '<button type="button" class="btn btn--ghost btn--sm" data-rc-manual>+ Ligne manuelle</button>' +
+        '</form>' +
+        '<div class="rc-results" data-rc-results></div>' +
+      '</section>' +
+      // --- Offre ---
+      '<section class="rc-sec">' +
+        '<h3>2. Offre de rachat</h3>' +
+        '<div class="rc-tablewrap"><table class="rc-table"><thead><tr>' +
+          '<th>Carte</th><th>État</th><th>Langue</th><th>Qté</th><th>Valeur €</th><th>Reprise</th><th class="rc-num">Offre €</th><th class="rc-num">Revente CHF</th><th></th>' +
+        '</tr></thead><tbody data-rc-lines>' + linesHtml() + '</tbody></table></div>' +
+        '<div class="rc-foot">' +
+          '<div class="rc-client">' +
+            '<input data-rc-client placeholder="Nom du vendeur (option.)" autocomplete="off">' +
+            '<input data-rc-note placeholder="Note interne (option.)" autocomplete="off">' +
+          '</div>' +
+          '<div class="rc-totals">' +
+            '<div><span>Total offre</span><b data-c="total-eur">' + eur(t.offreEur) + '</b></div>' +
+            '<div class="rc-totals__main"><span>Valeur de rachat</span><b data-c="total-chf">' + chf(t.rachatChf) + '</b></div>' +
+          '</div>' +
+        '</div>' +
+        '<div class="rc-actions">' +
+          '<button type="button" class="btn btn--gold" data-rc-save>💾 Enregistrer &amp; imprimer</button>' +
+          '<button type="button" class="btn btn--ghost" data-rc-print>🖨️ Imprimer (sans enregistrer)</button>' +
+          '<button type="button" class="btn btn--ghost btn--sm" data-rc-clear>Vider</button>' +
+        '</div>' +
+      '</section>' +
+      // --- Offres enregistrées ---
+      '<section class="rc-sec"><h3>3. Offres enregistrées</h3><div data-rc-offers>' + offersHtml() + '</div></section>' +
+      // --- Paramètres ---
+      '<details class="rc-sec rc-params"><summary>⚙️ Paramètres de calcul</summary>' +
+        '<p class="rc-hint">À caler sur votre fichier de calcul (offre N°117). Ces valeurs figent chaque offre enregistrée.</p>' +
+        '<div class="rc-pgrid">' +
+          pField('marge', 'Marge (revente)', p.marge, '0.01') +
+          pField('tva', 'TVA (0.081 = 8.1%)', p.tva, '0.001') +
+          pField('cm_plus', '+ frais CM (0.05 = 5%)', p.cm_plus, '0.01') +
+          pField('eur_chf', 'Taux EUR→CHF', p.eur_chf, '0.0001') +
+          pField('next_number', 'Prochain n° d\'offre', p.next_number, '1') +
+        '</div>' +
+        '<div class="rc-pgrid">' +
+          '<label>Paliers de reprise (valeur € → %)<input data-pp="paliers" value="' + esc(paliersToStr(p.paliers)) + '" placeholder="0-20:60, 20-100:65, 100+:80"></label>' +
+          '<label>Entreprise (impression)<input data-pm="name" value="' + esc((p.merchant || {}).name || '') + '"></label>' +
+          '<label>IDE<input data-pm="ide" value="' + esc((p.merchant || {}).ide || '') + '"></label>' +
+          '<label>Adresse<input data-pm="addr" value="' + esc((p.merchant || {}).addr || '') + '"></label>' +
+          '<label>E-mail<input data-pm="email" value="' + esc((p.merchant || {}).email || '') + '"></label>' +
+          '<label>Téléphone<input data-pm="phone" value="' + esc((p.merchant || {}).phone || '') + '"></label>' +
+        '</div>' +
+        '<button type="button" class="btn btn--gold btn--sm" data-rc-saveparams>Enregistrer les paramètres</button>' +
+      '</details>' +
+      '</div>';
+    bindRachat();
+  }
+  function pField(k, label, val, step) {
+    return '<label>' + label + '<input data-pp="' + k + '" type="number" step="' + step + '" value="' + (val != null ? val : '') + '"></label>';
+  }
+  function paliersToStr(pal) {
+    if (!Array.isArray(pal)) return '';
+    var prev = 0;
+    return pal.map(function (x) { var s = (x.max == null) ? (prev + '+') : (prev + '-' + x.max); prev = x.max; return s + ':' + x.reprise; }).join(', ');
+  }
+  function strToPaliers(s) {
+    var out = [];
+    String(s || '').split(',').forEach(function (seg) {
+      var m = seg.split(':'); if (m.length < 2) return;
+      var reprise = Number(m[1].trim());
+      var range = m[0].trim();
+      var max = /\+/.test(range) ? null : Number((range.split('-')[1] || range).trim());
+      if (isFinite(reprise)) out.push({ max: (max === null || isFinite(max)) ? max : null, reprise: reprise });
+    });
+    return out.length ? out : null;
+  }
+
+  function recomputeRow(i) {
+    var tr = panels.rachat.querySelector('[data-line="' + i + '"]'); if (!tr) return;
+    var c = calcLine(R.lines[i]);
+    var o = tr.querySelector('[data-c="offre"]'); if (o) o.textContent = eur(c.offre_eur);
+    var rv = tr.querySelector('[data-c="revente"]'); if (rv) rv.textContent = chf(c.ttc_chf);
+    recomputeTotals();
+  }
+  function recomputeTotals() {
+    var t = totals();
+    var a = panels.rachat.querySelector('[data-c="total-eur"]'); if (a) a.textContent = eur(t.offreEur);
+    var b = panels.rachat.querySelector('[data-c="total-chf"]'); if (b) b.textContent = chf(t.rachatChf);
+  }
+  function redrawLines() {
+    var tb = panels.rachat.querySelector('[data-rc-lines]'); if (tb) tb.innerHTML = linesHtml();
+    recomputeTotals();
+  }
+
+  function addLine(card) {
+    var val = card && card.trendEur != null ? Number(card.trendEur) : 0;
+    R.lines.push({
+      name: (card && card.name) || '', set: (card && card.setName) || '', number: (card && card.number) || '',
+      img: (card && card.img) || '', etat: 'NM', langue: 'FR', qty: 1,
+      value_eur: val, reprise_pct: repriseForValue(val),
+    });
+    redrawLines();
+  }
+
+  function renderResults(cards, total) {
+    var box = panels.rachat.querySelector('[data-rc-results]'); if (!box) return;
+    if (!cards.length) { box.innerHTML = '<p class="empty">Aucune carte trouvée. Essayez un autre nom ou « + Ligne manuelle ».</p>'; return; }
+    box.innerHTML = '<div class="rc-cards">' + cards.map(function (c, i) {
+      RESULTS[i] = c;
+      return '<button type="button" class="rc-cardbtn" data-add="' + i + '">' +
+        (c.img ? '<img src="' + esc(c.img) + '" alt="" loading="lazy">' : '<span class="rc-noimg">?</span>') +
+        '<span class="rc-cardbtn__name">' + esc(c.name) + '</span>' +
+        '<span class="rc-cardbtn__set">' + esc(c.setName) + (c.number ? ' · ' + esc(c.number) : '') + '</span>' +
+        '<span class="rc-cardbtn__price">' + (c.trendEur != null ? eur(c.trendEur) : '— €') + '</span>' +
+      '</button>';
+    }).join('') + '</div>' + (total > cards.length ? '<p class="rc-hint">' + cards.length + ' affichées sur ' + total + '. Affinez la recherche (nom + n°).</p>' : '');
+  }
+  var RESULTS = {};
+
+  function doSearch(form) {
+    if (R.searching) return;
+    var name = form.name.value.trim(); if (!name) return;
+    var box = panels.rachat.querySelector('[data-rc-results]');
+    R.searching = true; if (box) box.innerHTML = '<p class="empty">Recherche…</p>';
+    api('POST', 'admin-cards-search', { name: name, number: form.number.value.trim() || undefined }).then(function (d) {
+      R.searching = false;
+      if (!d || !d.ok) { if (box) box.innerHTML = '<p class="empty">' + esc((d && d.error) || 'Erreur.') + '</p>'; return; }
+      RESULTS = {};
+      renderResults(d.cards || [], d.total || 0);
+    }).catch(function () { R.searching = false; if (box) box.innerHTML = '<p class="empty">Erreur réseau.</p>'; });
+  }
+
+  // Objet offre (forme commune aperçu / enregistré) pour l'impression.
+  function previewOffer() {
+    var p = R.params || {};
+    var t = totals();
+    return {
+      offer_number: p.next_number, provisional: true, created_at: new Date().toISOString(),
+      client_name: (panels.rachat.querySelector('[data-rc-client]') || {}).value || '',
+      eur_chf_rate: p.eur_chf, params: p,
+      lines: R.lines.map(function (l) { var c = calcLine(l); return { name: l.name, set: l.set, number: l.number, etat: l.etat, langue: l.langue, qty: l.qty, value_eur: l.value_eur, reprise_pct: l.reprise_pct, offre_eur: c.offre_eur, ttc_chf: c.ttc_chf }; }),
+      total_offre_eur: t.offreEur, valeur_rachat_chf: t.rachatChf,
+    };
+  }
+
+  function printOffer(offer) {
+    var p = R.params || {}; var m = (offer.params && offer.params.merchant) || p.merchant || {};
+    var rows = (offer.lines || []).map(function (l, i) {
+      return '<tr><td>' + (i + 1) + '</td><td>' + esc(l.name || '') + '<br><small>' + esc(l.set || '') + (l.number ? ' · ' + esc(l.number) : '') + '</small></td>' +
+        '<td>' + esc(l.etat || '') + '</td><td>' + esc(l.langue || '') + '</td><td class="r">' + (l.qty || 1) + '</td>' +
+        '<td class="r">€ ' + Number(l.value_eur || 0).toFixed(2) + '</td><td class="r">' + Number(l.reprise_pct || 0) + ' %</td>' +
+        '<td class="r">€ ' + Number(l.offre_eur || 0).toFixed(2) + '</td></tr>';
+    }).join('');
+    var d = new Date(offer.created_at || Date.now());
+    var dateStr = d.toLocaleDateString('fr-CH', { day: '2-digit', month: '2-digit', year: 'numeric' });
+    var html = '<!doctype html><html lang="fr"><head><meta charset="utf-8"><title>Offre de rachat N°' + offer.offer_number + '</title>' +
+      '<style>*{box-sizing:border-box}body{font-family:Arial,Helvetica,sans-serif;color:#111;margin:0;padding:28px 34px;font-size:12px}' +
+      'h1{font-size:19px;margin:0 0 2px}.muted{color:#555}.head{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:2px solid #c8a24a;padding-bottom:12px;margin-bottom:16px}' +
+      '.ref{text-align:right}.ref b{font-size:16px}table{width:100%;border-collapse:collapse;margin:10px 0}th,td{border:1px solid #ccc;padding:5px 7px;text-align:left;vertical-align:top}' +
+      'th{background:#f3ead2}.r{text-align:right}small{color:#666}.tot{margin-top:14px;width:320px;margin-left:auto}.tot td{border:none;padding:3px 7px}' +
+      '.tot .big{font-size:15px;font-weight:bold;border-top:2px solid #c8a24a}.sign{margin-top:46px;display:flex;justify-content:space-between;gap:40px}' +
+      '.sign div{flex:1;border-top:1px solid #999;padding-top:5px;color:#555}.note{margin-top:22px;color:#555;font-size:11px}.prov{color:#b00;font-weight:bold}@media print{body{padding:0}}</style></head><body>' +
+      '<div class="head"><div><h1>' + esc(m.name || 'Coffre à Dom') + '</h1>' +
+        '<div class="muted">' + [m.addr, m.ide ? 'IDE ' + m.ide : '', m.email, m.phone].filter(Boolean).map(esc).join('<br>') + '</div></div>' +
+        '<div class="ref"><b>Offre de rachat</b><br>N° ' + offer.offer_number + (offer.provisional ? ' <span class="prov">(provisoire)</span>' : '') + '<br>' + dateStr +
+          (offer.client_name ? '<br>Vendeur : ' + esc(offer.client_name) : '') + '</div></div>' +
+      '<table><thead><tr><th>#</th><th>Carte</th><th>État</th><th>Langue</th><th class="r">Qté</th><th class="r">Valeur</th><th class="r">Reprise</th><th class="r">Offre</th></tr></thead><tbody>' + rows + '</tbody></table>' +
+      '<table class="tot"><tr><td>Total de l\'offre (EUR)</td><td class="r">€ ' + Number(offer.total_offre_eur || 0).toFixed(2) + '</td></tr>' +
+        '<tr class="big"><td>Valeur de rachat (CHF)</td><td class="r">CHF ' + Number(offer.valeur_rachat_chf || 0).toFixed(2) + '</td></tr></table>' +
+      '<p class="note">Offre de reprise indicative établie sur la base de la cote Cardmarket au ' + dateStr + ', sous réserve de vérification de l\'état des cartes en boutique. Taux EUR→CHF appliqué : ' + Number(offer.eur_chf_rate || p.eur_chf || 0).toFixed(4) + '.</p>' +
+      '<div class="sign"><div>Signature du vendeur</div><div>Signature ' + esc(m.name || 'Coffre à Dom') + '</div></div>' +
+      '<script>window.onload=function(){window.print();}<\/script></body></html>';
+    var w = window.open('', '_blank');
+    if (!w) { showFlash('Autorisez les fenêtres pop-up pour imprimer.', false); return; }
+    w.document.write(html); w.document.close();
+  }
+
+  function saveOffer() {
+    if (!R.lines.length) { showFlash('Ajoutez au moins une carte.', false); return; }
+    var btn = panels.rachat.querySelector('[data-rc-save]'); if (btn) btn.disabled = true;
+    api('POST', 'admin-buyback', {
+      action: 'create',
+      client_name: (panels.rachat.querySelector('[data-rc-client]') || {}).value || '',
+      client_note: (panels.rachat.querySelector('[data-rc-note]') || {}).value || '',
+      lines: R.lines,
+    }).then(function (d) {
+      if (btn) btn.disabled = false;
+      if (!d || !d.ok) { showFlash((d && d.error) || 'Erreur.', false); return; }
+      showFlash('Offre N°' + d.offer.offer_number + ' enregistrée.', true);
+      printOffer(d.offer);
+      R.lines = []; R.params.next_number = d.offer.offer_number + 1;
+      redrawLines();
+      var ci = panels.rachat.querySelector('[data-rc-client]'); if (ci) ci.value = '';
+      var ni = panels.rachat.querySelector('[data-rc-note]'); if (ni) ni.value = '';
+      refreshOffers();
+    }).catch(function () { if (btn) btn.disabled = false; showFlash('Erreur réseau.', false); });
+  }
+
+  function saveParams() {
+    var p = { ...R.params, merchant: { ...(R.params.merchant || {}) } };
+    panels.rachat.querySelectorAll('[data-pp]').forEach(function (el) {
+      var k = el.getAttribute('data-pp');
+      if (k === 'paliers') { var pl = strToPaliers(el.value); if (pl) p.paliers = pl; }
+      else p[k] = Number(el.value);
+    });
+    panels.rachat.querySelectorAll('[data-pm]').forEach(function (el) { p.merchant[el.getAttribute('data-pm')] = el.value; });
+    api('POST', 'admin-buyback', { action: 'save-params', params: p }).then(function (d) {
+      if (d && d.ok) { R.params = d.params; showFlash('Paramètres enregistrés.', true); }
+      else showFlash((d && d.error) || 'Erreur.', false);
+    }).catch(function () { showFlash('Erreur réseau.', false); });
+  }
+
+  function bindRachat() {
+    if (R.bound) return; R.bound = true;
+    // Saisie dans les lignes (recalcul sans re-render pour garder le focus).
+    panels.rachat.addEventListener('input', function (e) {
+      var f = e.target.closest('[data-f]'); if (!f) return;
+      var tr = f.closest('[data-line]'); if (!tr) return;
+      var i = parseInt(tr.getAttribute('data-line'), 10);
+      if (!R.lines[i]) return;
+      R.lines[i][f.getAttribute('data-f')] = f.value;
+      recomputeRow(i);
+    });
+    panels.rachat.addEventListener('submit', function (e) {
+      var s = e.target.closest('[data-rc-search]'); if (s) { e.preventDefault(); doSearch(s); }
+    });
+    panels.rachat.addEventListener('click', function (e) {
+      var add = e.target.closest('[data-add]'); if (add) { addLine(RESULTS[add.getAttribute('data-add')]); return; }
+      if (e.target.closest('[data-rc-manual]')) { addLine(null); return; }
+      var rm = e.target.closest('[data-rm]'); if (rm) { var tr = rm.closest('[data-line]'); R.lines.splice(parseInt(tr.getAttribute('data-line'), 10), 1); redrawLines(); return; }
+      if (e.target.closest('[data-rc-save]')) { saveOffer(); return; }
+      if (e.target.closest('[data-rc-print]')) { if (!R.lines.length) { showFlash('Ajoutez au moins une carte.', false); return; } printOffer(previewOffer()); return; }
+      if (e.target.closest('[data-rc-clear]')) { R.lines = []; redrawLines(); return; }
+      if (e.target.closest('[data-rc-saveparams]')) { saveParams(); return; }
+      var rp = e.target.closest('[data-reprint]'); if (rp) {
+        api('POST', 'admin-buyback', { action: 'get', id: rp.getAttribute('data-reprint') }).then(function (d) { if (d && d.ok) printOffer(d.offer); else showFlash('Offre introuvable.', false); });
+        return;
+      }
+    });
+  }
 
   /* ---------- Login ---------- */
   login.addEventListener('submit', function (e) {
