@@ -133,9 +133,9 @@
     return '<div class="dash-box"><h3>Ventes par canal <em class="dash-box__meta">' + lbl + ' · ' + chf(totRev) + '</em></h3>' + body + '</div>';
   }
   var STATS_PERIOD = 30;
-  var PERIOD_LABELS = { 1: 'Aujourd\'hui', 7: '7 jours', 30: '30 jours', 90: '90 jours' };
+  var PERIOD_LABELS = { 1: 'Aujourd\'hui', 7: '7 jours', 30: '30 jours', 90: '90 jours', 180: '180 jours', 365: '1 an' };
   function periodSelector() {
-    return '<div class="period-sel">' + [1, 7, 30, 90].map(function (n) {
+    return '<div class="period-sel">' + [1, 7, 30, 90, 180, 365].map(function (n) {
       return '<button type="button" class="period-btn' + (n === STATS_PERIOD ? ' is-active' : '') + '" data-statsperiod="' + n + '">' + PERIOD_LABELS[n] + '</button>';
     }).join('') + '</div>';
   }

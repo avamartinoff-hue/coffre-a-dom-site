@@ -30,7 +30,7 @@ exports.handler = async (event) => {
 
     // Période demandée (nombre de jours) : 1 (aujourd'hui) · 7 · 30 · 90 · 365. Défaut 30.
     const qsDays = parseInt((event.queryStringParameters || {}).days, 10);
-    const N = [1, 7, 30, 90].includes(qsDays) ? qsDays : 30;
+    const N = [1, 7, 30, 90, 180, 365].includes(qsDays) ? qsDays : 30;
 
     const byStatus = { pending: 0, paid: 0, failed: 0, cancelled: 0 };
     let revenue = 0, revenuePeriod = 0, ordersPeriod = 0, paidOrdersPeriod = 0;
