@@ -1341,7 +1341,8 @@
     var pct = isFinite(Number(l.reprise_pct)) ? Number(l.reprise_pct) : 60;
     var offreUnit = Math.round(value * pct) / 100;
     var ttcEurUnit = offreUnit * (Number(p.marge) || 1) * (1 + (Number(p.tva) || 0));
-    var ttcChfUnit = Math.round(ttcEurUnit * (Number(p.eur_chf) || 1) * 100) / 100;
+    var sellRate = Number(p.eur_chf_sell != null ? p.eur_chf_sell : p.eur_chf) || 1;
+    var ttcChfUnit = Math.round(ttcEurUnit * sellRate * 100) / 100;
     return {
       offre_eur: Math.round(offreUnit * qty * 100) / 100,
       ttc_chf: Math.round(ttcChfUnit * qty * 100) / 100,
@@ -1351,7 +1352,9 @@
     var te = 0, tc = 0;
     R.lines.forEach(function (l) { var c = calcLine(l); te += c.offre_eur; tc += c.ttc_chf; });
     te = Math.round(te * 100) / 100;
-    var rachat = Math.round(te * (Number((R.params || {}).eur_chf) || 1) * 100) / 100;
+    var pr = R.params || {};
+    var buyRate = Number(pr.eur_chf_buy != null ? pr.eur_chf_buy : pr.eur_chf) || 1;
+    var rachat = Math.round(te * buyRate * 100) / 100;
     return { offreEur: te, reventeChf: Math.round(tc * 100) / 100, rachatChf: rachat };
   }
 
@@ -1437,6 +1440,7 @@
           '<div class="rc-client">' +
             '<input data-rc-client placeholder="Nom du vendeur (option.)" autocomplete="off">' +
             '<input data-rc-note placeholder="Note interne (option.)" autocomplete="off">' +
+            '<select data-rc-pay aria-label="Méthode de paiement"><option value="">💳 Paiement du rachat…</option><option value="especes">💵 Espèces</option><option value="virement">🏦 Virement</option><option value="twint">📱 TWINT</option></select>' +
           '</div>' +
           '<div class="rc-totals">' +
             '<div><span>Total offre</span><b data-c="total-eur">' + eur(t.offreEur) + '</b></div>' +
@@ -1458,7 +1462,8 @@
           pField('marge', 'Marge (revente)', p.marge, '0.01') +
           pField('tva', 'TVA (0.081 = 8.1%)', p.tva, '0.001') +
           pField('cm_plus', '+ frais CM (0.05 = 5%)', p.cm_plus, '0.01') +
-          pField('eur_chf', 'Taux EUR→CHF', p.eur_chf, '0.0001') +
+          pField('eur_chf_buy', 'Taux EUR→CHF (rachat payé)', p.eur_chf_buy, '0.0001') +
+          pField('eur_chf_sell', 'Taux EUR→CHF (revente)', p.eur_chf_sell, '0.0001') +
           pField('next_number', 'Prochain n° d\'offre', p.next_number, '1') +
         '</div>' +
         '<div class="rc-pgrid">' +
@@ -1556,12 +1561,14 @@
     return {
       offer_number: p.next_number, provisional: true, created_at: new Date().toISOString(),
       client_name: (panels.rachat.querySelector('[data-rc-client]') || {}).value || '',
-      eur_chf_rate: p.eur_chf, params: p,
+      payment_mode: (panels.rachat.querySelector('[data-rc-pay]') || {}).value || '',
+      eur_chf_rate: (p.eur_chf_buy != null ? p.eur_chf_buy : p.eur_chf), params: p,
       lines: R.lines.map(function (l) { var c = calcLine(l); return { name: l.name, set: l.set, number: l.number, etat: l.etat, langue: l.langue, qty: l.qty, value_eur: l.value_eur, reprise_pct: l.reprise_pct, offre_eur: c.offre_eur, ttc_chf: c.ttc_chf }; }),
       total_offre_eur: t.offreEur, valeur_rachat_chf: t.rachatChf,
     };
   }
 
+  var PAYLBL = { especes: 'Espèces', virement: 'Virement', twint: 'TWINT' };
   function printOffer(offer) {
     var p = R.params || {}; var m = (offer.params && offer.params.merchant) || p.merchant || {};
     var rows = (offer.lines || []).map(function (l, i) {
@@ -1582,11 +1589,12 @@
       '<div class="head"><div><h1>' + esc(m.name || 'Coffre à Dom') + '</h1>' +
         '<div class="muted">' + [m.addr, m.ide ? 'IDE ' + m.ide : '', m.email, m.phone].filter(Boolean).map(esc).join('<br>') + '</div></div>' +
         '<div class="ref"><b>Offre de rachat</b><br>N° ' + offer.offer_number + (offer.provisional ? ' <span class="prov">(provisoire)</span>' : '') + '<br>' + dateStr +
-          (offer.client_name ? '<br>Vendeur : ' + esc(offer.client_name) : '') + '</div></div>' +
+          (offer.client_name ? '<br>Vendeur : ' + esc(offer.client_name) : '') +
+          (PAYLBL[offer.payment_mode] ? '<br>Paiement : ' + PAYLBL[offer.payment_mode] : '') + '</div></div>' +
       '<table><thead><tr><th>#</th><th>Carte</th><th>État</th><th>Langue</th><th class="r">Qté</th><th class="r">Valeur</th><th class="r">Reprise</th><th class="r">Offre</th></tr></thead><tbody>' + rows + '</tbody></table>' +
       '<table class="tot"><tr><td>Total de l\'offre (EUR)</td><td class="r">€ ' + Number(offer.total_offre_eur || 0).toFixed(2) + '</td></tr>' +
         '<tr class="big"><td>Valeur de rachat (CHF)</td><td class="r">CHF ' + Number(offer.valeur_rachat_chf || 0).toFixed(2) + '</td></tr></table>' +
-      '<p class="note">Offre de reprise indicative établie sur la base de la cote Cardmarket au ' + dateStr + ', sous réserve de vérification de l\'état des cartes en boutique. Taux EUR→CHF appliqué : ' + Number(offer.eur_chf_rate || p.eur_chf || 0).toFixed(4) + '.</p>' +
+      '<p class="note">Offre de reprise indicative établie sur la base de la cote Cardmarket au ' + dateStr + ', sous réserve de vérification de l\'état des cartes en boutique. Taux EUR→CHF appliqué : ' + Number(offer.eur_chf_rate || p.eur_chf_buy || p.eur_chf || 0).toFixed(4) + '.</p>' +
       '<div class="sign"><div>Signature du vendeur</div><div>Signature ' + esc(m.name || 'Coffre à Dom') + '</div></div>' +
       '<script>window.onload=function(){window.print();}<\/script></body></html>';
     var w = window.open('', '_blank');
@@ -1601,6 +1609,7 @@
       action: 'create',
       client_name: (panels.rachat.querySelector('[data-rc-client]') || {}).value || '',
       client_note: (panels.rachat.querySelector('[data-rc-note]') || {}).value || '',
+      payment_mode: (panels.rachat.querySelector('[data-rc-pay]') || {}).value || '',
       lines: R.lines,
     }).then(function (d) {
       if (btn) btn.disabled = false;
@@ -1611,6 +1620,7 @@
       redrawLines();
       var ci = panels.rachat.querySelector('[data-rc-client]'); if (ci) ci.value = '';
       var ni = panels.rachat.querySelector('[data-rc-note]'); if (ni) ni.value = '';
+      var pi = panels.rachat.querySelector('[data-rc-pay]'); if (pi) pi.value = '';
       refreshOffers();
     }).catch(function () { if (btn) btn.disabled = false; showFlash('Erreur réseau.', false); });
   }

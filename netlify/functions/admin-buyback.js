@@ -30,7 +30,7 @@ function sb() {
 }
 
 const DEFAULTS = {
-  marge: 1.55, tva: 0.081, cm_plus: 0.05, eur_chf: 0.92, next_number: 118,
+  marge: 1.55, tva: 0.081, cm_plus: 0.05, eur_chf_buy: 0.91, eur_chf_sell: 0.93, next_number: 118,
   paliers: [{ max: 20, reprise: 60 }, { max: 100, reprise: 65 }, { max: null, reprise: 80 }],
   merchant: { name: 'Coffre à Dom Sàrl', ide: 'CHE-142.573.696', addr: '', email: '', phone: '' },
 };
@@ -38,7 +38,10 @@ const DEFAULTS = {
 async function loadParams(db) {
   const rows = await db.get('buyback_config?id=eq.1&select=data');
   const data = (rows[0] && rows[0].data) || {};
-  return { ...DEFAULTS, ...data, merchant: { ...DEFAULTS.merchant, ...(data.merchant || {}) } };
+  const p = { ...DEFAULTS, ...data, merchant: { ...DEFAULTS.merchant, ...(data.merchant || {}) } };
+  // Rétro-compat : ancienne config à taux unique `eur_chf` → sert aux deux si les nouveaux manquent.
+  if (data.eur_chf != null) { if (data.eur_chf_buy == null) p.eur_chf_buy = Number(data.eur_chf); if (data.eur_chf_sell == null) p.eur_chf_sell = Number(data.eur_chf); }
+  return p;
 }
 
 function round2(n) { return Math.round((Number(n) || 0) * 100) / 100; }
@@ -51,7 +54,8 @@ function computeLine(line, p) {
   const pct = isFinite(reprise) ? reprise : 60;
   const offreUnit = round2(value * pct / 100);               // € payé au vendeur / unité
   const ttcEurUnit = offreUnit * (Number(p.marge) || 1) * (1 + (Number(p.tva) || 0));
-  const ttcChfUnit = round2(ttcEurUnit * (Number(p.eur_chf) || 1));       // revente CHF TTC / unité
+  const sellRate = Number(p.eur_chf_sell != null ? p.eur_chf_sell : p.eur_chf) || 1;
+  const ttcChfUnit = round2(ttcEurUnit * sellRate);                       // revente CHF TTC / unité
   const cmChfUnit = round2(ttcChfUnit * (1 + (Number(p.cm_plus) || 0)));  // revente CHF +5% CM
   return {
     name: String(line.name || '').slice(0, 160),
@@ -89,7 +93,7 @@ exports.handler = async (event) => {
       const cur = await loadParams(db);
       const next = { ...cur, ...(body.params || {}), merchant: { ...cur.merchant, ...((body.params || {}).merchant || {}) } };
       // Garde-fous numériques
-      ['marge', 'tva', 'cm_plus', 'eur_chf'].forEach((k) => { next[k] = Number(next[k]) || cur[k]; });
+      ['marge', 'tva', 'cm_plus', 'eur_chf_buy', 'eur_chf_sell'].forEach((k) => { next[k] = Number(next[k]) || cur[k]; });
       next.next_number = Math.max(1, parseInt(next.next_number, 10) || cur.next_number);
       if (!Array.isArray(next.paliers) || !next.paliers.length) next.paliers = cur.paliers;
       await db.post('buyback_config', { id: 1, data: next, updated_at: new Date().toISOString() }, 'resolution=merge-duplicates,return=minimal');
@@ -138,25 +142,32 @@ exports.handler = async (event) => {
       const lines = rawLines.filter((l) => l && (l.name || l.value_eur != null)).map((l) => computeLine(l, p));
       if (!lines.length) return json(400, { ok: false, error: 'Aucune ligne valide.' });
       const totalOffreEur = round2(lines.reduce((s, l) => s + l.offre_eur, 0));
-      const valeurRachatChf = round2(totalOffreEur * (Number(p.eur_chf) || 1));
+      const buyRate = Number(p.eur_chf_buy != null ? p.eur_chf_buy : p.eur_chf) || 1;
+      const valeurRachatChf = round2(totalOffreEur * buyRate);
 
       // Numéro séquentiel : max(existant, next_number-1) + 1 → jamais de collision.
       const last = await db.get('buyback_offers?select=offer_number&order=offer_number.desc&limit=1');
       const base = Math.max((last[0] && last[0].offer_number) || 0, (p.next_number || 1) - 1);
       const offerNumber = base + 1;
 
-      const [offer] = await db.post('buyback_offers', {
+      const payModes = ['especes', 'virement', 'twint'];
+      const row = {
         offer_number: offerNumber,
         client_name: (body.client_name || '').slice(0, 160) || null,
         client_note: (body.client_note || '').slice(0, 2000) || null,
         currency: 'CHF',
-        eur_chf_rate: Number(p.eur_chf) || null,
-        params: { marge: p.marge, tva: p.tva, cm_plus: p.cm_plus, eur_chf: p.eur_chf },
+        eur_chf_rate: buyRate || null,
+        params: { marge: p.marge, tva: p.tva, cm_plus: p.cm_plus, eur_chf_buy: p.eur_chf_buy, eur_chf_sell: p.eur_chf_sell },
         lines,
         total_offre_eur: totalOffreEur,
         valeur_rachat_chf: valeurRachatChf,
         status: ['draft', 'sent', 'accepted', 'paid', 'cancelled'].includes(body.status) ? body.status : 'draft',
-      });
+        payment_mode: payModes.includes(body.payment_mode) ? body.payment_mode : null,
+      };
+      // Tolérant : si la colonne payment_mode n'existe pas encore (SQL pas rejoué), on réinsère sans.
+      let offer;
+      try { [offer] = await db.post('buyback_offers', row); }
+      catch (e) { const r2 = { ...row }; delete r2.payment_mode; [offer] = await db.post('buyback_offers', r2); }
 
       // Avance next_number pour la prochaine offre.
       await db.post('buyback_config', { id: 1, data: { ...p, next_number: offerNumber + 1 }, updated_at: new Date().toISOString() }, 'resolution=merge-duplicates,return=minimal').catch(() => {});

@@ -26,7 +26,8 @@ values (1, jsonb_build_object(
   'marge',   1.55,                 -- coefficient de revente
   'tva',     0.081,                -- TVA 8.1 %
   'cm_plus', 0.05,                 -- +5 % frais Cardmarket sur la revente
-  'eur_chf', 0.92,                 -- taux de conversion EUR → CHF
+  'eur_chf_buy',  0.91,            -- taux EUR→CHF appliqué au RACHAT (payé au vendeur)
+  'eur_chf_sell', 0.93,            -- taux EUR→CHF appliqué à la REVENTE (Total TTC)
   'next_number', 118,              -- prochain n° d'offre (N°117 déjà émise)
   'paliers', jsonb_build_array(    -- % de reprise par tranche de valeur (€)
     jsonb_build_object('max', 20,   'reprise', 60),
@@ -65,6 +66,8 @@ create index if not exists buyback_offers_created_idx on public.buyback_offers (
 -- Horodatage de mise en vente (produits créés depuis l'offre) → évite les doublons.
 -- (idempotent : ré-exécuter buyback.sql n'écrase rien)
 alter table public.buyback_offers add column if not exists listed_at timestamptz;
+-- Méthode de paiement du rachat (especes | virement | twint).
+alter table public.buyback_offers add column if not exists payment_mode text;
 
 -- RLS : tout verrouillé côté public ; service_role (fonctions) bypass.
 alter table public.buyback_config enable row level security;
