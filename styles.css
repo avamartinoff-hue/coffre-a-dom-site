@@ -1394,3 +1394,12 @@ h1,h2,h3{ letter-spacing:0; }                 /* DM Serif respire mieux sans tra
 .rc-pgrid label{ display:flex; flex-direction:column; gap:4px; font-size:.8rem; color:var(--muted); }
 .rc-pgrid input{ padding:8px 10px; border:1px solid var(--line-strong); border-radius:9px; background:rgba(255,255,255,.04); color:var(--text); font:inherit; }
 @media (max-width:640px){ .rc-foot{ flex-direction:column; } .rc-totals{ align-items:stretch; } }
+
+/* Rachat — statut des offres + actions */
+.rc-octa{ display:flex; gap:6px; flex-wrap:wrap; }
+.rc-status{ padding:5px 8px; border-radius:8px; border:1px solid var(--line-strong); background:rgba(255,255,255,.04); color:var(--text); font:inherit; font-size:.82rem; cursor:pointer; }
+.rc-status--draft{ color:var(--muted); }
+.rc-status--sent{ border-color:rgba(90,170,255,.5); color:#8fc0ff; }
+.rc-status--accepted{ border-color:rgba(120,220,170,.5); color:#8fe3b4; }
+.rc-status--paid{ border-color:var(--gold); color:var(--gold-2); background:rgba(245,196,81,.08); }
+.rc-status--cancelled{ border-color:rgba(255,120,120,.45); color:#ff9a9a; }

@@ -1323,6 +1323,7 @@
   var R = { params: null, lines: [], offers: [], bound: false, searching: false };
   var ETATS = ['NM', 'EX', 'GD', 'LP', 'PL', 'PO'];       // Near Mint → Poor
   var LANGUES = ['FR', 'EN', 'JP', 'IT', 'DE', 'ES'];
+  var STATUSES = [['draft', 'Brouillon'], ['sent', 'Envoyée'], ['accepted', 'Acceptée'], ['paid', 'Payée'], ['cancelled', 'Annulée']];
   var eur = function (n) { return '€ ' + Number(n || 0).toFixed(2); };
 
   function repriseForValue(v) {
@@ -1392,14 +1393,20 @@
     if (!R.lines.length) return '<tr><td colspan="9" class="empty">Aucune carte. Recherchez une carte ci-dessus ou ajoutez une ligne manuelle.</td></tr>';
     return R.lines.map(lineRow).join('');
   }
+  function statusSelect(o) {
+    var cur = o.status || 'draft';
+    return '<select data-ostatus="' + o.id + '" class="rc-status rc-status--' + cur + '">' +
+      STATUSES.map(function (s) { return '<option value="' + s[0] + '"' + (cur === s[0] ? ' selected' : '') + '>' + s[1] + '</option>'; }).join('') + '</select>';
+  }
   function offersHtml() {
     if (!R.offers.length) return '<p class="empty">Aucune offre enregistrée.</p>';
-    return '<table class="rc-table rc-table--offers"><thead><tr><th>N°</th><th>Date</th><th>Client</th><th>Statut</th><th class="rc-num">Rachat</th><th></th></tr></thead><tbody>' +
+    return '<div class="rc-tablewrap"><table class="rc-table rc-table--offers"><thead><tr><th>N°</th><th>Date</th><th>Client</th><th>Statut</th><th class="rc-num">Rachat</th><th></th></tr></thead><tbody>' +
       R.offers.map(function (o) {
         return '<tr><td><b>N°' + o.offer_number + '</b></td><td>' + frDate(o.created_at) + '</td><td>' + esc(o.client_name || '—') + '</td>' +
-          '<td>' + esc(o.status || '') + '</td><td class="rc-num">' + chf(o.valeur_rachat_chf) + '</td>' +
-          '<td><button type="button" class="btn btn--ghost btn--sm" data-reprint="' + o.id + '">Imprimer</button></td></tr>';
-      }).join('') + '</tbody></table>';
+          '<td>' + statusSelect(o) + '</td><td class="rc-num">' + chf(o.valeur_rachat_chf) + '</td>' +
+          '<td class="rc-octa"><button type="button" class="btn btn--ghost btn--sm" data-reprint="' + o.id + '" title="Ré-imprimer l\'offre">🖨️</button>' +
+          '<button type="button" class="btn btn--gold btn--sm" data-sell="' + o.id + '" title="Créer ces cartes comme produits de la boutique">➕ Vendre</button></td></tr>';
+      }).join('') + '</tbody></table></div>';
   }
 
   function renderRachat() {
@@ -1620,8 +1627,74 @@
     }).catch(function () { showFlash('Erreur réseau.', false); });
   }
 
+  function setOfferStatus(id, val, sel) {
+    api('POST', 'admin-buyback', { action: 'set-status', id: id, status: val }).then(function (d) {
+      if (d && d.ok) { var o = R.offers.filter(function (x) { return x.id === id; })[0]; if (o) o.status = val; if (sel) sel.className = 'rc-status rc-status--' + val; showFlash('Statut mis à jour.', true); }
+      else showFlash((d && d.error) || 'Erreur statut.', false);
+    }).catch(function () { showFlash('Erreur réseau.', false); });
+  }
+
+  function openSell(id) {
+    api('POST', 'admin-buyback', { action: 'get', id: id }).then(function (d) {
+      if (!d || !d.ok) { showFlash('Offre introuvable.', false); return; }
+      if ((CATEGORIES || []).length) sellModal(d.offer);
+      else api('GET', 'admin-products').then(function (pd) { if (pd && pd.ok) { PRODUCTS = pd.products || []; CATEGORIES = pd.categories || []; } sellModal(d.offer); }).catch(function () { sellModal(d.offer); });
+    }).catch(function () { showFlash('Erreur réseau.', false); });
+  }
+  // Prix de revente conseillé par unité (revente +5% CM figée, arrondi à 0,05).
+  function suggestPrice(l) {
+    var qty = Math.max(1, parseInt(l.qty, 10) || 1);
+    var unit = (Number(l.cm_chf) || 0) / qty;
+    return Math.round(unit / 0.05) * 0.05;
+  }
+  function sellModal(offer) {
+    var cats = CATEGORIES || [];
+    var catOpts = '<option value="">(Sans catégorie)</option>' + cats.map(function (c) { return '<option value="' + esc(c.slug) + '">' + esc(c.name) + '</option>'; }).join('');
+    var rows = (offer.lines || []).map(function (l, i) {
+      var nm = (l.name || 'Carte') + (l.set ? ' — ' + l.set : '') + (l.number ? ' ' + l.number : '') + (l.langue ? ' (' + l.langue + ')' : '');
+      return '<tr><td><input type="checkbox" data-sl="' + i + '" checked></td>' +
+        '<td><input data-sn="' + i + '" value="' + esc(nm) + '"></td>' +
+        '<td class="rc-num">' + (l.qty || 1) + '</td>' +
+        '<td><input data-sp="' + i + '" type="number" step="0.05" min="0" value="' + suggestPrice(l) + '"> CHF</td></tr>';
+    }).join('');
+    var ov = document.createElement('div'); ov.className = 'modal-ov';
+    ov.innerHTML = '<div class="modal modal--lg"><button class="modal__x" data-mx>✕</button>' +
+      '<h3>Mettre en vente — Offre N°' + offer.offer_number + '</h3>' +
+      '<p class="rc-hint">Crée ces cartes comme produits <b>cachés (brouillon)</b> : vous ajoutez les photos et publiez ensuite depuis l\'onglet Produits. Le prix de revente est pré-rempli (modifiable).</p>' +
+      '<label class="field"><span>Catégorie</span><select data-scat>' + catOpts + '</select></label>' +
+      '<div class="rc-tablewrap"><table class="rc-table"><thead><tr><th></th><th>Produit</th><th class="rc-num">Qté</th><th>Prix revente</th></tr></thead><tbody>' + rows + '</tbody></table></div>' +
+      '<div class="modal__foot"><span style="flex:1"></span><button class="btn btn--gold" data-screate>Créer les produits (cachés)</button></div>' +
+    '</div>';
+    document.body.appendChild(ov);
+    function close() { ov.remove(); }
+    ov.addEventListener('click', function (e) { if (e.target === ov || e.target.hasAttribute('data-mx')) close(); });
+    ov.querySelector('[data-screate]').addEventListener('click', function () {
+      var cat = ov.querySelector('[data-scat]').value || null;
+      var jobs = [];
+      (offer.lines || []).forEach(function (l, i) {
+        var cb = ov.querySelector('[data-sl="' + i + '"]'); if (!cb || !cb.checked) return;
+        var name = (ov.querySelector('[data-sn="' + i + '"]').value || '').trim() || l.name || 'Carte';
+        var price = Number(ov.querySelector('[data-sp="' + i + '"]').value) || 0;
+        jobs.push({ name: name, price: price, stock_qty: l.qty || 1, category: cat, image: l.img || '', brand: 'Pokémon', visible: false });
+      });
+      if (!jobs.length) { showFlash('Sélectionnez au moins une carte.', false); return; }
+      var btn = ov.querySelector('[data-screate]'); btn.disabled = true; btn.textContent = 'Création…';
+      var done = 0, fail = 0;
+      Promise.all(jobs.map(function (p) {
+        return api('POST', 'admin-products', { action: 'create', product: p }).then(function (r) { if (r && r.ok) done++; else fail++; }).catch(function () { fail++; });
+      })).then(function () {
+        close();
+        showFlash(done + ' produit(s) créé(s) en brouillon' + (fail ? ' (' + fail + ' échec)' : '') + '. À compléter dans l\'onglet Produits.', !fail);
+        PRODUCTS = []; // forcera un rechargement de l'onglet Produits
+      });
+    });
+  }
+
   function bindRachat() {
     if (R.bound) return; R.bound = true;
+    panels.rachat.addEventListener('change', function (e) {
+      var st = e.target.closest('[data-ostatus]'); if (st) { setOfferStatus(st.getAttribute('data-ostatus'), st.value, st); }
+    });
     // Saisie dans les lignes (recalcul sans re-render pour garder le focus).
     panels.rachat.addEventListener('input', function (e) {
       var f = e.target.closest('[data-f]'); if (!f) return;
@@ -1646,6 +1719,7 @@
         api('POST', 'admin-buyback', { action: 'get', id: rp.getAttribute('data-reprint') }).then(function (d) { if (d && d.ok) printOffer(d.offer); else showFlash('Offre introuvable.', false); });
         return;
       }
+      var sl = e.target.closest('[data-sell]'); if (sl) { openSell(sl.getAttribute('data-sell')); return; }
     });
   }
 
