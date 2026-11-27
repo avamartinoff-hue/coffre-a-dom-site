@@ -23,7 +23,8 @@
 [images]
   remote_images = [
     "https://bjdmeeqzzfxroicxrsna.supabase.co/storage/.*",
-    "https://images.pokemontcg.io/.*",  # visuels de cartes (produits issus d'un rachat)
+    "https://images.pokemontcg.io/.*",            # visuels cartes Pokémon (rachat)
+    "https://en.onepiece-cardgame.com/images/.*", # visuels cartes One Piece (rachat)
   ]
 
 # Filet de sécurité paiements : re-vérifie les commandes en attente toutes les 15 min

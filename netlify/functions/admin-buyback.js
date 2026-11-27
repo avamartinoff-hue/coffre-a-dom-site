@@ -67,6 +67,7 @@ function computeLine(line, p) {
     number: String(line.number || '').slice(0, 40),
     etat: String(line.etat || '').slice(0, 24),
     langue: String(line.langue || '').slice(0, 8),
+    game: line.game === 'onepiece' ? 'onepiece' : 'pokemon',
     img: String(line.img || '').slice(0, 400),
     qty,
     value_eur: value,

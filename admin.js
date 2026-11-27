@@ -1430,7 +1430,8 @@
       '<section class="rc-sec">' +
         '<h3>1. Rechercher une carte (cote Cardmarket)</h3>' +
         '<form class="rc-search" data-rc-search>' +
-          '<input name="name" placeholder="Nom de la carte (ex. Charizard ex)" autocomplete="off" required>' +
+          '<select name="game" class="rc-search__game" aria-label="Jeu"><option value="pokemon">Pokémon</option><option value="onepiece">One Piece</option></select>' +
+          '<input name="name" placeholder="Nom de la carte (ex. Charizard ex / Zoro)" autocomplete="off" required>' +
           '<input name="number" placeholder="N° (option.)" class="rc-search__sm">' +
           '<button type="submit" class="btn btn--gold btn--sm">Rechercher</button>' +
           '<button type="button" class="btn btn--ghost btn--sm" data-rc-manual>+ Ligne manuelle</button>' +
@@ -1525,9 +1526,10 @@
 
   function addLine(card) {
     var val = card && card.trendEur != null ? Number(card.trendEur) : 0;
+    var game = (panels.rachat.querySelector('[name="game"]') || {}).value || 'pokemon';
     R.lines.push({
       name: (card && card.name) || '', set: (card && card.setName) || '', number: (card && card.number) || '',
-      img: (card && card.img) || '', etat: 'NM', langue: 'FR', qty: 1,
+      img: (card && card.img) || '', etat: 'NM', langue: 'FR', qty: 1, game: game,
       value_eur: val, reprise_pct: repriseForValue(val),
     });
     redrawLines();
@@ -1553,7 +1555,7 @@
     var name = form.name.value.trim(); if (!name) return;
     var box = panels.rachat.querySelector('[data-rc-results]');
     R.searching = true; if (box) box.innerHTML = '<p class="empty">Recherche…</p>';
-    api('POST', 'admin-cards-search', { name: name, number: form.number.value.trim() || undefined }).then(function (d) {
+    api('POST', 'admin-cards-search', { game: form.game.value, name: name, number: form.number.value.trim() || undefined }).then(function (d) {
       R.searching = false;
       if (!d || !d.ok) { if (box) box.innerHTML = '<p class="empty">' + esc((d && d.error) || 'Erreur.') + '</p>'; return; }
       RESULTS = {};
@@ -1698,7 +1700,8 @@
         var price = Number(ov.querySelector('[data-sp="' + i + '"]').value) || 0;
         var qty = l.qty || 1;
         var costUnit = Math.round(((Number(l.offre_eur) || 0) / qty) * buyRate * 100) / 100; // coût de rachat / unité (CHF)
-        jobs.push({ product: { name: name, price: price, stock_qty: qty, category: cat, image: l.img || '', brand: 'Pokémon', visible: false, sku: 'RCH-' + offer.offer_number }, cost_chf: costUnit });
+        var brand = l.game === 'onepiece' ? 'One Piece' : 'Pokémon';
+        jobs.push({ product: { name: name, price: price, stock_qty: qty, category: cat, image: l.img || '', brand: brand, visible: false, sku: 'RCH-' + offer.offer_number }, cost_chf: costUnit });
       });
       if (!jobs.length) { showFlash('Sélectionnez au moins une carte.', false); return; }
       var btn = ov.querySelector('[data-screate]'); btn.disabled = true; btn.textContent = 'Création…';
