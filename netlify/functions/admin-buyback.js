@@ -25,6 +25,7 @@ function sb() {
     async get(p) { const r = await fetch(`${url}/rest/v1/${p}`, { headers }); if (!r.ok) throw new Error(`GET ${p} ${r.status}`); return r.json(); },
     async post(p, b, prefer = 'return=representation') { const r = await fetch(`${url}/rest/v1/${p}`, { method: 'POST', headers: { ...headers, Prefer: prefer }, body: JSON.stringify(b) }); if (!r.ok) throw new Error(`POST ${p} ${r.status} ${await r.text()}`); return prefer.includes('representation') ? r.json() : null; },
     async patch(p, b) { const r = await fetch(`${url}/rest/v1/${p}`, { method: 'PATCH', headers: { ...headers, Prefer: 'return=minimal' }, body: JSON.stringify(b) }); if (!r.ok) throw new Error(`PATCH ${p} ${r.status}`); },
+    async del(p) { const r = await fetch(`${url}/rest/v1/${p}`, { method: 'DELETE', headers }); if (!r.ok) throw new Error(`DELETE ${p} ${r.status}`); },
   };
 }
 
@@ -96,7 +97,10 @@ exports.handler = async (event) => {
     }
 
     if (action === 'list') {
-      const offers = await db.get('buyback_offers?select=id,offer_number,created_at,client_name,status,total_offre_eur,valeur_rachat_chf&order=offer_number.desc&limit=200');
+      // Tolérant : si la colonne listed_at n'existe pas encore (buyback.sql pas rejoué), on retombe sans elle.
+      let offers;
+      try { offers = await db.get('buyback_offers?select=id,offer_number,created_at,client_name,status,total_offre_eur,valeur_rachat_chf,listed_at&order=offer_number.desc&limit=200'); }
+      catch (e) { offers = await db.get('buyback_offers?select=id,offer_number,created_at,client_name,status,total_offre_eur,valeur_rachat_chf&order=offer_number.desc&limit=200'); }
       return json(200, { ok: true, offers });
     }
 
@@ -112,6 +116,19 @@ exports.handler = async (event) => {
       const allowed = ['draft', 'sent', 'accepted', 'paid', 'cancelled'];
       if (!allowed.includes(body.status)) return json(400, { ok: false, error: 'statut invalide.' });
       await db.patch(`buyback_offers?id=eq.${encodeURIComponent(body.id)}`, { status: body.status });
+      return json(200, { ok: true });
+    }
+
+    if (action === 'mark-listed') {
+      if (!body.id) return json(400, { ok: false, error: 'id manquant.' });
+      // Best-effort : si la colonne listed_at manque (SQL pas rejoué), on ne bloque pas.
+      try { await db.patch(`buyback_offers?id=eq.${encodeURIComponent(body.id)}`, { listed_at: new Date().toISOString() }); return json(200, { ok: true, persisted: true }); }
+      catch (e) { return json(200, { ok: true, persisted: false }); }
+    }
+
+    if (action === 'delete') {
+      if (!body.id) return json(400, { ok: false, error: 'id manquant.' });
+      await db.del(`buyback_offers?id=eq.${encodeURIComponent(body.id)}`);
       return json(200, { ok: true });
     }
 

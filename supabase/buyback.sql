@@ -62,6 +62,10 @@ create table if not exists public.buyback_offers (
 create unique index if not exists buyback_offers_number_uidx on public.buyback_offers (offer_number);
 create index if not exists buyback_offers_created_idx on public.buyback_offers (created_at desc);
 
+-- Horodatage de mise en vente (produits créés depuis l'offre) → évite les doublons.
+-- (idempotent : ré-exécuter buyback.sql n'écrase rien)
+alter table public.buyback_offers add column if not exists listed_at timestamptz;
+
 -- RLS : tout verrouillé côté public ; service_role (fonctions) bypass.
 alter table public.buyback_config enable row level security;
 alter table public.buyback_offers enable row level security;

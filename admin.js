@@ -1402,10 +1402,12 @@
     if (!R.offers.length) return '<p class="empty">Aucune offre enregistrée.</p>';
     return '<div class="rc-tablewrap"><table class="rc-table rc-table--offers"><thead><tr><th>N°</th><th>Date</th><th>Client</th><th>Statut</th><th class="rc-num">Rachat</th><th></th></tr></thead><tbody>' +
       R.offers.map(function (o) {
+        var listed = !!o.listed_at;
         return '<tr><td><b>N°' + o.offer_number + '</b></td><td>' + frDate(o.created_at) + '</td><td>' + esc(o.client_name || '—') + '</td>' +
           '<td>' + statusSelect(o) + '</td><td class="rc-num">' + chf(o.valeur_rachat_chf) + '</td>' +
           '<td class="rc-octa"><button type="button" class="btn btn--ghost btn--sm" data-reprint="' + o.id + '" title="Ré-imprimer l\'offre">🖨️</button>' +
-          '<button type="button" class="btn btn--gold btn--sm" data-sell="' + o.id + '" title="Créer ces cartes comme produits de la boutique">➕ Vendre</button></td></tr>';
+          '<button type="button" class="btn ' + (listed ? 'btn--ghost' : 'btn--gold') + ' btn--sm" data-sell="' + o.id + '" title="' + (listed ? 'Déjà mis en vente le ' + esc(frDate(o.listed_at)) + ' — cliquer pour recréer' : 'Créer ces cartes comme produits de la boutique') + '">' + (listed ? '✓ En vente' : '➕ Vendre') + '</button>' +
+          '<button type="button" class="btn btn--ghost btn--sm rc-del" data-odel="' + o.id + '" data-onum="' + o.offer_number + '" title="Supprimer l\'offre">🗑️</button></td></tr>';
       }).join('') + '</tbody></table></div>';
   }
 
@@ -1686,6 +1688,7 @@
         close();
         showFlash(done + ' produit(s) créé(s) en brouillon' + (fail ? ' (' + fail + ' échec)' : '') + '. À compléter dans l\'onglet Produits.', !fail);
         PRODUCTS = []; // forcera un rechargement de l'onglet Produits
+        if (done > 0) { api('POST', 'admin-buyback', { action: 'mark-listed', id: offer.id }).then(function () { refreshOffers(); }).catch(function () { refreshOffers(); }); }
       });
     });
   }
@@ -1719,7 +1722,21 @@
         api('POST', 'admin-buyback', { action: 'get', id: rp.getAttribute('data-reprint') }).then(function (d) { if (d && d.ok) printOffer(d.offer); else showFlash('Offre introuvable.', false); });
         return;
       }
-      var sl = e.target.closest('[data-sell]'); if (sl) { openSell(sl.getAttribute('data-sell')); return; }
+      var sl = e.target.closest('[data-sell]'); if (sl) {
+        var oid = sl.getAttribute('data-sell');
+        var off = R.offers.filter(function (x) { return x.id === oid; })[0];
+        if (off && off.listed_at && !confirm('Cette offre a déjà été mise en vente le ' + frDate(off.listed_at) + '.\nRecréer les produits ? (des doublons seront créés)')) return;
+        openSell(oid); return;
+      }
+      var od = e.target.closest('[data-odel]'); if (od) {
+        if (!confirm('Supprimer définitivement l\'offre N°' + od.getAttribute('data-onum') + ' ?\n(Les produits éventuellement déjà créés ne sont PAS supprimés.)')) return;
+        var did = od.getAttribute('data-odel'); od.disabled = true;
+        api('POST', 'admin-buyback', { action: 'delete', id: did }).then(function (d) {
+          if (d && d.ok) { R.offers = R.offers.filter(function (x) { return x.id !== did; }); var box = panels.rachat.querySelector('[data-rc-offers]'); if (box) box.innerHTML = offersHtml(); showFlash('Offre supprimée.', true); }
+          else { od.disabled = false; showFlash((d && d.error) || 'Erreur.', false); }
+        }).catch(function () { od.disabled = false; showFlash('Erreur réseau.', false); });
+        return;
+      }
     });
   }
 
